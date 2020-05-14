@@ -13,10 +13,10 @@ Flask-Script==2.0.6
 Flask-SocketIO==2.9.3
 Flask-SQLAlchemy==2.3.2
 Flask-Testing==0.8.0
-itsdangerous==0.24
+itsdangerous==1.1.0
 psycopg2==2.7.3.2
 pytz==2017.3
-six==1.11.0
+six==1.14.0
 SQLAlchemy==1.2.0
 sqlalchemy-migrate==0.7.2 
 Werkzeug==0.15.3
