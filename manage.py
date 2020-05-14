@@ -4,11 +4,11 @@ import unittest
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
-from app import blueprint
 from app.main import create_app, db
+from app.main.config.v1.routes import v1_blueprint
 
 app = create_app(os.getenv('BOILERPLATE_ENV') or 'dev')
-app.register_blueprint(blueprint)
+app.register_blueprint(v1_blueprint)
 
 app.app_context().push()
 
