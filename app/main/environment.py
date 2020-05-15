@@ -5,33 +5,33 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-class Config:
+class Environment:
     SECRET_KEY = os.getenv('SECRET_KEY', 'lsarp_secret_key')
     DEBUG = False
-    TESTING = False
+    TEST = False
     SQLALCHEMY_DATABASE_URI = ''
     PRESERVE_CONTEXT_ON_EXCEPTION = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-class DevelopmentConfig(Config):
+class Development(Environment):
     # uncomment the line below to use postgres
     # SQLALCHEMY_DATABASE_URI = postgres_local_base
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('LSARP_DATABASE_URL') + '/lsarp_development'
 
-class TestingConfig(Config):
+class Test(Environment):
     DEBUG = True
-    TESTING = True
+    TEST = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('LSARP_DATABASE_URL') + '/lsarp_test'
 
-class ProductionConfig(Config):
+class Production(Environment):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('LSARP_DATABASE_URL') + '/lsarp_production'
 
 environments = dict(
-    dev=DevelopmentConfig,
-    test=TestingConfig,
-    prod=ProductionConfig
+    dev=Development,
+    test=Test,
+    prod=Production
 )
 
-key = Config.SECRET_KEY
+key = Environment.SECRET_KEY

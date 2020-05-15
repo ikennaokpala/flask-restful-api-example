@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 
-from .config import environments
+from .environment import environments
 
 db = SQLAlchemy()
 flask_bcrypt = Bcrypt()
