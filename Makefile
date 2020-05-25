@@ -57,4 +57,8 @@ run:
 	source ./env-packages/bin/activate; \
 	python manage.py run
 
+db_init:
+	source ./env-packages/bin/activate; \
+	python manage.py db init
+
 all: clean install tests run
