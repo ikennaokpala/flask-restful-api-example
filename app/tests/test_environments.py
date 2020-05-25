@@ -5,7 +5,6 @@ from flask import current_app
 from flask_testing import TestCase
 
 from manage import app
-from app.main.environment import basedir
 from app.main.environment import environments
 
 class TestDevelopmentEnvironment(TestCase):
