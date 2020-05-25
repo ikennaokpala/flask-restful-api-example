@@ -57,6 +57,10 @@ python-packages:
 
 install: system-packages python-packages
 
+test_prepare:
+	source ./env-packages/bin/activate; \
+	python manage.py test_prepare
+
 tests:
 	source ./env-packages/bin/activate; \
 	python manage.py tests

@@ -22,6 +22,7 @@ class Development(Environment):
 class Test(Environment):
     DEBUG = True
     TEST = True
+    TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('LSARP_DATABASE_URL') + '/lsarp_test'
 
 class Production(Environment):
