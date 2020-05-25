@@ -1,7 +1,7 @@
 import unittest
 import json
 
-from app.tests.base import BaseTestCase
+from app.tests.base_test_case import BaseTestCase
 from app.main.config.oidc import OIDC
 
 class TestAuthorizationCodeURL(BaseTestCase):

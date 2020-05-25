@@ -4,12 +4,13 @@ from flask_testing import TestCase
 from app.main import db
 from manage import app
 
+from app.main.environment import environments
 
 class BaseTestCase(TestCase):
     """ Base Tests """
 
     def create_app(self):
-        app.config.from_object('app.main.environment.Test')
+        app.config.from_object(environments['test'])
         return app
 
     def setUp(self):
