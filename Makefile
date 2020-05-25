@@ -11,6 +11,8 @@ yum-packages:
 	$(SUDO) yum install -y python-pip
 	$(SUDO) pip install --user virtualenv
 	python3 -m venv env-packages
+	source ./env-packages/bin/activate; \
+	pip install --upgrade pip
 
 .PHONY: apk-packages
 apk-packages:
@@ -18,6 +20,8 @@ apk-packages:
 	$(SUDO) apk install -y python-pip
 	$(SUDO) pip install --user virtualenv
 	python3 -m venv env-packages
+	source ./env-packages/bin/activate; \
+	pip install --upgrade pip
 
 .PHONY: apt-packages
 apt-packages:
@@ -25,6 +29,8 @@ apt-packages:
 	$(SUDO) apt-get install -y python-pip
 	$(SUDO) pip install --user virtualenv
 	python3 -m venv env-packages
+	source ./env-packages/bin/activate; \
+	pip install --upgrade pip
 
 .PHONY: homebrew-packages
 homebrew-packages:
@@ -35,6 +41,8 @@ homebrew-packages:
 	sudo easy_install pip
 	sudo pip install --user virtualenv
 	python3 -m venv env-packages
+	source ./env-packages/bin/activate; \
+	pip install --upgrade pip
 
 .PHONY: clean python-packages install tests run all
 
