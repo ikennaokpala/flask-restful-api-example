@@ -51,7 +51,7 @@ install: system-packages python-packages
 
 tests:
 	source ./env-packages/bin/activate; \
-	python manage.py test
+	python manage.py tests
 
 run:
 	source ./env-packages/bin/activate; \
