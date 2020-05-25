@@ -6,10 +6,11 @@ from flask_testing import TestCase
 
 from manage import app
 from app.main.environment import basedir
+from app.main.environment import environments
 
 class TestDevelopmentEnvironment(TestCase):
     def create_app(self):
-        app.config.from_object('app.main.environment.Development')
+        app.config.from_object(environments['development'])
         return app
 
     def test_app_is_development(self):
@@ -22,7 +23,7 @@ class TestDevelopmentEnvironment(TestCase):
 
 class TestTestingEnvironment(TestCase):
     def create_app(self):
-        app.config.from_object('app.main.environment.Test')
+        app.config.from_object(environments['test'])
         return app
 
     def test_app_is_testing(self):
@@ -34,7 +35,7 @@ class TestTestingEnvironment(TestCase):
 
 class TestProductionEnvironment(TestCase):
     def create_app(self):
-        app.config.from_object('app.main.environment.Production')
+        app.config.from_object(environments['production'])
         return app
 
     def test_app_is_production(self):

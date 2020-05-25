@@ -8,7 +8,7 @@ from flask_cors import CORS
 from app.main import create_app, db
 from app.main.config.v1.routes import v1_blueprint
 
-app = create_app(os.getenv('BOILERPLATE_ENV') or 'dev')
+app = create_app(os.getenv('BOILERPLATE_ENV') or 'development')
 CORS(app)
 app.register_blueprint(v1_blueprint)
 

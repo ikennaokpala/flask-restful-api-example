@@ -29,9 +29,9 @@ class Production(Environment):
     SQLALCHEMY_DATABASE_URI = os.environ.get('LSARP_DATABASE_URL') + '/lsarp_production'
 
 environments = dict(
-    dev=Development,
+    development=Development,
     test=Test,
-    prod=Production
+    production=Production
 )
 
 key = Environment.SECRET_KEY
