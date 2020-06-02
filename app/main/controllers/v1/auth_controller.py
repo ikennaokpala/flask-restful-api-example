@@ -38,4 +38,8 @@ class AuthorizationCodeURLController(Resource):
 class AuthCallbackController(Resource):
     @endpoint.expect(tokenized_user_fields)
     def post(self):
-        return { 'user': OIDC.tokenized_user(request.json)._asdict() }
+        outcome = lambda token_user: (token_user.pop('id_token') and token_user)
+        tokenized_user = OIDC.tokenized_user(request.json)
+        token_user_dict = tokenized_user._asdict()
+
+        return { 'user': outcome(token_user_dict.copy()) }, 201

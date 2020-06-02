@@ -29,7 +29,6 @@ class TestAuthCallback(BaseTestCase):
                 'email': 'testcase.user@testingemaildomain.txt',
                 'locale': 'en',
                 'access_token': type(self).OIDC_USER_ACCESS_TOKEN,
-                'id_token': type(self).OIDC_USER_ID_TOKEN,
                 'refresh_token': None,
                 'token_type': 'bearer',
                 'expires_in': 600,
@@ -45,7 +44,7 @@ class TestAuthCallback(BaseTestCase):
             with self.client as rdbclient:
                 response = rdbclient.post('/v1/auth/callback', json=self.params)
 
-                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.status_code, 201)
                 self.assertTrue(response.content_type == 'application/json')
 
                 outcome = json.loads(response.data.decode())
