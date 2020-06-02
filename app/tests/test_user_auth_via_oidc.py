@@ -39,7 +39,7 @@ class TestAuthCallback(BaseTestCase):
         }
         self.params = { 'code': type(self).OIDC_USER_AUTHORIZATION_CODE, 'redirect_uri': type(self).OIDC_REDIRECT_URI }
 
-    @freeze_time('2020-05-09 15:04:12', tz_offset=-3)
+    @freeze_time('2020-06-02 08:57:53')
     def test_successful_auth_with_valid_params(self):
         with self.vcr.use_cassette('v1/auth/valid_authentication_requests.yml'):
             with self.client as rdbclient:
