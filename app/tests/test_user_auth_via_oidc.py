@@ -50,3 +50,15 @@ class TestAuthCallback(BaseTestCase):
                 outcome = json.loads(response.data.decode())
                 self.assertTrue(outcome == self.expected)
                 self.assertTrue(outcome['user'] == self.expected['user'])
+
+    @freeze_time('2020-06-02 09:57:54') # After an hour and 1 second
+    def test_when_bearer_token_has_expired(self):
+        with self.vcr.use_cassette('v1/auth/valid_authentication_requests.yml'):
+            with self.client as rdbclient:
+                response = rdbclient.post('/v1/auth/callback', json=self.params)
+
+                self.assertEqual(response.status_code, 422)
+                self.assertTrue(response.content_type == 'application/json')
+
+                outcome = json.loads(response.data.decode())
+                self.assertTrue(outcome['message'] == 'The request was well-formed but was unable to be followed due to semantic errors.')

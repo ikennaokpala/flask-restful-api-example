@@ -1,5 +1,7 @@
 from flask_restplus import Namespace, Resource, fields
 from flask import request
+from werkzeug.exceptions import UnprocessableEntity
+import openid_connect
 
 from app.main.config.oidc import OIDC
 
@@ -38,8 +40,10 @@ class AuthorizationCodeURLController(Resource):
 class AuthCallbackController(Resource):
     @endpoint.expect(tokenized_user_fields)
     def post(self):
-        outcome = lambda token_user: (token_user.pop('id_token') and token_user)
-        tokenized_user = OIDC.tokenized_user(request.json)
-        token_user_dict = tokenized_user._asdict()
-
-        return { 'user': outcome(token_user_dict.copy()) }, 201
+        try:
+            outcome = lambda token_user: (token_user.pop('id_token') and token_user)
+            tokenized_user = OIDC.tokenized_user(request.json)
+            token_user_dict = tokenized_user._asdict()
+            return { 'user': outcome(token_user_dict.copy()) }, 201
+        except openid_connect.errors.Forbidden:
+            raise UnprocessableEntity
