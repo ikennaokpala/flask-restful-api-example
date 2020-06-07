@@ -1,6 +1,7 @@
 from flask_restplus import Namespace, Resource, fields
 from flask import request
 from werkzeug.exceptions import UnprocessableEntity
+from requests.exceptions import HTTPError
 import openid_connect
 
 from app.main.config.oidc import OIDC
@@ -45,5 +46,5 @@ class AuthCallbackController(Resource):
             tokenized_user = OIDC.tokenized_user(request.json)
             token_user_dict = tokenized_user._asdict()
             return { 'user': outcome(token_user_dict.copy()) }, 201
-        except openid_connect.errors.Forbidden:
+        except (openid_connect.errors.Forbidden, HTTPError):
             raise UnprocessableEntity

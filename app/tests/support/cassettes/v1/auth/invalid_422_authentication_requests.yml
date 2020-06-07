@@ -1,0 +1,216 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.23.0
+    method: GET
+    uri: https://idp.mit.c3.ca/.well-known/openid-configuration
+  response:
+    body:
+      string: "{\n   \"issuer\":\"https://idp.mit.c3.ca\",\n   \"authorization_endpoint\":\"https://idp.mit.c3.ca/idp/profile/oidc/authorize\",\n
+        \  \"registration_endpoint\":\"https://idp.mit.c3.ca/idp/profile/oidc/register\",\n
+        \  \"token_endpoint\":\"https://idp.mit.c3.ca/idp/profile/oidc/token\",\n
+        \  \"userinfo_endpoint\":\"https://idp.mit.c3.ca/idp/profile/oidc/userinfo\",\n
+        \  \"jwks_uri\":\"https://idp.mit.c3.ca/idp/profile/oidc/keyset\",\n   \"response_types_supported\":[\n
+        \     \"code\",\n      \"id_token\",\n      \"token id_token\",\n      \"code
+        id_token\",\n      \"code token\",\n      \"code token id_token\"\n   ],\n
+        \  \"subject_types_supported\":[\n      \"public\",\n      \"pairwise\"\n
+        \  ],\n   \"grant_types_supported\":[\n      \"authorization_code\",\n      \"implicit\",\n
+        \     \"refresh_token\"\n   ],\n   \"id_token_encryption_alg_values_supported\":[\n
+        \     \"RSA1_5\",\n      \"RSA-OAEP\",\n      \"RSA-OAEP-256\",\n      \"A128KW\",\n
+        \     \"A192KW\",\n      \"A256KW\",\n      \"A128GCMKW\",\n      \"A192GCMKW\",\n
+        \     \"A256GCMKW\"\n   ],\n   \"id_token_encryption_enc_values_supported\":[\n
+        \     \"A128CBC-HS256\"\n   ],\n   \"id_token_signing_alg_values_supported\":[\n
+        \     \"RS256\",\n      \"RS384\",\n      \"RS512\",\n      \"HS256\",\n      \"HS384\",\n
+        \     \"HS512\",\n      \"ES256\"\n   ],\n   \"userinfo_encryption_alg_values_supported\":[\n
+        \     \"RSA1_5\",\n      \"RSA-OAEP\",\n      \"RSA-OAEP-256\",\n      \"A128KW\",\n
+        \     \"A192KW\",\n      \"A256KW\",\n      \"A128GCMKW\",\n      \"A192GCMKW\",\n
+        \     \"A256GCMKW\"\n   ],\n   \"userinfo_encryption_enc_values_supported\":[\n
+        \     \"A128CBC-HS256\"\n   ],\n   \"userinfo_signing_alg_values_supported\":[\n
+        \     \"RS256\",\n      \"RS384\",\n      \"RS512\",\n      \"HS256\",\n      \"HS384\",\n
+        \     \"HS512\",\n      \"ES256\"\n   ],\n   \"request_object_signing_alg_values_supported\":[\n
+        \     \"none\",\n      \"RS256\",\n      \"RS384\",\n      \"RS512\",\n      \"HS256\",\n
+        \     \"HS384\",\n      \"HS512\",\n      \"ES256\",\n      \"ES384\",\n      \"ES512\"\n
+        \  ],\n   \"token_endpoint_auth_methods_supported\":[\n      \"client_secret_basic\",\n
+        \     \"client_secret_post\",\n      \"client_secret_jwt\",\n      \"private_key_jwt\"\n
+        \  ],\n   \"claims_parameter_supported\":true,\n   \"request_parameter_supported\":true,\n
+        \  \"request_uri_parameter_supported\":false,\n   \"require_request_uri_registration\":false,\n
+        \  \"display_values_supported\":[\n      \"page\"\n   ],\n   \"scopes_supported\":[\n
+        \     \"openid\",\n      \"profile\",\n      \"email\",\n      \"address\",\n
+        \     \"phone\",\n      \"offline_access\"\n   ],\n   \"response_modes_supported\":[\n
+        \     \"query\",\n      \"fragment\",\n      \"form_post\"\n   ],\n   \"claims_supported\":[\n
+        \     \"aud\",\n      \"iss\",\n      \"sub\",\n      \"iat\",\n      \"exp\",\n
+        \     \"acr\",\n      \"auth_time\",\n      \"email\",\n      \"email_verified\",\n
+        \     \"address\",\n      \"phone\",\n      \"phone_number_verified\",\n      \"name\",\n
+        \     \"family_name\",\n      \"given_name\",\n      \"middle_name\",\n      \"nickname\",\n
+        \     \"preferred_username\",\n      \"profile\",\n      \"picture\",\n      \"website\",\n
+        \     \"gender\",\n      \"birthdate\",\n      \"zoneinfo\",\n      \"locale\",\n
+        \     \"updated_at\"\n   ]\n}\n"
+    headers:
+      Accept-Ranges:
+      - bytes
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2924'
+      Date:
+      - Mon, 25 May 2020 13:59:54 GMT
+      ETag:
+      - W/"2924-1590414104724"
+      Last-Modified:
+      - Mon, 25 May 2020 13:41:44 GMT
+      Server:
+      - openresty/1.15.8.1
+      Set-Cookie:
+      - route=1590415195.275.47.722610; Path=/; Secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+    status:
+      code: 200
+      message: ''
+- request:
+    body: 'grant_type=authorization_code&code=expired_authorization_code&redirect_uri=http://wrong/redirect/uri'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Authorization:
+      - Basic bXktY2MtZGV2LXRlc3Qtc3RhZ2luZzo0NmJkZjk2Zi00Y2VjLTQ0YjYtYjZjNy1lNDlkNzJmNjg0MGM=
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '655'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      User-Agent:
+      - python-requests/2.23.0
+    method: POST
+    uri: https://idp.mit.c3.ca/idp/profile/oidc/token
+  response:
+    body:
+      string: ''
+    headers:
+      Cache-Control:
+      - no-store
+      - no-store
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '61'
+      Content-Type:
+      - application/json;charset=UTF-8
+      Date:
+      - Mon, 25 May 2020 13:59:54 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - openresty/1.15.8.1
+      Set-Cookie:
+      - route=1590415195.641.46.747678; Path=/; Secure; HttpOnly
+      - JSESSIONID=663B8B4115A9CBAAEAAAFF913A4B5831; Path=/idp; Secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+    status:
+      code: 422
+      message: ''
+- request:
+    body: ''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Authorization:
+      - Basic bXktY2MtZGV2LXRlc3Qtc3RhZ2luZzo0NmJkZjk2Zi00Y2VjLTQ0YjYtYjZjNy1lNDlkNzJmNjg0MGM=
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '655'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      User-Agent:
+      - python-requests/2.23.0
+    method: GET
+    uri: https://idp.mit.c3.ca/idp/profile/oidc/keyset
+  response:
+    body:
+      string: '{"keys":[{"kty":"RSA","e":"AQAB","use":"sig","kid":"defaultRSASign","n":"uxGdLdLBxeL7rcprqDWGiBGOWAWLIfzDOvEzog4olkHW0UNuxNmG1fZr0WjOnMtPt6Y6RtXz96lgJVPBYof2_p7YcODAe0xUKPZQdGBDoTPwmIPQ4suQ5IK2-arPmmse33MreMTbqGCcdtZPjSqXLiftFS_FB5CxIt1xKroRtGmNl0GcQcOBEYNZ58bxEIGDYzuCwFlh2vOXnLAbhpjvG8ZUuSxHrbB7SFV9B40LJdCo_qEee_mYK0nsSDDBEWyPj6fE6XJ6kyy6TZZnoQYaL5kDEIcKxPTSMqyFq-cZcLJwx-_Mw59z4Dh299BOg6Oxf2iES4ybz3p9mLyuE9Zpqw"},{"kty":"EC","use":"sig","crv":"P-256","kid":"defaultECSign","x":"LzR4AQVSEo4so88ieufFocP9w1semuZ-pERUR5y_kTM","y":"gjRPONj23Cpsath9PBYUMitUAqM3oXH6pZPTz7Vpkpk"},{"kty":"RSA","e":"AQAB","use":"enc","kid":"defaultRSAEnc","n":"j_nrN4bD2s-uTCIYhHL5q1pEMcxZYPKEuwK6PisDonWukn45iOhonWiinyNelWb0ckEMFsXC9vXJ2RJwUkW-QbJ26E6kjY8bjHz7NmA1ZbwswzGEMWj90IFwZXfjXIev9TV-E2QUqL3ERhIKqqbqn5LI126cf2nunh3MnQ2BF02lamu5Pb5yn5ze_xV3NgHDUxP1iaGvraSE0kPrEpRJfq89OwswVBUQpQXgR47te0vO2d-hJXlBcUW2nxbXe1tENGYqmURclcnKNyNK0f7p4IDuHWn3-xSGS99eyqs_6LXg8VoPO8qB6XJQ-s7naksy6TZEuPQaZBMSbR0MgCSi6Q"}]}'
+    headers:
+      Cache-Control:
+      - no-store
+      - no-store
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '61'
+      Content-Type:
+      - application/json;charset=UTF-8
+      Date:
+      - Mon, 25 May 2020 13:59:54 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - openresty/1.15.8.1
+      Set-Cookie:
+      - route=1590415195.641.46.747678; Path=/; Secure; HttpOnly
+      - JSESSIONID=663B8B4115A9CBAAEAAAFF913A4B5831; Path=/idp; Secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+    status:
+      code: 200
+      message: ''
+- request:
+    body: ''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Authorization:
+      - Bearer AAdzZWNyZXQxcQEIz8PEJJF9w7UGptR7Jgzzm3_VIqO5emnGhn7xvedt-A_ldZ-sKnEqFQWXAorX2LljwHrKfGqzZe_Uvp3kqAv5oromTsW9Fbll-cAz1PCYWKE6q43kpuM7jr7a3WOqGt5vxV1ihvN463sF0t3XyC64NWJtDWFVrcHM8mosjArdI1-tVjFXWlEcXzcrvh9entDpkQPrnCucyf4muGa5yvskMJgq5fSsiMLqTvnLvNgVg5qo4XJdiVvIhIiNV8_aTgECiu64_8WTZ3JSyb3Qfmy66Cyt_RbsqeGeoz8E_5Wip48K8Oe-KzPPo1ssk3aAUNw5ZSDDKEsZ-KQapCRwaZYnpKjoHKA6IXCBXZbJjBjEDXiI7XDqJzd7ntr9peScT0aVxVXqtujKW0yR95CH4qyENtEn-swUBiIWVi2dWw4c1t0xrUJdhbUIic15IEOS66LCPKU5ArrxkATbK9OYUNxxlXW3fMNmIzdUs3HmeRgl_hqk4C-gSP8gAj8tTNbF5HrHl0TGjCYipywEHPOfS4UOZ23l
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '655'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      User-Agent:
+      - python-requests/2.23.0
+    method: GET
+    uri: https://idp.mit.c3.ca/idp/profile/oidc/userinfo
+  response:
+    body:
+      string: '{"name":"TestCase User","sub":"KAZJ6NM35K65ECI57TFX5BTIQM4JW34F","middle_name":"MiddleMan","nickname":"Nickname","given_name":"TestCase","family_name":"User","email":"testcase.user@testingemaildomain.txt", "locale": "en"}'
+    headers:
+      Cache-Control:
+      - no-store
+      - no-store
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '61'
+      Content-Type:
+      - application/json;charset=UTF-8
+      Date:
+      - Mon, 25 May 2020 13:59:54 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - openresty/1.15.8.1
+      Set-Cookie:
+      - route=1590415195.641.46.747678; Path=/; Secure; HttpOnly
+      - JSESSIONID=663B8B4115A9CBAAEAAAFF913A4B5831; Path=/idp; Secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+    status:
+      code: 200
+      message: ''
+version: 1  
