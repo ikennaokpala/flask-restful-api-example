@@ -1,11 +1,13 @@
+import openid_connect
+
 from flask_restplus import Namespace, Resource, fields
 from flask import request
 from werkzeug.exceptions import UnprocessableEntity
 from werkzeug.exceptions import BadRequest
 from requests.exceptions import HTTPError
-import openid_connect
 
 from app.main.config.oidc import OIDC
+from app.main.dao.session_dao import SessionDAO
 
 endpoint = Namespace('auth-endpoint', description='authentication related api endpoints')
 
@@ -22,7 +24,6 @@ tokenized_user_fields = endpoint.model('Resource', {
         'email': fields.String,
         'locale': fields.String,
         'access_token': fields.String,
-        'id_token': fields.String,
         'refresh_token': fields.String,
         'token_type': fields.String,
         'expires_in': fields.Integer,
@@ -45,8 +46,8 @@ class AuthCallback(Resource):
         try:
             outcome = lambda token_user: (token_user.pop('id_token') and token_user)
             tokenized_user = OIDC.tokenized_user(request.json['code'], request.json['redirect_uri'])
-            token_user_dict = tokenized_user._asdict()
-            return { 'user': outcome(token_user_dict.copy()) }, 201
+            dao = SessionDAO(tokenized_user).create()
+            return { 'user': outcome(dao.tokenized_user.copy()) }, 201
         except (openid_connect.errors.Forbidden, HTTPError):
             raise UnprocessableEntity
         except (KeyError):

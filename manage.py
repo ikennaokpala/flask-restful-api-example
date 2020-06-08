@@ -42,11 +42,11 @@ def createdb(environment):
 @manager.command
 def tests():
     """Runs the unit tests."""
+    app.config.from_object(environments['test'])
     createdb('test')
     tests = unittest.TestLoader().discover('app/tests', pattern='test*.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
-        dropdb('test')
         return 0
     return 1
 

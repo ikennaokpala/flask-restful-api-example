@@ -4,6 +4,7 @@ from freezegun import freeze_time
 
 from app.tests.base_test_case import BaseTestCase
 from app.main.config.oidc import OIDC
+from app.main.models.session import Session
 
 class TestAuthorizationCodeURL(BaseTestCase):
     def test_authorization_code_url(self):
@@ -18,7 +19,7 @@ class TestAuthorizationCodeURL(BaseTestCase):
 
 class TestAuthCallback(BaseTestCase):
     def setUp(self):
-        super()
+        super(TestAuthCallback, self).setUp()
         self.expected = {
             'user': {
                 'name': 'TestCase User',
@@ -50,6 +51,10 @@ class TestAuthCallback(BaseTestCase):
                 outcome = json.loads(response.data.decode())
                 self.assertTrue(outcome == self.expected)
                 self.assertTrue(outcome['user'] == self.expected['user'])
+
+                outcome = Session.query.filter_by(access_token=outcome['user']['access_token']).first()
+                outcome.tokenized_user.pop('id_token')
+                self.assertTrue(outcome.tokenized_user == self.expected['user'])
 
     @freeze_time('2020-06-02 09:57:54') # After an hour and 1 second
     def test_when_bearer_token_has_expired(self):
