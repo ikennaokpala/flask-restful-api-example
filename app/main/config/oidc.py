@@ -38,9 +38,9 @@ class OIDC:
         return klazz.authorization_endpoint + '?' + urlencode(klazz.__authorization_code_params())
 
     @classmethod
-    def tokenized_user(klazz, params):
+    def tokenized_user(klazz, code, redirect_uri):
         client = OpenIDClient(klazz.issuer, klazz.client_id, klazz.client_secret)
-        token_response = client.request_token(params.get('redirect_uri', None), params.get('code', None))
+        token_response = client.request_token(redirect_uri, code)
         user_info = token_response.userinfo
         refresh_token = None
 
@@ -57,8 +57,8 @@ class OIDC:
           refresh_token=refresh_token,
           token_type='bearer',
           expires_in=600,
-          redirect_uri=params.get('redirect_uri', None),
-          code=params.get('code', None),
+          redirect_uri=redirect_uri,
+          code=code,
         )
 
     @classmethod

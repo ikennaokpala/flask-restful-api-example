@@ -75,6 +75,28 @@ class TestAuthCallback(BaseTestCase):
                 outcome = json.loads(response.data.decode())
                 self.assertTrue(outcome['message'] == 'The request was well-formed but was unable to be followed due to semantic errors.')
 
+    def test_when_authorization_code_is_exempted(self):
+        parameters = { 'redirect_uri': type(self).OIDC_REDIRECT_URI }
+        with self.client as rdbclient:
+            response = rdbclient.post('/v1/auth/callback', json=parameters)
+
+            self.assertEqual(response.status_code, 400)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            self.assertTrue(outcome['message'] == 'The browser (or proxy) sent a request that this server could not understand.')
+
+    def test_when_redirect_uri_is_exempted(self):
+        parameters = { 'code': 'authorization_code' }
+        with self.client as rdbclient:
+            response = rdbclient.post('/v1/auth/callback', json=parameters)
+
+            self.assertEqual(response.status_code, 400)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            self.assertTrue(outcome['message'] == 'The browser (or proxy) sent a request that this server could not understand.')
+
     def test_when_redirect_uri_is_wrong(self):
         parameters = { 'code': 'authorization_code', 'redirect_uri': 'http://wrong.url/path' }
         with self.vcr.use_cassette('v1/auth/invalid_422_authentication_requests.yml'):

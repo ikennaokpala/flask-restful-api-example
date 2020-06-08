@@ -1,6 +1,7 @@
 from flask_restplus import Namespace, Resource, fields
 from flask import request
 from werkzeug.exceptions import UnprocessableEntity
+from werkzeug.exceptions import BadRequest
 from requests.exceptions import HTTPError
 import openid_connect
 
@@ -43,8 +44,10 @@ class AuthCallbackController(Resource):
     def post(self):
         try:
             outcome = lambda token_user: (token_user.pop('id_token') and token_user)
-            tokenized_user = OIDC.tokenized_user(request.json)
+            tokenized_user = OIDC.tokenized_user(request.json['code'], request.json['redirect_uri'])
             token_user_dict = tokenized_user._asdict()
             return { 'user': outcome(token_user_dict.copy()) }, 201
         except (openid_connect.errors.Forbidden, HTTPError):
             raise UnprocessableEntity
+        except (KeyError):
+            raise BadRequest
