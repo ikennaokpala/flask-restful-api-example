@@ -32,14 +32,14 @@ tokenized_user_fields = endpoint.model('Resource', {
 })
 
 @endpoint.route('/authorization_code_url')
-class AuthorizationCodeURLController(Resource):
+class AuthorizationCodeURL(Resource):
     @endpoint.expect(authorization_code_url_fields)
     def get(self):
         return { 'url': OIDC.authorization_code_url() }
 
 @endpoint.route('/callback')
 @endpoint.doc(params={'code': 'Authorization code issued by IdP from the frontend', 'redirect_uri': 'Redirect URI'})
-class AuthCallbackController(Resource):
+class AuthCallback(Resource):
     @endpoint.expect(tokenized_user_fields)
     def post(self):
         try:
