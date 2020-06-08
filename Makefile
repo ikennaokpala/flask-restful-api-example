@@ -1,3 +1,10 @@
+SHELL=/bin/bash
+
+args = `arg="$(filter-out $@,$(MAKECMDGOALS))" && echo $${arg:-${1}}`
+
+%:
+	@:
+
 .PHONY: system-packages
 system-packages:
 	if [ -x /sbin/apk ];        then $(MAKE) apk-packages; fi
@@ -57,9 +64,13 @@ python-packages:
 
 install: system-packages python-packages
 
-test_prepare:
+createdb:
 	source ./env-packages/bin/activate; \
-	python manage.py test_prepare
+	python manage.py createdb $(call args, development)
+
+dropdb:
+	source ./env-packages/bin/activate; \
+	python manage.py dropdb $(call args, development)
 
 tests:
 	source ./env-packages/bin/activate; \

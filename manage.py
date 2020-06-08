@@ -27,9 +27,14 @@ def run():
     app.run(host='0.0.0.0', port=3000)
 
 @manager.command
-def test_prepare():
-    app.config.from_object(environments['test'])
-    if database_exists(app.config['SQLALCHEMY_DATABASE_URI']):
+def dropdb(environment):
+    app.config.from_object(environments[environment])
+    drop_database(app.config['SQLALCHEMY_DATABASE_URI'])
+
+@manager.command
+def createdb(environment):
+    app.config.from_object(environments[environment])
+    if environment == 'test' and database_exists(app.config['SQLALCHEMY_DATABASE_URI']):
         drop_database(app.config['SQLALCHEMY_DATABASE_URI'])
     if not database_exists(app.config['SQLALCHEMY_DATABASE_URI']):
         create_database(app.config['SQLALCHEMY_DATABASE_URI'])
@@ -37,9 +42,11 @@ def test_prepare():
 @manager.command
 def tests():
     """Runs the unit tests."""
+    createdb('test')
     tests = unittest.TestLoader().discover('app/tests', pattern='test*.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
+        dropdb('test')
         return 0
     return 1
 
