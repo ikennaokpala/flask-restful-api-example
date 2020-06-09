@@ -6,6 +6,7 @@ from freezegun import freeze_time
 from app.tests.base_test_case import BaseTestCase
 from app.main.models.project import Project
 from app.tests.support.factories import SessionFactory
+from app.tests.support.factories import ProjectFactory
 
 class TestCreateProject(BaseTestCase):
     def setUp(self):
@@ -91,3 +92,20 @@ class TestCreateProject(BaseTestCase):
             self.assertTrue(outcome.email == self.email)
             self.assertTrue(results.count() == 1)
 
+class TestProjects(TestCreateProject):
+    def setUp(self):
+        super(TestProjects, self).setUp()
+
+    @freeze_time('2020-06-02 08:57:53')
+    def test_fetch_all_projects(self):
+        self.projects = ProjectFactory.create_batch(size=2, email=self.email)
+        self.another_project = ProjectFactory.create(email='another@anotherexample.com')
+
+        with self.client as rdbclient:
+            response = rdbclient.get('/v1/projects', headers=self.headers)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            self.assertTrue(len(outcome) == 2)

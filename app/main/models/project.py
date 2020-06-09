@@ -2,10 +2,17 @@ import re
 import unidecode
 import datetime
 
+from dataclasses import dataclass
 from app.main import db
 
+@dataclass
 class Project(db.Model):
     __tablename__ = 'projects'
+
+    name: str
+    description: str
+    slug: str
+    email: str
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, index=True)

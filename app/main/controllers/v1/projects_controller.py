@@ -36,3 +36,11 @@ class AProject(Resource):
             return { 'slug': dao.project.slug }, 201
         except (KeyError):
             raise BadRequest
+
+@endpoint.route('/') # with slash
+@endpoint.route('') # without slash
+class Projects(Resource):
+    @endpoint.doc('List of a user\'s projects')
+    @endpoint.expect(project_fields)
+    def get(self):
+        return jsonify(Project.query.filter_by(email=session['token_user']['email']).all())
