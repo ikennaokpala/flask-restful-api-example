@@ -4,6 +4,7 @@ import vcr
 from urllib.parse import urlencode
 from collections import namedtuple
 from  openid_connect._oidc import OpenIDClient
+from  openid_connect._verify import verify
 
 
 class OIDC:
@@ -60,6 +61,10 @@ class OIDC:
           redirect_uri=redirect_uri,
           code=code,
         )
+
+    @classmethod
+    def valid(klazz, id_token):
+        return verify(OpenIDClient(klazz.issuer, klazz.client_id, klazz.client_secret), id_token)
 
     @classmethod
     def __authorization_code_params(klazz):
