@@ -134,6 +134,7 @@ class TestUpdateAProject(TestCreateProject):
 
     @freeze_time('2020-06-02 08:57:53')
     def test_update_a_project(self):
+        self.another_project = ProjectFactory.create(email='another@anotherexample.com')
         self.params = { 'name': 'Updated name', 'description': 'Updated desccription' }
 
         with self.client as rdbclient:
@@ -149,3 +150,22 @@ class TestUpdateAProject(TestCreateProject):
 
             self.assertTrue(outcome.name == self.params['name'])
             self.assertTrue(outcome.description == self.params['description'])
+
+class TestDeleteAProject(TestCreateProject):
+    def setUp(self):
+        super(TestDeleteAProject, self).setUp()
+
+    @freeze_time('2020-06-02 08:57:53')
+    def test_delete_a_project(self):
+        self.another_project = ProjectFactory.create(email='another@anotherexample.com')
+        with self.client as rdbclient:
+            response = rdbclient.delete('/v1/projects/metabolomics-project-1', headers=self.headers)
+
+            self.assertEqual(response.status_code, 204)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = response.data.decode()
+            self.assertTrue(outcome == '')
+
+            outcome = Project.query.filter_by(slug='metabolomics-project-1').first()
+            self.assertTrue(outcome == None)

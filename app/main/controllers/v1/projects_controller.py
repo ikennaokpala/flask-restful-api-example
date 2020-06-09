@@ -38,6 +38,12 @@ class AProject(Resource):
         dao = ProjectDAO(request.json['name'], request.json['description'], session['token_user']['email']).update_by(slug)
         return jsonify({ 'slug': dao.project.slug })
 
+    @endpoint.doc('Deletes a projects by slug')
+    @endpoint.expect(project_field)
+    def delete(self, slug):
+        Project.query.filter_by(slug=slug).delete()
+        return None, 204
+
 @endpoint.route('/') # with slash
 @endpoint.route('') # without slash
 class Projects(Resource):
