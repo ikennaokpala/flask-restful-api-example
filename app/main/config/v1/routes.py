@@ -1,7 +1,7 @@
 from flask_restplus import Api
 from flask import Blueprint
 
-from app.main.controllers.v1.auth_resource import endpoint as auth_endpoint
+from app.main.controllers.v1.auth_controller import endpoint as auth_endpoint
 
 v1_blueprint = Blueprint('api', __name__, url_prefix='/v1')
 
