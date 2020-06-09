@@ -2,7 +2,6 @@ import openid_connect
 
 from flask_restplus import Namespace, Resource, fields
 from flask import request, session, jsonify
-from werkzeug.exceptions import UnprocessableEntity
 from werkzeug.exceptions import BadRequest
 from requests.exceptions import HTTPError
 
@@ -32,6 +31,12 @@ class AProject(Resource):
     @endpoint.expect(project_fields)
     def get(self, slug):
         return jsonify(Project.query.filter_by(slug=slug).first())
+
+    @endpoint.doc('Update a projects by slug')
+    @endpoint.expect(project_field)
+    def put(self, slug):
+        dao = ProjectDAO(request.json['name'], request.json['description'], session['token_user']['email']).update_by(slug)
+        return jsonify({ 'slug': dao.project.slug })
 
 @endpoint.route('/') # with slash
 @endpoint.route('') # without slash

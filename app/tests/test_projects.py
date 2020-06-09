@@ -127,3 +127,25 @@ class TestFetchAProject(TestCreateProject):
             self.expected.update(self.params)
             self.expected.update({ 'email':'another@anotherexample.com' })
             self.assertTrue(outcome == self.expected)
+
+class TestUpdateAProject(TestCreateProject):
+    def setUp(self):
+        super(TestUpdateAProject, self).setUp()
+
+    @freeze_time('2020-06-02 08:57:53')
+    def test_update_a_project(self):
+        self.params = { 'name': 'Updated name', 'description': 'Updated desccription' }
+
+        with self.client as rdbclient:
+            response = rdbclient.put('/v1/projects/metabolomics-project-1', headers=self.headers, json=self.params)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            self.assertTrue(outcome == { 'slug': 'metabolomics-project-1' })
+
+            outcome = Project.query.filter_by(slug=outcome['slug']).first()
+
+            self.assertTrue(outcome.name == self.params['name'])
+            self.assertTrue(outcome.description == self.params['description'])
