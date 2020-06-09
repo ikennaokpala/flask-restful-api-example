@@ -99,7 +99,6 @@ class TestProjects(TestCreateProject):
     @freeze_time('2020-06-02 08:57:53')
     def test_fetch_all_projects(self):
         self.projects = ProjectFactory.create_batch(size=2, email=self.email)
-        self.another_project = ProjectFactory.create(email='another@anotherexample.com')
 
         with self.client as rdbclient:
             response = rdbclient.get('/v1/projects', headers=self.headers)
@@ -109,3 +108,22 @@ class TestProjects(TestCreateProject):
 
             outcome = json.loads(response.data.decode())
             self.assertTrue(len(outcome) == 2)
+
+class TestFetchAProject(TestCreateProject):
+    def setUp(self):
+        super(TestFetchAProject, self).setUp()
+
+    @freeze_time('2020-06-02 08:57:53')
+    def test_fetch_a_project(self):
+        self.another_project = ProjectFactory.create(email='another@anotherexample.com')
+
+        with self.client as rdbclient:
+            response = rdbclient.get('/v1/projects/metabolomics-project-1', headers=self.headers)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            self.expected.update(self.params)
+            self.expected.update({ 'email':'another@anotherexample.com' })
+            self.assertTrue(outcome == self.expected)

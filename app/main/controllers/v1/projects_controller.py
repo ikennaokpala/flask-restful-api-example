@@ -24,10 +24,18 @@ project_fields = endpoint.model('Resource', {
     'updated_at': fields.String,
 })
 
-@endpoint.route('/') # with slash
-@endpoint.route('') # without slash
+@endpoint.route('/<slug>')
+@endpoint.param('slug', 'The User identifier')
 @endpoint.doc(params={'name': 'Name of project', 'description': 'Description of the project'})
 class AProject(Resource):
+    @endpoint.doc('Fetch a projects by slug')
+    @endpoint.expect(project_fields)
+    def get(self, slug):
+        return jsonify(Project.query.filter_by(slug=slug).first())
+
+@endpoint.route('/') # with slash
+@endpoint.route('') # without slash
+class Projects(Resource):
     @endpoint.doc('Create a Project')
     @endpoint.expect(project_field, validate=True)
     def post(self):
@@ -37,9 +45,6 @@ class AProject(Resource):
         except (KeyError):
             raise BadRequest
 
-@endpoint.route('/') # with slash
-@endpoint.route('') # without slash
-class Projects(Resource):
     @endpoint.doc('List of a user\'s projects')
     @endpoint.expect(project_fields)
     def get(self):
