@@ -14,7 +14,7 @@ system-packages:
 
 .PHONY: yum-packages
 yum-packages:
-	$(SUDO) yum update -y
+	sudo yum update -y
 	$(SUDO) yum install -y python-pip
 	$(SUDO) pip install --user virtualenv
 	python3 -m venv env-packages
@@ -32,9 +32,10 @@ apk-packages:
 
 .PHONY: apt-packages
 apt-packages:
-	$(SUDO) apt-get update -y
-	$(SUDO) apt-get install -y python-pip
-	$(SUDO) pip install --user virtualenv
+	sudo apt-get update -y
+	sudo apt-get install python3-venv -y
+	sudo apt-get install -y python-pip
+	sudo pip install --user virtualenv
 	python3 -m venv env-packages
 	source ./env-packages/bin/activate; \
 	pip install --upgrade pip
