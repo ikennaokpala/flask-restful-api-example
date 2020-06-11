@@ -11,7 +11,8 @@ class ProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     name = 'Metabolomics Project 1'  
     description = 'Very good science based description'
-    owner='test@example.com'
+    owner = 'test@example.com'
+    collaborators = ['collab@ucal.ca']
 
 class SessionFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:

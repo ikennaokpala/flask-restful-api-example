@@ -8,7 +8,7 @@ from requests.exceptions import HTTPError
 from app.main.dao.project_dao import ProjectDAO
 from app.main.models.project import Project
 
-endpoint = Namespace('project-endpoint', description='projects related api endpoints')
+endpoint = Namespace('projects-endpoint', description='projects related api endpoints')
 
 project_field = endpoint.model('Resource', {
     'slug': fields.String,
@@ -19,6 +19,7 @@ project_fields = endpoint.model('Resource', {
     'description': fields.String,
     'slug': fields.String,
     'owner': fields.String,
+    'collaboarators': fields.List(fields.String),
     'created_at': fields.String,
     'updated_at': fields.String,
 })
@@ -35,7 +36,7 @@ class AProject(Resource):
     @endpoint.doc('Update a projects by slug')
     @endpoint.expect(project_field)
     def put(self, slug):
-        dao = ProjectDAO(request.json['name'], request.json['description'], session['token_user']['owner']).update_by(slug)
+        dao = ProjectDAO(request.json, session['token_user']['owner']).update_by(slug)
         return jsonify({ 'slug': dao.project.slug })
 
     @endpoint.doc('Deletes a projects by slug')
@@ -51,7 +52,7 @@ class Projects(Resource):
     @endpoint.expect(project_field, validate=True)
     def post(self):
         try:
-            dao = ProjectDAO(request.json['name'], request.json['description'], session['token_user']['owner']).create()
+            dao = ProjectDAO(request.json, session['token_user']['owner']).create()
             return { 'slug': dao.project.slug }, 201
         except (KeyError):
             raise BadRequest

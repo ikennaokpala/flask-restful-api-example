@@ -15,7 +15,7 @@ class TestCreateProject(BaseTestCase):
         self.owner = self.current_session.tokenized_user['owner']
         self.expected = { 'slug': 'metabolomics-project-1' }
         self.headers = { 'Authorization': 'Bearer ' + self.current_session.access_token }
-        self.params = { 'name': 'Metabolomics Project 1', 'description': 'Very good science based description' }
+        self.params = { 'name': 'Metabolomics Project 1', 'description': 'Very good science based description', 'collaborators': ['collab@ucal.ca']  }
 
     @freeze_time('2020-06-02 09:57:54') # After an hour and 1 second
     def test_when_user_access_token_is_expired(self):
@@ -41,7 +41,7 @@ class TestCreateProject(BaseTestCase):
             self.assertTrue(outcome['message'] == 'The server could not verify that you are authorized to access the URL requested. You either supplied the wrong credentials (e.g. a bad password), or your browser doesn\'t understand how to supply the credentials required.')
 
     @freeze_time('2020-06-02 08:57:53')
-    def test_when_user_access_token_is_valid_and_a_name_and_description_are_exempted(self):
+    def test_when_user_access_token_is_valid_and_a_params_are_exempted(self):
         with self.client as rdbclient:
             response = rdbclient.post('/v1/projects', headers=self.headers, json={})
 
@@ -74,7 +74,7 @@ class TestCreateProject(BaseTestCase):
             self.assertTrue(outcome['message'] == 'The browser (or proxy) sent a request that this server could not understand.')
 
     @freeze_time('2020-06-02 08:57:53')
-    def test_when_user_access_token_is_valid_with_a_name_and_description_provided(self):
+    def test_when_user_access_token_is_valid_with_params_provided(self):
         with self.client as rdbclient:
             response = rdbclient.post('/v1/projects/', headers=self.headers, json=self.params)
 
@@ -135,7 +135,7 @@ class TestUpdateAProject(TestCreateProject):
     @freeze_time('2020-06-02 08:57:53')
     def test_update_a_project(self):
         self.another_project = ProjectFactory.create(owner='another@anotherexample.com')
-        self.params = { 'name': 'Updated name', 'description': 'Updated desccription' }
+        self.params = { 'name': 'Updated name', 'description': 'Updated desccription', 'collaborators': ['update@ucal.ca'] }
 
         with self.client as rdbclient:
             response = rdbclient.put('/v1/projects/metabolomics-project-1', headers=self.headers, json=self.params)
@@ -150,6 +150,7 @@ class TestUpdateAProject(TestCreateProject):
 
             self.assertTrue(outcome.name == self.params['name'])
             self.assertTrue(outcome.description == self.params['description'])
+            self.assertTrue(outcome.collaborators == self.params['collaborators'])
 
 class TestDeleteAProject(TestCreateProject):
     def setUp(self):
