@@ -12,7 +12,7 @@ class TestCreateProject(BaseTestCase):
     def setUp(self):
         super(TestCreateProject, self).setUp()
         self.current_session = SessionFactory.create()
-        self.email = self.current_session.tokenized_user['email']
+        self.owner = self.current_session.tokenized_user['owner']
         self.expected = { 'slug': 'metabolomics-project-1' }
         self.headers = { 'Authorization': 'Bearer ' + self.current_session.access_token }
         self.params = { 'name': 'Metabolomics Project 1', 'description': 'Very good science based description' }
@@ -89,7 +89,7 @@ class TestCreateProject(BaseTestCase):
             self.assertTrue(outcome.name == self.params['name'])
             self.assertTrue(outcome.description == self.params['description'])
             self.assertTrue(outcome.slug == self.expected['slug'])
-            self.assertTrue(outcome.email == self.email)
+            self.assertTrue(outcome.owner == self.owner)
             self.assertTrue(results.count() == 1)
 
 class TestProjects(TestCreateProject):
@@ -98,7 +98,7 @@ class TestProjects(TestCreateProject):
 
     @freeze_time('2020-06-02 08:57:53')
     def test_fetch_all_projects(self):
-        self.projects = ProjectFactory.create_batch(size=2, email=self.email)
+        self.projects = ProjectFactory.create_batch(size=2, owner=self.owner)
 
         with self.client as rdbclient:
             response = rdbclient.get('/v1/projects', headers=self.headers)
@@ -115,7 +115,7 @@ class TestFetchAProject(TestCreateProject):
 
     @freeze_time('2020-06-02 08:57:53')
     def test_fetch_a_project(self):
-        self.another_project = ProjectFactory.create(email='another@anotherexample.com')
+        self.another_project = ProjectFactory.create(owner='another@anotherexample.com')
 
         with self.client as rdbclient:
             response = rdbclient.get('/v1/projects/metabolomics-project-1', headers=self.headers)
@@ -125,7 +125,7 @@ class TestFetchAProject(TestCreateProject):
 
             outcome = json.loads(response.data.decode())
             self.expected.update(self.params)
-            self.expected.update({ 'email':'another@anotherexample.com' })
+            self.expected.update({ 'owner':'another@anotherexample.com' })
             self.assertTrue(outcome == self.expected)
 
 class TestUpdateAProject(TestCreateProject):
@@ -134,7 +134,7 @@ class TestUpdateAProject(TestCreateProject):
 
     @freeze_time('2020-06-02 08:57:53')
     def test_update_a_project(self):
-        self.another_project = ProjectFactory.create(email='another@anotherexample.com')
+        self.another_project = ProjectFactory.create(owner='another@anotherexample.com')
         self.params = { 'name': 'Updated name', 'description': 'Updated desccription' }
 
         with self.client as rdbclient:
@@ -157,7 +157,7 @@ class TestDeleteAProject(TestCreateProject):
 
     @freeze_time('2020-06-02 08:57:53')
     def test_delete_a_project(self):
-        self.another_project = ProjectFactory.create(email='another@anotherexample.com')
+        self.another_project = ProjectFactory.create(owner='another@anotherexample.com')
         with self.client as rdbclient:
             response = rdbclient.delete('/v1/projects/metabolomics-project-1', headers=self.headers)
 
