@@ -1,5 +1,11 @@
 #### LSARP
 
+### Prerequisites
+
+Python Version: 3.7 or higher
+Containerised solution: Docker and Docker compose
+Database: PostgreSQL
+
 ### Terminal commands
 
     Initial installation: make install
@@ -15,3 +21,12 @@
 
     Open the following url on your browser to view swagger documentation
     http://127.0.0.1:3000/
+
+### Docker development setup
+
+    $ docker-compose up
+    # Run this on another terminal tab
+    $ docker exec -it api /bin/bash 
+        $ make createdb
+        $ python manage.py db upgrade head
+        $ make tests

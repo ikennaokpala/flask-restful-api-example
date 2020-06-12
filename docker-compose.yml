@@ -1,0 +1,15 @@
+api:
+  build: .
+  container_name: api
+  command: make run
+  volumes:
+    - .:/api
+  ports:
+    - 3000:3000
+  links:
+    - db
+db:
+  container_name: db
+  image: postgres
+  environment:
+    POSTGRES_PASSWORD: postgres
