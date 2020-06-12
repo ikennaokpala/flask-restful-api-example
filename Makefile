@@ -1,3 +1,10 @@
+SHELL=/bin/bash
+
+args = `arg="$(filter-out $@,$(MAKECMDGOALS))" && echo $${arg:-${1}}`
+
+%:
+	@:
+
 .PHONY: system-packages
 system-packages:
 	if [ -x /sbin/apk ];        then $(MAKE) apk-packages; fi
@@ -7,10 +14,12 @@ system-packages:
 
 .PHONY: yum-packages
 yum-packages:
-	$(SUDO) yum update -y
+	sudo yum update -y
 	$(SUDO) yum install -y python-pip
 	$(SUDO) pip install --user virtualenv
 	python3 -m venv env-packages
+	source ./env-packages/bin/activate; \
+	pip install --upgrade pip
 
 .PHONY: apk-packages
 apk-packages:
@@ -18,13 +27,18 @@ apk-packages:
 	$(SUDO) apk install -y python-pip
 	$(SUDO) pip install --user virtualenv
 	python3 -m venv env-packages
+	source ./env-packages/bin/activate; \
+	pip install --upgrade pip
 
 .PHONY: apt-packages
 apt-packages:
-	$(SUDO) apt-get update -y
-	$(SUDO) apt-get install -y python-pip
-	$(SUDO) pip install --user virtualenv
+	sudo apt-get update -y
+	sudo apt-get install python3-venv -y
+	sudo apt-get install -y python-pip
+	sudo pip install --user virtualenv
 	python3 -m venv env-packages
+	source ./env-packages/bin/activate; \
+	pip install --upgrade pip
 
 .PHONY: homebrew-packages
 homebrew-packages:
@@ -35,6 +49,8 @@ homebrew-packages:
 	sudo easy_install pip
 	sudo pip install --user virtualenv
 	python3 -m venv env-packages
+	source ./env-packages/bin/activate; \
+	pip install --upgrade pip
 
 .PHONY: clean python-packages install tests run all
 
@@ -49,12 +65,24 @@ python-packages:
 
 install: system-packages python-packages
 
+createdb:
+	source ./env-packages/bin/activate; \
+	python manage.py createdb $(call args, development)
+
+dropdb:
+	source ./env-packages/bin/activate; \
+	python manage.py dropdb $(call args, development)
+
 tests:
 	source ./env-packages/bin/activate; \
-	python manage.py test
+	python manage.py tests
 
 run:
 	source ./env-packages/bin/activate; \
 	python manage.py run
+
+db_init:
+	source ./env-packages/bin/activate; \
+	python manage.py db init
 
 all: clean install tests run

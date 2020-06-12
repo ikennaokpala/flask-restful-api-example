@@ -5,11 +5,11 @@ from flask import current_app
 from flask_testing import TestCase
 
 from manage import app
-from app.main.config import basedir
+from app.main.environment import environments
 
-class TestDevelopmentConfig(TestCase):
+class TestDevelopmentEnvironment(TestCase):
     def create_app(self):
-        app.config.from_object('app.main.config.DevelopmentConfig')
+        app.config.from_object(environments['development'])
         return app
 
     def test_app_is_development(self):
@@ -20,9 +20,9 @@ class TestDevelopmentConfig(TestCase):
             app.config['SQLALCHEMY_DATABASE_URI'] == 'postgres://postgres:postgres@localhost:5432/lsarp_development'
         )
 
-class TestTestingConfig(TestCase):
+class TestTestingEnvironment(TestCase):
     def create_app(self):
-        app.config.from_object('app.main.config.TestingConfig')
+        app.config.from_object(environments['test'])
         return app
 
     def test_app_is_testing(self):
@@ -32,9 +32,9 @@ class TestTestingConfig(TestCase):
             app.config['SQLALCHEMY_DATABASE_URI'] == 'postgres://postgres:postgres@localhost:5432/lsarp_test'
         )
 
-class TestProductionConfig(TestCase):
+class TestProductionEnvironment(TestCase):
     def create_app(self):
-        app.config.from_object('app.main.config.ProductionConfig')
+        app.config.from_object(environments['production'])
         return app
 
     def test_app_is_production(self):
