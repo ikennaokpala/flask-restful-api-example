@@ -8,6 +8,8 @@ api:
     - 3000:3000
   links:
     - db
+  environment:
+    ALLOWED_CORS_CLIENTS: '206.12.120.8,https://resistancedb.org,http://proteomics.resistancedb.org'
 db:
   container_name: db
   image: postgres
