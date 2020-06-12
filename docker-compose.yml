@@ -1,7 +1,7 @@
 api:
   build: .
   container_name: api
-  command: make run
+  command: /etc/entrypoint.sh
   volumes:
     - .:/api
   ports:
