@@ -1,5 +1,7 @@
 SHELL=/bin/bash
 
+SUDO := $(shell which sudo)
+
 args = `arg="$(filter-out $@,$(MAKECMDGOALS))" && echo $${arg:-${1}}`
 
 %:
@@ -14,7 +16,7 @@ system-packages:
 
 .PHONY: yum-packages
 yum-packages:
-	sudo yum update -y
+	$(SUDO) yum update -y
 	$(SUDO) yum install -y python-pip
 	$(SUDO) pip install --user virtualenv
 	python3 -m venv env-packages
@@ -32,10 +34,10 @@ apk-packages:
 
 .PHONY: apt-packages
 apt-packages:
-	sudo apt-get update -y
-	sudo apt-get install python3-venv -y
-	sudo apt-get install -y python-pip
-	sudo pip install --user virtualenv
+	$(SUDO) apt-get update -y
+	$(SUDO) apt-get install python3-venv -y
+	$(SUDO) apt-get install -y python-pip
+	$(SUDO) pip install --user virtualenv
 	python3 -m venv env-packages
 	source ./env-packages/bin/activate; \
 	pip install --upgrade pip
@@ -46,8 +48,8 @@ homebrew-packages:
 	# Fails if any of the packages are already installed, ignore and continue - if it's a problem the latest build steps will fail with missing headers
 	brew update
 	brew install python
-	sudo easy_install pip
-	sudo pip install --user virtualenv
+	$(SUDO) easy_install pip
+	$(SUDO) pip install --user virtualenv
 	python3 -m venv env-packages
 	source ./env-packages/bin/activate; \
 	pip install --upgrade pip
@@ -55,13 +57,13 @@ homebrew-packages:
 .PHONY: clean python-packages install tests run all
 
 clean:
-	sudo rm -rf env-packages
+	$(SUDO) rm -rf env-packages
 	find . -type f -name '*.pyc' -delete
 	find . -type f -name '*.log' -delete
 
 python-packages:
 	source ./env-packages/bin/activate; \
-	sudo pip install -r requirements.txt
+	pip install -r requirements.txt
 
 install: system-packages python-packages
 
