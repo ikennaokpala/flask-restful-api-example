@@ -10,7 +10,7 @@ from app.main import create_app, db
 from app.main.config.v1.routes import v1_blueprint
 from app.main.environment import environments
 
-environment = os.getenv('BOILERPLATE_ENV') or 'development'
+environment = os.getenv('FLASK_ENV') or 'development'
 
 app = create_app(environment)
 app.register_blueprint(v1_blueprint)
