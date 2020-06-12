@@ -2,7 +2,7 @@ import os
 
 class Environment:
     SECRET_KEY = os.getenv('SECRET_KEY', 'lsarp_secret_key')
-    ALLOWED_CORS_CLIENTS = os.getenv('ALLOWED_CORS_CLIENTS', '*').split(',')
+    ALLOWED_CORS_CLIENTS = ['*']
     DEBUG = False
     TEST = False
     SQLALCHEMY_DATABASE_URI = ''

@@ -5,8 +5,6 @@ set -x
 
 python -m venv env-packages
 source ./env-packages/bin/activate; \
-
 pip install -r requirements.txt
-
-make run
+python manage.py run
 
