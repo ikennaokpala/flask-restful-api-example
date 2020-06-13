@@ -6,3 +6,4 @@
 # noinspection PyUnresolvedReferences
 import app.main.models.session
 import app.main.models.project
+import app.main.models.raw_file

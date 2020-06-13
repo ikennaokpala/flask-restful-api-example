@@ -29,7 +29,9 @@ class TestSkipAuth(BaseTestCase):
             self.assertTrue(response.content_type == 'text/html; charset=utf-8')
             self.assertTrue(response.headers['Access-Control-Expose-Headers'] == 'Authorization, Content-Type, X-ACCESS-TOKEN')
             self.assertTrue(response.headers['Access-Control-Allow-Origin'] == '*')
-            self.assertTrue(response.headers['Allow'] == 'DELETE, OPTIONS')
+            self.assertTrue('DELETE' in response.headers['Allow'])
+            self.assertTrue('OPTIONS' in response.headers['Allow'])
+            self.assertTrue(len(response.headers['Allow'].split(',')) == 2)
 
 class TestAuthCallback(BaseTestCase):
     def setUp(self):
