@@ -27,7 +27,8 @@ class TestCreateProject(BaseTestCase):
 
             outcome = json.loads(response.data.decode())
             self.assertTrue(outcome['message'] == 'The server could not verify that you are authorized to access the URL requested. You either supplied the wrong credentials (e.g. a bad password), or your browser doesn\'t understand how to supply the credentials required.')
-
+    
+    @freeze_time('2020-06-02 08:57:53')
     def test_when_user_access_token_does_not_exist(self):
         headers = { 'Authorization': 'Bearer access_token_does_not_exist' }
 
@@ -39,6 +40,38 @@ class TestCreateProject(BaseTestCase):
 
             outcome = json.loads(response.data.decode())
             self.assertTrue(outcome['message'] == 'The server could not verify that you are authorized to access the URL requested. You either supplied the wrong credentials (e.g. a bad password), or your browser doesn\'t understand how to supply the credentials required.')
+    
+    @freeze_time('2020-06-02 08:57:53')
+    def test_when_authorize_bearer_or_x_access_token_isnt_set_in_header(self):
+        with self.client as rdbclient:
+            response = rdbclient.post('/v1/projects', headers={}, json=self.params)
+
+            self.assertEqual(response.status_code, 400)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            self.assertTrue(outcome['message'] == 'The browser (or proxy) sent a request that this server could not understand.')
+
+    @freeze_time('2020-06-02 08:57:53')
+    def test_when_authorize_bearer_isnt_set_but_x_access_token_is_set_in_header(self):
+        headers = { 'X-ACCESS-TOKEN': self.current_session.access_token }
+
+        with self.client as rdbclient:
+            response = rdbclient.post('/v1/projects', headers=headers, json=self.params)
+
+            self.assertEqual(response.status_code, 201)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            self.assertTrue(outcome == self.expected)
+
+            results = Project.query.filter_by(slug=outcome['slug'])
+            outcome = results.first()
+            self.assertTrue(outcome.name == self.params['name'])
+            self.assertTrue(outcome.description == self.params['description'])
+            self.assertTrue(outcome.slug == self.expected['slug'])
+            self.assertTrue(outcome.owner == self.owner)
+            self.assertTrue(results.count() == 1)
 
     @freeze_time('2020-06-02 08:57:53')
     def test_when_user_access_token_is_valid_and_a_params_are_exempted(self):

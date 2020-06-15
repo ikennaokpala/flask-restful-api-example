@@ -22,21 +22,30 @@ api.add_namespace(projects_endpoint, path='/projects')
 
 @v1_blueprint.before_request
 def authenticate():
-  if request.path.startswith('/v1/auth'):
-    return
-
-  if request.headers.get('Authorization'):
-    try:
-      access_token = request.headers.get('Authorization').split().pop()
-      current_session = Session.query.filter_by(access_token=access_token).first()
-      session['token_user'] = current_session.tokenized_user
-
-      if session['token_user'] and OIDC.valid(session['token_user']['id_token']):
+    if request.path.startswith('/v1/auth'):
         return
-      else:
-        abort(401)
+
+    try:
+        access_token = access_token_from_header().split().pop()
+        current_session = Session.query.filter_by(access_token=access_token).first()
+        session['token_user'] = current_session.tokenized_user
+
+        if session['token_user'] and OIDC.valid(session['token_user']['id_token']):
+            return
+        else:
+            abort(401)
 
     except (openid_connect.errors.Forbidden, AttributeError):
         abort(401)
-  else:
-      abort(403)
+    
+    except (KeyError):
+        abort(400)
+      
+
+
+def access_token_from_header():
+    try:
+        return request.headers['Authorization']
+    except (KeyError):
+        return request.headers['X-ACCESS-TOKEN']
+  
