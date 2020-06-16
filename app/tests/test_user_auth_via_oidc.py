@@ -134,4 +134,5 @@ class TestUserLogout(BaseTestCase):
             outcome = Session.query.filter_by(access_token=self.current_session.access_token).first()
             self.assertTrue(outcome == None)
 
-
+if __name__ == '__main__':
+    unittest.main()
