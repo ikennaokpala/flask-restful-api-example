@@ -203,3 +203,6 @@ class TestDeleteAProject(TestCreateProject):
 
             outcome = Project.query.filter_by(slug='metabolomics-project-1').first()
             self.assertTrue(outcome == None)
+
+if __name__ == '__main__':
+    unittest.main()
