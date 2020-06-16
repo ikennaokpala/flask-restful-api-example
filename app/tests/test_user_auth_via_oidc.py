@@ -5,6 +5,7 @@ from freezegun import freeze_time
 from app.tests.base_test_case import BaseTestCase
 from app.main.config.oidc import OIDC
 from app.main.models.session import Session
+from app.tests.support.factories import SessionFactory
 
 class TestAuthorizationCodeURL(BaseTestCase):
     def test_authorization_code_url(self):
@@ -113,3 +114,24 @@ class TestAuthCallback(BaseTestCase):
 
                 outcome = json.loads(response.data.decode())
                 self.assertTrue(outcome['message'] == 'The request was well-formed but was unable to be followed due to semantic errors.')
+        
+class TestUserLogout(BaseTestCase):
+    def setUp(self):
+        super(TestUserLogout, self).setUp()
+        self.current_session = SessionFactory.create()
+        self.headers = { 'Authorization': 'Bearer ' + self.current_session.access_token }
+    
+    @freeze_time('2020-06-02 08:57:53')
+    def test_logout(self):
+        with self.client as rdbclient:
+            response = rdbclient.delete('/v1/auth/logout', headers=self.headers)
+            self.assertEqual(response.status_code, 202)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            self.assertTrue(outcome == None)
+
+            outcome = Session.query.filter_by(access_token=self.current_session.access_token).first()
+            self.assertTrue(outcome == None)
+
+
