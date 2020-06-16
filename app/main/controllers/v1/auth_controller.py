@@ -1,13 +1,14 @@
 import openid_connect
 
 from flask_restplus import Namespace, Resource, fields
-from flask import request
+from flask import request, session
 from werkzeug.exceptions import UnprocessableEntity
 from werkzeug.exceptions import BadRequest
 from requests.exceptions import HTTPError
 
 from app.main.config.oidc import OIDC
 from app.main.dao.session_dao import SessionDAO
+from app.main.models.session import Session
 
 endpoint = Namespace('auth-endpoint', description='authentication related api endpoints')
 
@@ -52,3 +53,12 @@ class AuthCallback(Resource):
             raise UnprocessableEntity
         except (KeyError):
             raise BadRequest
+
+@endpoint.route('/logout')
+class AuthLogout(Resource):
+    def delete(self):
+        Session.query.filter_by(access_token=session['token_user']['access_token']).delete()
+        session['token_user'] = None
+
+        return None, 202
+        

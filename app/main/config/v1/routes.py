@@ -22,7 +22,7 @@ api.add_namespace(projects_endpoint, path='/projects')
 
 @v1_blueprint.before_request
 def authenticate():
-    if request.path.startswith('/v1/auth'):
+    if request.path.startswith('/v1/auth/callback') or request.path.startswith('/v1/auth/authorization_code_url'):
         return
 
     try:
