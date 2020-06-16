@@ -10,7 +10,7 @@ from .environment import environments
 db = SQLAlchemy()
 flask_bcrypt = Bcrypt()
 
-CUSTOM_REQUEST_HEADERS = ['Authorization', 'X-ACCESS-TOKEN']
+CUSTOM_REQUEST_HEADERS = ['Content-Type', 'Authorization', 'X-ACCESS-TOKEN']
 
 def create_app(environment):
     app = Flask(__name__)

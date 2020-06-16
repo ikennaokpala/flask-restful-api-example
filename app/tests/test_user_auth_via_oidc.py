@@ -18,6 +18,19 @@ class TestAuthorizationCodeURL(BaseTestCase):
             outcome = json.loads(response.data.decode())
             self.assertTrue(outcome['url'] == OIDC.authorization_code_url())
 
+class TestSkipAuth(BaseTestCase):
+    def test_when_browser_sends_an_options_check_request(self):
+        headers = { 'Access-Control-Request-Headers': 'content-type,authorization,x-access-token' }
+
+        with self.client as rdbclient:
+            response = rdbclient.options('/v1/auth/logout', headers=headers, json={})
+
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.content_type == 'text/html; charset=utf-8')
+            self.assertTrue(response.headers['Access-Control-Expose-Headers'] == 'Authorization, Content-Type, X-ACCESS-TOKEN')
+            self.assertTrue(response.headers['Access-Control-Allow-Origin'] == '*')
+            self.assertTrue(response.headers['Allow'] == 'DELETE, OPTIONS')
+
 class TestAuthCallback(BaseTestCase):
     def setUp(self):
         super(TestAuthCallback, self).setUp()
