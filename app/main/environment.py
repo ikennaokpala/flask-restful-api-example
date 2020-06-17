@@ -3,6 +3,8 @@ import os
 class Environment:
     SECRET_KEY = os.getenv('SECRET_KEY', 'lsarp_secret_key')
     ALLOWED_CORS_CLIENTS = ['*']
+    RAW_FILES_UPLOAD_FOLDER = os.getenv('RAW_FILES_UPLOAD_FOLDER', '/tmp/')
+    ALLOWED_RAW_FILE_EXTENSIONS = os.getenv('ALLOWED_RAW_FILE_EXTENSIONS', 'mzXML').split(',')
     DEBUG = False
     TEST = False
     SQLALCHEMY_DATABASE_URI = ''

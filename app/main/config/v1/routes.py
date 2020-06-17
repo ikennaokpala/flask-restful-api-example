@@ -8,6 +8,7 @@ from app.main.models.session import Session
 
 from app.main.controllers.v1.auth_controller import endpoint as auth_endpoint
 from app.main.controllers.v1.projects_controller import endpoint as projects_endpoint
+from app.main.controllers.v1.project_raw_files_controller import endpoint as project_raw_files_endpoint
 
 v1_blueprint = Blueprint('api', __name__, url_prefix='/v1')
 
@@ -19,6 +20,7 @@ api = Api(v1_blueprint,
 
 api.add_namespace(auth_endpoint, path='/auth')
 api.add_namespace(projects_endpoint, path='/projects')
+api.add_namespace(project_raw_files_endpoint, path='/projects/<slug>')
 
 NONE_AUTH_ENDPOINTS = ('/v1/auth/callback', '/v1/auth/authorization_code_url')
 SKIP_OIDC_VALIDATIONS = ('/v1/auth/logout')
