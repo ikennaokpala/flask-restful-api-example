@@ -4,6 +4,8 @@ import datetime
 
 from sqlalchemy.dialects import postgresql as pg
 from dataclasses import dataclass
+
+from app.main.lib.slugifier import Slugifier
 from app.main import db
 
 @dataclass
@@ -29,7 +31,4 @@ class Project(db.Model):
 
     def __init__(self, *args, **kwargs):
         super(Project, self).__init__(*args, **kwargs)
-        self.slug = self.slugify(self.name)
-
-    def slugify(self, name):
-        return re.sub(r'[\W_]+', '-', unidecode.unidecode(name).lower())
+        self.slug = Slugifier(self, self.name).call()
