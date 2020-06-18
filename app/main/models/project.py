@@ -20,10 +20,10 @@ class Project(db.Model):
     raw_files: list
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, index=True)
+    name = db.Column(db.String, index=True, nullable=False)
     description = db.Column(db.TEXT)
-    slug = db.Column(db.TEXT, index=True)
-    owner = db.Column(db.String, index=True)
+    slug = db.Column(db.TEXT, index=True, unique=True, nullable=False)
+    owner = db.Column(db.String, index=True, nullable=False)
     collaborators = db.Column(pg.ARRAY(db.String))
     raw_files = db.relationship('RawFile', backref='projects', lazy='joined')
     created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
