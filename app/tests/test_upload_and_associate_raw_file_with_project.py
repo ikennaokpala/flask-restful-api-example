@@ -20,7 +20,7 @@ class TestUploadAndAssociateWithProject(BaseTestCase):
         super(TestUploadAndAssociateWithProject, self).setUp()
         self.current_session = SessionFactory.create()
         self.project = ProjectFactory.create()
-        self.email = self.current_session.tokenized_user['owner']
+        self.email = self.current_session.tokenized_user['email']
         self.headers = { 'Authorization': 'Bearer ' + self.current_session.access_token }
         self.raw_file_path = os.path.abspath('app/tests/support/fixtures/raw_files/sample.mzXML')
         self.raw_file_full_name = os.path.basename(self.raw_file_path)

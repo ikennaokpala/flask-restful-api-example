@@ -36,7 +36,7 @@ class AProject(Resource):
     @endpoint.doc('Update a projects by slug')
     @endpoint.expect(project_field)
     def put(self, slug):
-        dao = ProjectDAO(request.json, session['token_user']['owner']).update_by(slug)
+        dao = ProjectDAO(request.json, session['token_user']['email']).update_by(slug)
         return jsonify({ 'slug': dao.project.slug })
 
     @endpoint.doc('Deletes a projects by slug')
@@ -52,7 +52,7 @@ class Projects(Resource):
     @endpoint.expect(project_field, validate=True)
     def post(self):
         try:
-            dao = ProjectDAO(request.json, session['token_user']['owner']).create()
+            dao = ProjectDAO(request.json, session['token_user']['email']).create()
             return { 'slug': dao.project.slug }, 201
         except (KeyError):
             raise BadRequest
@@ -60,4 +60,4 @@ class Projects(Resource):
     @endpoint.doc('List of a user\'s projects')
     @endpoint.expect(project_fields)
     def get(self):
-        return jsonify(Project.query.filter_by(owner=session['token_user']['owner']).all())
+        return jsonify(Project.query.filter_by(owner=session['token_user']['email']).all())
