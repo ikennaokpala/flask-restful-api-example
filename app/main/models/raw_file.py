@@ -14,11 +14,11 @@ class RawFile(db.Model):
     project_id: str
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.TEXT, index=True)
-    extension = db.Column(db.String, index=True)
-    location = db.Column(db.TEXT, index=True)
-    checksum = db.Column(db.String, index=True)
-    project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
+    name = db.Column(db.TEXT, index=True, nullable=False)
+    extension = db.Column(db.String, index=True, nullable=False)
+    location = db.Column(db.TEXT, index=True, nullable=False)
+    checksum = db.Column(db.String, index=True, nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
     project = db.relationship('Project', back_populates='raw_files')
     created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)

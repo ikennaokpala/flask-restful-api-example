@@ -177,7 +177,7 @@ class TestUpdateAProject(TestCreateProject):
             self.assertTrue(response.content_type == 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertTrue(outcome == { 'slug': 'metabolomics-project-1' })
+            self.assertTrue(outcome == { 'slug': 'updated-name' })
 
             outcome = Project.query.filter_by(slug=outcome['slug']).first()
 
