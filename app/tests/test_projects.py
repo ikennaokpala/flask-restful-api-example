@@ -69,6 +69,7 @@ class TestCreateProject(BaseTestCase):
             outcome = results.first()
             self.assertTrue(outcome.name == self.params['name'])
             self.assertTrue(outcome.description == self.params['description'])
+            self.assertTrue(outcome.collaborators == ['collab@ucal.ca'])
             self.assertTrue(outcome.slug == self.expected['slug'])
             self.assertTrue(outcome.owner == self.owner)
             self.assertTrue(results.count() == 1)
@@ -85,15 +86,42 @@ class TestCreateProject(BaseTestCase):
             self.assertTrue(outcome['message'] == 'The browser (or proxy) sent a request that this server could not understand.')
 
     @freeze_time('2020-06-02 08:57:53')
-    def test_when_user_access_token_is_valid_and_a_description_are_exempted(self):
+    def test_when_user_access_token_is_valid_and_a_description_is_exempted(self):
         with self.client as rdbclient:
-            response = rdbclient.post('/v1/projects', headers=self.headers, json={ 'name': '' })
+            response = rdbclient.post('/v1/projects', headers=self.headers, json={ 'name': 'Metabolomics Project 1' })
 
-            self.assertEqual(response.status_code, 400)
+            self.assertEqual(response.status_code, 201)
             self.assertTrue(response.content_type == 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertTrue(outcome['message'] == 'The browser (or proxy) sent a request that this server could not understand.')
+            self.assertTrue(outcome == self.expected)
+            results = Project.query.filter_by(slug=outcome['slug'])
+            outcome = results.first()
+            self.assertTrue(outcome.name == self.params['name'])
+            self.assertTrue(outcome.description == None)
+            self.assertTrue(outcome.collaborators == [])
+            self.assertTrue(outcome.slug == self.expected['slug'])
+            self.assertTrue(outcome.owner == self.owner)
+            self.assertTrue(results.count() == 1)
+
+    @freeze_time('2020-06-02 08:57:53')
+    def test_when_user_access_token_is_valid_and_a_collaborators_is_exempted(self):
+        with self.client as rdbclient:
+            params = { 'name': 'Metabolomics Project 1', 'description': 'desc' }
+            response = rdbclient.post('/v1/projects', headers=self.headers, json=params)
+
+            self.assertEqual(response.status_code, 201)
+            self.assertTrue(response.content_type == 'application/json')
+            outcome = json.loads(response.data.decode())
+            self.assertTrue(outcome == self.expected)
+            results = Project.query.filter_by(slug=outcome['slug'])
+            outcome = results.first()
+            self.assertTrue(outcome.name == self.params['name'])
+            self.assertTrue(outcome.description == 'desc')
+            self.assertTrue(outcome.collaborators == [])
+            self.assertTrue(outcome.slug == self.expected['slug'])
+            self.assertTrue(outcome.owner == self.owner)
+            self.assertTrue(results.count() == 1)
 
     @freeze_time('2020-06-02 08:57:53')
     def test_when_user_access_token_is_valid_and_a_name_are_exempted(self):
