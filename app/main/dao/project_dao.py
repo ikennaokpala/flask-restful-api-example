@@ -5,8 +5,8 @@ from app.main import db
 class ProjectDAO:
     def __init__(self, params, owner):
         self.name = params['name']
-        self.description = params['description']
-        self.collaborators = params['collaborators']
+        self.description = params.get('description', None)
+        self.collaborators =  params.get('collaborators', [])
         self.owner = owner
         self.project = None
 
