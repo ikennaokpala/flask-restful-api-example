@@ -158,7 +158,10 @@ class TestProjects(TestCreateProject):
         super(TestProjects, self).setUp()
 
     @freeze_time('2020-06-02 08:57:53')
-    def test_fetch_all_projects(self):
+    def test_fetch_all_owned_and_collaboarating_projects(self):
+        ProjectFactory.create(collaborators=[self.owner], owner='another@email.com')
+        ProjectFactory.create(owner='another@email.com')
+        ProjectFactory.create(collaborators=['another@email.com'], owner='another@email.com')
         self.projects = ProjectFactory.create_batch(size=2, owner=self.owner)
 
         with self.client as rdbclient:
@@ -168,7 +171,7 @@ class TestProjects(TestCreateProject):
             self.assertTrue(response.content_type == 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertTrue(len(outcome) == 2)
+            self.assertTrue(len(outcome) == 3)
 
 class TestFetchAProject(TestCreateProject):
     def setUp(self):
