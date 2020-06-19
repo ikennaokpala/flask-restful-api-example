@@ -12,7 +12,7 @@ class TestCreateProject(BaseTestCase):
     def setUp(self):
         super(TestCreateProject, self).setUp()
         self.current_session = SessionFactory.create()
-        self.owner = self.current_session.tokenized_user['owner']
+        self.owner = self.current_session.tokenized_user['email']
         self.expected = { 'slug': 'metabolomics-project-1' }
         self.headers = { 'Authorization': 'Bearer ' + self.current_session.access_token }
         self.params = { 'name': 'Metabolomics Project 1', 'description': 'Very good science based description', 'collaborators': ['collab@ucal.ca']  }
