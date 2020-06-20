@@ -8,6 +8,7 @@ from sqlalchemy import or_
 
 from app.main.dao.project_dao import ProjectDAO
 from app.main.models.project import Project
+from app.main import db
 
 endpoint = Namespace('projects-endpoint', description='projects related api endpoints')
 
@@ -44,6 +45,7 @@ class AProject(Resource):
     @endpoint.expect(project_field)
     def delete(self, slug):
         Project.query.filter_by(slug=slug).delete()
+        db.session.commit()
         return None, 204
 
 @endpoint.route('/') # with slash
