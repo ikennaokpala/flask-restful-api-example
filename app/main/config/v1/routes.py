@@ -32,10 +32,10 @@ def authenticate():
     try:
         access_token = access_token_from_header().split().pop()
         current_session = Session.query.filter_by(access_token=access_token).first()
+        if not request.path.startswith(SKIP_OIDC_VALIDATIONS): OIDC.valid(current_session.tokenized_user['id_token'])
         session['token_user'] = current_session.tokenized_user
 
-        if not request.path.startswith(SKIP_OIDC_VALIDATIONS): OIDC.valid(session['token_user']['id_token'])
-    except (openid_connect.errors.Forbidden, AttributeError):
+    except (openid_connect.errors.Forbidden, AttributeError, IndexError):
         abort(401)
     except (KeyError):
         abort(400)

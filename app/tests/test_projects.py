@@ -40,6 +40,40 @@ class TestCreateProject(BaseTestCase):
 
             outcome = json.loads(response.data.decode())
             self.assertTrue(outcome['message'] == 'The server could not verify that you are authorized to access the URL requested. You either supplied the wrong credentials (e.g. a bad password), or your browser doesn\'t understand how to supply the credentials required.')
+
+    def test_when_authorize_bearer_with_no_access_token_in_header(self):
+        headers = { 'Authorization': 'Bearer ' }
+        with self.client as rdbclient:
+            response = rdbclient.post('/v1/projects', headers=headers, json=self.params)
+
+            self.assertEqual(response.status_code, 401)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            self.assertTrue(outcome['message'] == 'The server could not verify that you are authorized to access the URL requested. You either supplied the wrong credentials (e.g. a bad password), or your browser doesn\'t understand how to supply the credentials required.')
+
+    def test_when_authorize_bearer_is_set_empty_in_header(self):
+        headers = { 'Authorization': '' }
+        with self.client as rdbclient:
+            response = rdbclient.post('/v1/projects', headers=headers, json=self.params)
+
+            self.assertEqual(response.status_code, 401)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            self.assertTrue(outcome['message'] == 'The server could not verify that you are authorized to access the URL requested. You either supplied the wrong credentials (e.g. a bad password), or your browser doesn\'t understand how to supply the credentials required.')
+
+    def test_when_x_access_token_is_set_empty_in_header(self):
+        headers = { 'X-ACCESS-TOKEN': '' }
+
+        with self.client as rdbclient:
+            response = rdbclient.post('/v1/projects', headers=headers, json=self.params)
+
+            self.assertEqual(response.status_code, 401)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            self.assertTrue(outcome['message'] == 'The server could not verify that you are authorized to access the URL requested. You either supplied the wrong credentials (e.g. a bad password), or your browser doesn\'t understand how to supply the credentials required.')
     
     @freeze_time('2020-06-02 08:57:53')
     def test_when_authorize_bearer_or_x_access_token_isnt_set_in_header(self):
