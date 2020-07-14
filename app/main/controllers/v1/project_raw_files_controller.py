@@ -14,15 +14,15 @@ project_field = endpoint.model('Resource', {
 })
 
 @endpoint.route('/raw_file')
+@endpoint.route('/raw_files')
 @endpoint.param('slug', 'The project slug identifier')
-@endpoint.doc(params={'raw_file': 'Raw file object', 'slug': 'The project slug identifier'})
+@endpoint.doc(params={'raw_file_<index>': 'Raw file object', 'slug': 'The project slug identifier'})
 class RawFileProject(Resource):
     @endpoint.doc('Associate Raw file with a project')
     @endpoint.expect(project_field)
     def put(self, slug):
         try:
-            project_raw_file = ProjectRawFileDAO(slug, request.files['raw_file'], request.files['raw_file'].filename).upload()
-            return project_raw_file._asdict(), 201
+            return ProjectRawFileDAO(slug, request.files).upload(), 201
         except (NameError, IndexError):
             abort(400)
         except (NotFound):
