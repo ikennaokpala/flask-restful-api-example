@@ -4,6 +4,7 @@ class Environment:
     SECRET_KEY = os.getenv('SECRET_KEY', 'lsarp_secret_key')
     ALLOWED_CORS_CLIENTS = ['*']
     RAW_FILES_UPLOAD_FOLDER = os.getenv('RAW_FILES_UPLOAD_FOLDER', '/tmp/')
+    RAW_FILES_KEY_PREFIX = os.getenv('RAW_FILES_KEY_PREFIX', 'raw_file_')
     ALLOWED_RAW_FILE_EXTENSIONS = os.getenv('ALLOWED_RAW_FILE_EXTENSIONS', 'mzXML').split(',')
     DEBUG = False
     TEST = False

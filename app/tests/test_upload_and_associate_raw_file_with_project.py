@@ -27,17 +27,52 @@ class TestUploadAndAssociateWithProject(BaseTestCase):
         self.raw_file_full_name_ext = self.raw_file_full_name.split('.')
         self.raw_file_name = self.raw_file_full_name_ext[0]
         self.raw_file_ext = self.raw_file_full_name_ext[1]
-        self.raw_file_store = FileStorage(
+        self.raw_file_stores = [FileStorage(
             stream=open(self.raw_file_path, 'rb'),
             filename='sample.mzXML',
             content_type='text/xml',
-        )
-        self.params = { 'raw_file': self.raw_file_store }
+        ), FileStorage(
+            stream=open(self.raw_file_path, 'rb'),
+            filename='another_sample.mzXML',
+            content_type='text/xml',
+        )]
+        self.params = { 'raw_file_0': self.raw_file_stores[0] }
         self.destination = os.path.join(current_app.config['RAW_FILES_UPLOAD_FOLDER'], 'projects', self.project.slug)
 
     def tearDown(self):
         super(TestUploadAndAssociateWithProject, self).tearDown()
         shutil.rmtree(os.path.join(current_app.config['RAW_FILES_UPLOAD_FOLDER'], 'projects'), ignore_errors=True)
+
+    @freeze_time('2020-06-02 08:57:53')
+    def test_when_user_access_token_with_project_slug_and_multiple_raw_file_are_valid(self):
+        params = {'raw_file_0': self.raw_file_stores[0],
+                  'raw_file_1': self.raw_file_stores[1]}
+        with self.client as rdbclient:
+            response = rdbclient.put('/v1/projects/' + self.project.slug + '/raw_files', headers=self.headers, data=params, content_type='multipart/form-data')
+
+            self.assertEqual(response.status_code, 201)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcomes = json.loads(response.data.decode())
+            for index in range(len(outcomes)):
+                outcome = outcomes[index]
+                raw_file = params['raw_file_' + str(index)]
+                raw_file_destination = self.destination + '/' + outcome['checksum'] + '_' + raw_file.filename
+
+                self.assertTrue(outcome['path'] == raw_file_destination)
+                self.assertTrue(re.match(r'^[a-f0-9]{32}$', outcome['checksum']))
+                self.assertTrue(outcome['slug'] == self.project.slug)
+                self.assertTrue(os.path.exists(raw_file_destination))
+
+                project = Project.query.filter_by(slug=outcome['slug']).first()
+                outcome = project.raw_files[index]
+
+                self.assertTrue(outcome.location == raw_file_destination)
+                self.assertTrue(outcome.extension == self.raw_file_ext)
+                self.assertTrue(outcome.name == raw_file.filename.split('.')[0])
+                self.assertTrue(re.match(r'^[a-f0-9]{32}$', outcome.checksum))
+                self.assertTrue(outcome.project.id == project.id)
+                self.assertTrue(outcome.project_id == project.id)
 
     @freeze_time('2020-06-02 08:57:53')
     def test_when_user_access_token_with_project_slug_and_raw_file_are_valid(self):
@@ -47,7 +82,7 @@ class TestUploadAndAssociateWithProject(BaseTestCase):
             self.assertEqual(response.status_code, 201)
             self.assertTrue(response.content_type == 'application/json')
 
-            outcome = json.loads(response.data.decode())
+            outcome = json.loads(response.data.decode())[0]
             raw_file_destination = self.destination + '/' + outcome['checksum'] + '_' + self.raw_file_full_name
 
             self.assertTrue(outcome['path'] == raw_file_destination)
@@ -85,7 +120,7 @@ class TestUploadAndAssociateWithProject(BaseTestCase):
                 content_type='text/xml',
             )
         with self.client as rdbclient:
-            response = rdbclient.put('/v1/projects/' + self.project.slug + '/raw_file', headers=self.headers, data={ 'raw_file': raw_file_store }, content_type='multipart/form-data')
+            response = rdbclient.put('/v1/projects/' + self.project.slug + '/raw_file', headers=self.headers, data={ 'raw_file_0': raw_file_store }, content_type='multipart/form-data')
 
             self.assertEqual(response.status_code, 400)
             self.assertTrue(response.content_type == 'application/json')
@@ -102,7 +137,7 @@ class TestUploadAndAssociateWithProject(BaseTestCase):
                 content_type='text/xml',
             )
         with self.client as rdbclient:
-            response = rdbclient.put('/v1/projects/' + self.project.slug + '/raw_file', headers=self.headers, data={ 'raw_file': raw_file_store }, content_type='multipart/form-data')
+            response = rdbclient.put('/v1/projects/' + self.project.slug + '/raw_file', headers=self.headers, data={ 'raw_file_0': raw_file_store }, content_type='multipart/form-data')
 
             self.assertEqual(response.status_code, 422)
             self.assertTrue(response.content_type == 'application/json')

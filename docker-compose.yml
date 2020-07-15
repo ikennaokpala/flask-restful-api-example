@@ -11,6 +11,7 @@ api:
   environment:
     ALLOWED_CORS_CLIENTS: '206.12.120.8,https://resistancedb.org,http://proteomics.resistancedb.org'
     FLASK_ENV: development
+    PYTHONUNBUFFERED: 1
 db:
   container_name: db
   image: postgres
