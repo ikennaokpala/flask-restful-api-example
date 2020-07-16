@@ -4,9 +4,9 @@ from flask_restplus import Namespace, Resource, fields
 from flask import request, session, jsonify
 from werkzeug.exceptions import BadRequest
 from requests.exceptions import HTTPError
-from sqlalchemy import or_
 
 from app.main.dao.project_dao import ProjectDAO
+from app.main.dao.projects_dao import ProjectsDAO
 from app.main.models.project import Project
 from app.main import db
 
@@ -63,5 +63,4 @@ class Projects(Resource):
     @endpoint.doc('List of a user\'s projects')
     @endpoint.expect(model=project_fields)
     def get(self):
-        owner = session['token_user']['email'] 
-        return jsonify(Project.query.filter(or_(Project.owner == owner, Project.collaborators.any(owner))).all())
+        return jsonify(ProjectsDAO(session['token_user']['email']).fetch())
