@@ -16,14 +16,19 @@ project_field = endpoint.model('Resource', {
     'slug': fields.String,
 })
 
-project_fields = endpoint.model('Resource', {
-    'name': fields.String,
-    'description': fields.String,
-    'slug': fields.String,
-    'owner': fields.String,
-    'collaboarators': fields.List(fields.String),
-    'created_at': fields.String,
-    'updated_at': fields.String,
+project_fields = endpoint.model('Resource',{
+    'page': fields.Integer,
+    'per_page': fields.Integer,
+    'total': fields.Integer,
+    'projects': {
+        'name': fields.String,
+        'description': fields.String,
+        'slug': fields.String,
+        'owner': fields.String,
+        'collaboarators': fields.List(fields.String),
+        'created_at': fields.String,
+        'updated_at': fields.String,
+    }
 })
 
 @endpoint.route('/<slug>')
@@ -61,6 +66,8 @@ class Projects(Resource):
             raise BadRequest
 
     @endpoint.doc('List of a user\'s projects')
-    @endpoint.expect(model=project_fields)
+    @endpoint.doc(params={'page': 'Page or Offset for projects', 'per_page': 'Number of projects per page', 'direction': 'Sort desc or asc'})
+    @endpoint.expect(project_fields)
     def get(self):
-        return jsonify(ProjectsDAO(session['token_user']['email']).fetch())
+        projects = ProjectsDAO.call(request.args, session['token_user']['email'])
+        return jsonify(projects._asdict())
