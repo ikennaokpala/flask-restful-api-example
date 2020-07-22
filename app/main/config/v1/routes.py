@@ -1,6 +1,6 @@
 import openid_connect
 
-from flask_restplus import Api
+from flask_restplus import Api, Namespace
 from flask import Blueprint, request, abort, session
 
 from app.main.config.oidc import OIDC
@@ -10,7 +10,8 @@ from app.main.controllers.v1.auth_controller import endpoint as auth_endpoint
 from app.main.controllers.v1.projects_controller import endpoint as projects_endpoint
 from app.main.controllers.v1.project_raw_files_controller import endpoint as project_raw_files_endpoint
 
-v1_blueprint = Blueprint('api', __name__, url_prefix='/v1')
+v1_blueprint = Blueprint('api', __name__) #, url_prefix='/v1'
+
 
 api = Api(v1_blueprint,
           title='LSARP API',

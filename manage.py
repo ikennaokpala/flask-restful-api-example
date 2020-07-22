@@ -4,17 +4,35 @@ import unittest
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
+from flask_restplus import Api
+
 from sqlalchemy_utils import database_exists, create_database, drop_database
 
 from app.main import create_app, db
 from app.main.config.v1.routes import v1_blueprint
 from app.main.environment import environments
 
+from app.main.controllers.v1.auth_controller import endpoint as auth_endpoint
+from app.main.controllers.v1.projects_controller import endpoint as projects_endpoint
+from app.main.controllers.v1.project_raw_files_controller import endpoint as project_raw_files_endpoint
+
 environment = os.getenv('FLASK_ENV') or 'development'
 
 app = create_app(environment)
-app.register_blueprint(v1_blueprint)
+app.register_blueprint(v1_blueprint, url_prefix='/v1')
+api = Api(app,
+          title='LSARP API',
+          version='1.0',
+          description='This is the backend API implementation for the LSARP project'
+          )
 app.app_context().push()
+api.add_namespace(auth_endpoint, path='/auth')
+api.add_namespace(projects_endpoint, path='/projects')
+api.add_namespace(project_raw_files_endpoint, path='/projects/<slug>')
+
+# api.add_namespace(auth_endpoint, path='/v1/auth')
+# api.add_namespace(projects_endpoint, path='/v1/projects')
+# api.add_namespace(project_raw_files_endpoint, path='/v1/projects/<slug>')
 
 manager = Manager(app)
 

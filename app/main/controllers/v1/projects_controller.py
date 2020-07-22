@@ -31,18 +31,18 @@ project_fields = endpoint.model('Resource', {
 @endpoint.doc(params={'name': 'Name of project', 'description': 'Description of the project'})
 class AProject(Resource):
     @endpoint.doc('Fetch a projects by slug')
-    @endpoint.expect(project_fields)
+    @endpoint.expect(model=project_fields)
     def get(self, slug):
         return jsonify(Project.query.filter_by(slug=slug).first())
 
     @endpoint.doc('Update a projects by slug')
-    @endpoint.expect(project_field)
+    @endpoint.expect(model=project_field)
     def put(self, slug):
         dao = ProjectDAO(request.json, session['token_user']['email']).update_by(slug)
         return jsonify({ 'slug': dao.project.slug })
 
     @endpoint.doc('Deletes a projects by slug')
-    @endpoint.expect(project_field)
+    @endpoint.expect(model=project_field)
     def delete(self, slug):
         Project.query.filter_by(slug=slug).delete()
         db.session.commit()
@@ -52,7 +52,7 @@ class AProject(Resource):
 @endpoint.route('') # without slash
 class Projects(Resource):
     @endpoint.doc('Create a Project')
-    @endpoint.expect(project_field, validate=True)
+    @endpoint.expect(model=project_field, validate=True)
     def post(self):
         try:
             dao = ProjectDAO(request.json, session['token_user']['email']).create()
@@ -61,7 +61,7 @@ class Projects(Resource):
             raise BadRequest
 
     @endpoint.doc('List of a user\'s projects')
-    @endpoint.expect(project_fields)
+    @endpoint.expect(model=project_fields)
     def get(self):
         owner = session['token_user']['email'] 
         return jsonify(Project.query.filter(or_(Project.owner == owner, Project.collaborators.any(owner))).all())
