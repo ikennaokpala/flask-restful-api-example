@@ -10,14 +10,21 @@ from app.main.controllers.v1.auth_controller import endpoint as auth_endpoint
 from app.main.controllers.v1.projects_controller import endpoint as projects_endpoint
 from app.main.controllers.v1.project_raw_files_controller import endpoint as project_raw_files_endpoint
 
-v1_blueprint = Blueprint('api', __name__) #, url_prefix='/v1'
+
+web_blueprint = Blueprint('web', __name__)
+v1_blueprint = Blueprint('api', __name__, url_prefix='/v1')
 
 
 api = Api(v1_blueprint,
-          title='LSARP API',
-          version='1.0',
-          description='This is the backend API implementation for the LSARP project'
-          )
+        title='LSARP API',
+        version='1.0',
+        description='This is the backend API implementation for the LSARP project'
+    )
+web = Api(web_blueprint,
+        title='LSARP API',
+        version='1.0',
+        description='This is the documentation that covers the backend API implementation for the LSARP project'
+    )
 
 api.add_namespace(auth_endpoint, path='/auth')
 api.add_namespace(projects_endpoint, path='/projects')
