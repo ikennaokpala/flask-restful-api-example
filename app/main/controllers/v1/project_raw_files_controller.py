@@ -7,8 +7,8 @@ from app.main.dao.project_raw_file_dao import ProjectRawFileDAO
 
 endpoint = Namespace('project-raw-files-endpoint', description='raw files belonging to a project api endpoints')
 
-project_field = endpoint.model('Resource', {
-    'raw_file': fields.String,
+project_rawfile_field = endpoint.model('Resource', {
+    'path': fields.String,
     'checksum': fields.String,
     'slug': fields.String,
 })
@@ -18,8 +18,13 @@ project_field = endpoint.model('Resource', {
 @endpoint.param('slug', 'The project slug identifier')
 @endpoint.doc(params={'raw_file_<index>': 'Raw file object', 'slug': 'The project slug identifier'})
 class RawFileProject(Resource):
-    @endpoint.doc('Associate Raw file with a project')
-    @endpoint.expect(project_field)
+    @endpoint.doc(description='Associate Raw file(s) with a project', responses={
+        400: 'Bad request',
+        404: 'Not Found',
+        201: 'File(s) added to project'
+    })
+    @endpoint.expect(model=project_rawfile_field)
+
     def put(self, slug):
         try:
             return ProjectRawFileDAO(slug, request.files).upload(), 201
