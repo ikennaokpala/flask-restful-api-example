@@ -2,12 +2,13 @@ import os
 import unittest
 
 from flask_migrate import Migrate, MigrateCommand
+from flask_restplus import Api
 from flask_script import Manager
 
 from sqlalchemy_utils import database_exists, create_database, drop_database
 
 from app.main import create_app, db
-from app.main.config.v1.routes import v1_blueprint
+from app.main.config.v1.routes import v1_blueprint, RouterV1
 from app.main.environment import environments
 
 environment = os.getenv('FLASK_ENV') or 'development'
@@ -16,10 +17,34 @@ app = create_app(environment)
 app.register_blueprint(v1_blueprint)
 app.app_context().push()
 
+authorizations = {
+    'authorization': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'Authorization'
+    },
+    'accessToken': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'X-ACCESS-TOKEN'
+    },
+    'oauth2': {
+        'type': 'oauth2',
+        'flow': 'accessCode',
+    }
+}
+
+swagger_ui = Api(app,
+    title='LSARP API Documentation',
+    version='1.0',
+	description='This is backend API documentation for the LSARP project. Prefix all endpoints with /v1',
+	security=['accessToken', 'oauth2'],
+	authorizations=authorizations
+)
+RouterV1().draw(swagger_ui)
+
 manager = Manager(app)
-
 migrate = Migrate(app, db)
-
 manager.add_command('db', MigrateCommand)
 
 @manager.command
