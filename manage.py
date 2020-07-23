@@ -4,19 +4,15 @@ import unittest
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
-from flask_restplus import Api
-
 from sqlalchemy_utils import database_exists, create_database, drop_database
 
 from app.main import create_app, db
 from app.main.config.v1.routes import v1_blueprint
-from app.main.config.v1.routes import web_blueprint
 from app.main.environment import environments
 
 environment = os.getenv('FLASK_ENV') or 'development'
 
 app = create_app(environment)
-app.register_blueprint(web_blueprint)
 app.register_blueprint(v1_blueprint)
 app.app_context().push()
 
