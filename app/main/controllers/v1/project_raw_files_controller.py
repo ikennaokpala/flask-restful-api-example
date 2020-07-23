@@ -24,7 +24,6 @@ class RawFileProject(Resource):
         201: 'File(s) added to project'
     })
     @endpoint.expect(model=project_rawfile_field)
-
     def put(self, slug):
         try:
             return ProjectRawFileDAO(slug, request.files).upload(), 201
