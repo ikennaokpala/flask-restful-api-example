@@ -7,6 +7,7 @@ from app.main import db
 class RawFile(db.Model):
     __tablename__ = 'raw_files'
 
+    id: int
     name: str
     extension: str
     location: str
