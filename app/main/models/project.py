@@ -25,7 +25,7 @@ class Project(db.Model):
     slug = db.Column(db.TEXT, index=True, unique=True, nullable=False)
     owner = db.Column(db.String, index=True, nullable=False)
     collaborators = db.Column(pg.ARRAY(db.String))
-    raw_files = db.relationship('RawFile', backref='projects', lazy='joined')
+    raw_files = db.relationship('RawFile', cascade='all,delete', backref='projects', lazy='joined')
     created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
 
