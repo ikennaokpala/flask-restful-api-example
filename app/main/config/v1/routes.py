@@ -9,19 +9,20 @@ from app.main.models.session import Session
 from app.main.controllers.v1.auth_controller import endpoint as auth_endpoint
 from app.main.controllers.v1.projects_controller import endpoint as projects_endpoint
 from app.main.controllers.v1.project_raw_files_controller import endpoint as project_raw_files_endpoint
+from app.main.controllers.v1.raw_file_metadata_shipments_controller import endpoint as raw_files_metadata_endpoint
 
 class RouterV1:
 	def draw(klazz, api):
 		api.add_namespace(auth_endpoint, path='/auth')
 		api.add_namespace(projects_endpoint, path='/projects')
 		api.add_namespace(project_raw_files_endpoint, path='/projects/<slug>')
+		api.add_namespace(raw_files_metadata_endpoint, path='/projects/<slug>/raw_files/<raw_file_id>')
 
 v1_blueprint = Blueprint('api_version_one', __name__, url_prefix='/v1')
 RouterV1().draw(Api(v1_blueprint))
 
 NONE_AUTH_ENDPOINTS = ('/v1/auth/callback', '/v1/auth/authorization_code_url')
 SKIP_OIDC_VALIDATIONS = ('/v1/auth/logout')
-
 
 @v1_blueprint.before_request
 def authenticate():

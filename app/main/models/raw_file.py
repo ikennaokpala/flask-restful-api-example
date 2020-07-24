@@ -13,6 +13,7 @@ class RawFile(db.Model):
     location: str
     checksum: str
     project_id: str
+    metadata_shipments: list
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.TEXT, index=True, nullable=False)
@@ -21,5 +22,6 @@ class RawFile(db.Model):
     checksum = db.Column(db.String, index=True, nullable=False)
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
     project = db.relationship('Project', back_populates='raw_files')
+    metadata_shipments = db.relationship('MetadataShipment', cascade='all,delete', lazy='joined')
     created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)

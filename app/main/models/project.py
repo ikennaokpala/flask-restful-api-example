@@ -12,6 +12,7 @@ from app.main import db
 class Project(db.Model):
     __tablename__ = 'projects'
 
+    id: int
     name: str
     description: str
     slug: str

@@ -224,6 +224,7 @@ class TestFetchAProject(TestCreateProject):
             outcome = json.loads(response.data.decode())
             self.expected.update(self.params)
             self.expected.update({ 'owner':'another@anotherexample.com', 'raw_files': [] })
+            outcome.pop('id')
             self.assertTrue(outcome == self.expected)
 
 class TestUpdateAProject(TestCreateProject):
