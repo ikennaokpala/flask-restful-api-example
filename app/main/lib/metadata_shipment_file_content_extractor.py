@@ -3,7 +3,7 @@ import pandas as pd
 from collections import namedtuple
 
 from app.main.models.metadata_shipment import MetadataShipment
-from app.main.lib.metadata_shipment_validator import MetadataShipmentValidator
+from app.main.validators.metadata_shipment_validator import MetadataShipmentValidator
 
 class MetadataShipmentFileContentExtractor:
 	def __init__(self, metdata_shipment_file, validator=MetadataShipmentValidator):

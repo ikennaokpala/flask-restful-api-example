@@ -6,7 +6,7 @@ from collections import namedtuple
 from contextlib import contextmanager
 
 from app.main.models.raw_file import RawFile
-from app.main.lib.raw_file_validator import RawFileValidator
+from app.main.validators.raw_file_validator import RawFileValidator
 
 class ProjectRawFilesBuilder:
     def __init__(self, project, raw_files, validator=RawFileValidator):

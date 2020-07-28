@@ -2,7 +2,7 @@ from flask import current_app
 from werkzeug.exceptions import BadRequest
 from werkzeug.exceptions import UnprocessableEntity
 
-class BaseValidator:
+class BaseFileValidator:
 	def __init__(self, derived_file_object, allowed_file_extensions=[]):
 		self.derived_file_object = derived_file_object
 		self.allowed_file_extensions = [element.lower() for element in allowed_file_extensions]
