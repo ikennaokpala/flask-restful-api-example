@@ -33,7 +33,7 @@ class TestUploadAndAssociateWithProject(BaseTestCase):
             content_type='text/xml',
         ), FileStorage(
             stream=open(self.raw_file_path, 'rb'),
-            filename='another_sample.mzXML',
+            filename='sample.mzXML',
             content_type='text/xml',
         )]
         self.params = { 'raw_file_0': self.raw_file_stores[0] }
@@ -59,7 +59,9 @@ class TestUploadAndAssociateWithProject(BaseTestCase):
                 raw_file = params['raw_file_' + str(index)]
                 raw_file_destination = self.destination + '/' + outcome['checksum'] + '_' + raw_file.filename
 
-                self.assertTrue(outcome['raw_file_id'] == index + 1)
+                self.assertTrue(outcome['id'] == index + 1)
+                self.assertTrue(outcome['name'] == self.raw_file_name)
+                self.assertTrue(outcome['extension'] == self.raw_file_ext)
                 self.assertTrue(outcome['path'] == raw_file_destination)
                 self.assertTrue(re.match(r'^[a-f0-9]{32}$', outcome['checksum']))
                 self.assertTrue(outcome['slug'] == self.project.slug)
@@ -86,7 +88,9 @@ class TestUploadAndAssociateWithProject(BaseTestCase):
             outcome = json.loads(response.data.decode())[0]
             raw_file_destination = self.destination + '/' + outcome['checksum'] + '_' + self.raw_file_full_name
 
-            self.assertTrue(outcome['raw_file_id'] == 1)
+            self.assertTrue(outcome['id'] == 1)
+            self.assertTrue(outcome['name'] == self.raw_file_name)
+            self.assertTrue(outcome['extension'] == self.raw_file_ext)
             self.assertTrue(outcome['path'] == raw_file_destination)
             self.assertTrue(re.match(r'^[a-f0-9]{32}$', outcome['checksum']))
             self.assertTrue(outcome['slug'] == self.project.slug)

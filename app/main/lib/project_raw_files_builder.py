@@ -21,7 +21,7 @@ class ProjectRawFilesBuilder:
         self.destination = os.path.join(
             self.raw_files_projects_directory, project.slug)
         self.location = namedtuple('ProjectRawFileLocation', [
-                                   'path', 'checksum', 'slug'])
+                                    'name', 'extension', 'path', 'checksum', 'slug'])
         self.raw_files_key_prefix = current_app.config['RAW_FILES_KEY_PREFIX']
         self.project_raw_file = namedtuple('ProjectRawFile', [
                                            'model', 'location', 'raw_file', 'filename', 'name_extension', 'name', 'extension', 'destination'])
@@ -36,7 +36,7 @@ class ProjectRawFilesBuilder:
             model = RawFile(name=name_extension[0], extension=name_extension[1],
                             location=path_to_raw_file, checksum=checksum, project_id=self.project.id)
             location = self.location(
-                path=path_to_raw_file, checksum=checksum, slug=self.project.slug)
+                name=name_extension[0], extension=name_extension[1], path=path_to_raw_file, checksum=checksum, slug=self.project.slug)
 
             project_raw_file = self.project_raw_file(
                 model=model,
