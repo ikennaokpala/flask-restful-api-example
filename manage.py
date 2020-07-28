@@ -37,11 +37,11 @@ authorizations = {
 swagger_ui = Api(app,
     title='LSARP API Documentation',
     version='1.0',
-	description='This is backend API documentation for the LSARP project. Prefix all endpoints with /v1',
+	description='This is backend API documentation for the LSARP project.',
 	security=['accessToken', 'oauth2'],
 	authorizations=authorizations
 )
-RouterV1().draw(swagger_ui)
+RouterV1().draw(swagger_ui, prefix='/v1')
 
 manager = Manager(app)
 migrate = Migrate(app, db)
