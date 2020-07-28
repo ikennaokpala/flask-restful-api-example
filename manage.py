@@ -11,6 +11,7 @@ from app.main import create_app, db
 from app.main.config.v1.routes import v1_blueprint, RouterV1
 from app.main.environment import environments
 
+MIGRATION_DIR = os.path.join('app', 'main', 'config', 'db', 'migrations')
 environment = os.getenv('FLASK_ENV') or 'development'
 
 app = create_app(environment)
@@ -44,7 +45,7 @@ swagger_ui = Api(app,
 RouterV1().draw(swagger_ui, prefix='/v1')
 
 manager = Manager(app)
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, directory=MIGRATION_DIR)
 manager.add_command('db', MigrateCommand)
 
 @manager.command
