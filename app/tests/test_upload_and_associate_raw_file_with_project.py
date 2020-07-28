@@ -59,6 +59,7 @@ class TestUploadAndAssociateWithProject(BaseTestCase):
                 raw_file = params['raw_file_' + str(index)]
                 raw_file_destination = self.destination + '/' + outcome['checksum'] + '_' + raw_file.filename
 
+                self.assertTrue(outcome['raw_file_id'] == index + 1)
                 self.assertTrue(outcome['path'] == raw_file_destination)
                 self.assertTrue(re.match(r'^[a-f0-9]{32}$', outcome['checksum']))
                 self.assertTrue(outcome['slug'] == self.project.slug)
@@ -77,7 +78,7 @@ class TestUploadAndAssociateWithProject(BaseTestCase):
     @freeze_time('2020-06-02 08:57:53')
     def test_when_user_access_token_with_project_slug_and_raw_file_are_valid(self):
         with self.client as rdbclient:
-            response = rdbclient.put('/v1/projects/' + self.project.slug + '/raw_file', headers=self.headers, data=self.params, content_type='multipart/form-data')
+            response = rdbclient.put('/v1/projects/' + self.project.slug + '/raw_files', headers=self.headers, data=self.params, content_type='multipart/form-data')
 
             self.assertEqual(response.status_code, 201)
             self.assertTrue(response.content_type == 'application/json')
@@ -85,6 +86,7 @@ class TestUploadAndAssociateWithProject(BaseTestCase):
             outcome = json.loads(response.data.decode())[0]
             raw_file_destination = self.destination + '/' + outcome['checksum'] + '_' + self.raw_file_full_name
 
+            self.assertTrue(outcome['raw_file_id'] == 1)
             self.assertTrue(outcome['path'] == raw_file_destination)
             self.assertTrue(re.match(r'^[a-f0-9]{32}$', outcome['checksum']))
             self.assertTrue(outcome['slug'] == self.project.slug)

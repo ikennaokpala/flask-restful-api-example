@@ -8,6 +8,7 @@ from app.main.dao.project_raw_file_dao import ProjectRawFileDAO
 endpoint = Namespace('project-raw-files-endpoint', description='raw files belonging to a project api endpoints')
 
 project_rawfile_field = endpoint.model('Resource', {
+    'raw_file_id': fields.Integer,
     'path': fields.String,
     'checksum': fields.String,
     'slug': fields.String,
