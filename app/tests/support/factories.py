@@ -3,16 +3,41 @@ import factory
 from app.main import db
 from app.main.models.session import Session
 from app.main.models.project import Project
+from app.main.models.raw_file import RawFile
+
+
+class RawFileFactory(factory.alchemy.SQLAlchemyModelFactory):
+	class Meta:
+		model = RawFile
+		sqlalchemy_session = db.session
+
+	name = 'sample'
+	extension = 'mzXML'
+	location = '/tmp/projects/metabolomics-project-1/5e8ff9bf55ba3508199d22e984129be6_sample.mzXML'
+	checksum = '5e8ff9bf55ba3508199d22e984129be6'
 
 class ProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = Project
-        sqlalchemy_session = db.session
+	class Meta:
+		model = Project
+		sqlalchemy_session = db.session
 
-    name = 'Metabolomics Project 1'  
-    description = 'Very good science based description'
-    owner = 'test@example.com'
-    collaborators = ['collab@ucal.ca']
+	name = 'Metabolomics Project 1'  
+	description = 'Very good science based description'
+	owner = 'test@example.com'
+	collaborators = ['collab@ucal.ca']
+
+	@factory.post_generation
+	def raw_files(project, create, extracted, **kwargs):
+		if not create:
+			return
+
+		if extracted:
+			assert isinstance(extracted, int)
+
+			db.session.add(project)
+			db.session.commit()
+
+			RawFileFactory.create_batch(size=extracted, project_id=project.id, **kwargs)
 
 class SessionFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:

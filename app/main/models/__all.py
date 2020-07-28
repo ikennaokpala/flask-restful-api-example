@@ -7,3 +7,4 @@
 import app.main.models.session
 import app.main.models.project
 import app.main.models.raw_file
+import app.main.models.metadata_shipment

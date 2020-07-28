@@ -30,6 +30,9 @@ class ProjectRawFileDAO:
             db.session.add(project_raw_file.model)
             db.session.commit()
 
-            self.locations.append(location._asdict())
+            location = location._asdict()
+            location.update({ 'id': project_raw_file.model.id })
+
+            self.locations.append(location)
 
         return self.locations
