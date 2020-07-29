@@ -14,15 +14,15 @@ from app.tests.base_test_case import BaseTestCase
 from app.main.models.project import Project
 from app.tests.support.factories import SessionFactory
 from app.tests.support.factories import ProjectFactory
-from app.tests.support.factories import RawFileFactory
+from app.tests.support.factories import MZXmlFileFactory
 
-class TestUploadAndAssociateWithRawFile(BaseTestCase):
+class TestUploadAndAssociateWithMZXmlFile(BaseTestCase):
     def setUp(self):
-        super(TestUploadAndAssociateWithRawFile, self).setUp()
+        super(TestUploadAndAssociateWithMZXmlFile, self).setUp()
         self.current_session = SessionFactory.create()
-        self.project = ProjectFactory.create(raw_files=1)
-        self.raw_file = self.project.raw_files[0]
-        self.test_request_path = '/v1/projects/' + self.project.slug + '/raw_files/' + str(self.raw_file.id) + '/metadata_shipments'
+        self.project = ProjectFactory.create(mzxml_files=1)
+        self.mzxml_file = self.project.mzxml_files[0]
+        self.test_request_path = '/v1/projects/' + self.project.slug + '/mzxml_files/' + str(self.mzxml_file.id) + '/metadata_shipments'
         self.email = self.current_session.tokenized_user['email']
         self.headers = { 'Authorization': 'Bearer ' + self.current_session.access_token }
         self.metadata_shipment_path = os.path.abspath('app/tests/support/fixtures/metadata_shipments/sample_lsarp_metadata_shipment.xlsx')
@@ -44,10 +44,10 @@ class TestUploadAndAssociateWithRawFile(BaseTestCase):
         self.destination = ''
 
     def tearDown(self):
-        super(TestUploadAndAssociateWithRawFile, self).tearDown()
+        super(TestUploadAndAssociateWithMZXmlFile, self).tearDown()
 
     @freeze_time('2020-06-02 08:57:53')
-    def test_when_user_access_token_with_raw_file_id_and_multiple_metadata_shipment_are_valid(self):
+    def test_when_user_access_token_with_mzxml_file_id_and_multiple_metadata_shipment_are_valid(self):
         params = {'metadata_shipment_0': self.metadata_shipment_stores[0], 'metadata_shipment_1': self.metadata_shipment_stores[1]}
         with self.client as rdbclient:
             response = rdbclient.put(self.test_request_path, headers=self.headers, data=params, content_type='multipart/form-data')
@@ -59,13 +59,13 @@ class TestUploadAndAssociateWithRawFile(BaseTestCase):
             for index in range(len(outcomes)):
                 outcome = outcomes[index]
 
-                self.assertTrue(outcome['raw_file_id'] == self.raw_file.id)
+                self.assertTrue(outcome['mzxml_file_id'] == self.mzxml_file.id)
                 self.assertTrue(outcome['extension'] == self.metadata_shipment_ext)
                 self.assertTrue(outcome['file_name'] == self.metadata_shipment_name)
                 self.assertDictEqual(outcome['content'], self.metadata_shipment_content)
 
     @freeze_time('2020-06-02 08:57:53')
-    def test_when_user_access_token_with_raw_file_id_and_metadata_shipment_are_valid(self):
+    def test_when_user_access_token_with_mzxml_file_id_and_metadata_shipment_are_valid(self):
         with self.client as rdbclient:
             response = rdbclient.put(self.test_request_path, headers=self.headers, data=self.params, content_type='multipart/form-data')
 
@@ -73,7 +73,7 @@ class TestUploadAndAssociateWithRawFile(BaseTestCase):
             self.assertTrue(response.content_type == 'application/json')
 
             outcome = json.loads(response.data.decode())[0]
-            self.assertTrue(outcome['raw_file_id'] == self.raw_file.id)
+            self.assertTrue(outcome['mzxml_file_id'] == self.mzxml_file.id)
             self.assertTrue(outcome['extension'] == self.metadata_shipment_ext)
             self.assertTrue(outcome['file_name'] == self.metadata_shipment_name)
             self.assertDictEqual(outcome['content'], self.metadata_shipment_content)
@@ -125,10 +125,10 @@ class TestUploadAndAssociateWithRawFile(BaseTestCase):
             self.assertFalse(os.path.exists(self.destination))
 
     @freeze_time('2020-06-02 08:57:53')
-    def test_when_user_access_token_is_valid_and_none_existing_raw_file(self):
-        raw_file_id = str(self.project.raw_files[-1].id + 50)
+    def test_when_user_access_token_is_valid_and_none_existing_mzxml_file(self):
+        mzxml_file_id = str(self.project.mzxml_files[-1].id + 50)
         with self.client as rdbclient:
-            response = rdbclient.put('/v1/projects/'+ self.project.slug +'/raw_files/'+ raw_file_id +'/metadata_shipment', headers=self.headers, data=self.params, content_type='multipart/form-data')
+            response = rdbclient.put('/v1/projects/'+ self.project.slug +'/mzxml_files/'+ mzxml_file_id +'/metadata_shipment', headers=self.headers, data=self.params, content_type='multipart/form-data')
 
             self.assertEqual(response.status_code, 404)
             self.assertTrue(response.content_type == 'application/json')

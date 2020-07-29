@@ -3,9 +3,9 @@ import os
 class Environment:
     ALLOWED_CORS_CLIENTS = ['*']
     SECRET_KEY = os.getenv('SECRET_KEY', 'lsarp_secret_key')
-    RAW_FILES_KEY_PREFIX = os.getenv('RAW_FILES_KEY_PREFIX', 'raw_file_')
-    RAW_FILES_UPLOAD_FOLDER = os.getenv('RAW_FILES_UPLOAD_FOLDER', '/tmp/')
-    ALLOWED_RAW_FILE_EXTENSIONS = os.getenv('ALLOWED_RAW_FILE_EXTENSIONS', 'mzXML').split(',')
+    MZXML_FILES_KEY_PREFIX = os.getenv('MZXML_FILES_KEY_PREFIX', 'mzxml_file_')
+    MZXML_FILES_UPLOAD_FOLDER = os.getenv('MZXML_FILES_UPLOAD_FOLDER', '/tmp/')
+    ALLOWED_MZXML_FILE_EXTENSIONS = os.getenv('ALLOWED_MZXML_FILE_EXTENSIONS', 'mzXML').split(',')
     ALLOWED_METADATA_SHIPMENTS_EXTENSIONS = os.getenv('ALLOWED_METADATA_SHIPMENTS_EXTENSIONS', 'xlsx').split(',')
     DEBUG = False
     TEST = False
