@@ -3,12 +3,12 @@ import factory
 from app.main import db
 from app.main.models.session import Session
 from app.main.models.project import Project
-from app.main.models.mzxml_file import MzxmlFile
+from app.main.models.mzxml_file import MZXmlFile
 
 
-class MzxmlFileFactory(factory.alchemy.SQLAlchemyModelFactory):
+class MZXmlFileFactory(factory.alchemy.SQLAlchemyModelFactory):
 	class Meta:
-		model = MzxmlFile
+		model = MZXmlFile
 		sqlalchemy_session = db.session
 
 	name = 'sample'
@@ -37,7 +37,7 @@ class ProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
 			db.session.add(project)
 			db.session.commit()
 
-			MzxmlFileFactory.create_batch(size=extracted, project_id=project.id, **kwargs)
+			MZXmlFileFactory.create_batch(size=extracted, project_id=project.id, **kwargs)
 
 class SessionFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:

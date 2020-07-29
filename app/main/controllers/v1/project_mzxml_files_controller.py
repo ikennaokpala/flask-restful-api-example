@@ -3,7 +3,7 @@ from flask import request, abort
 from werkzeug.exceptions import NotFound
 from werkzeug.exceptions import BadRequest
 
-from app.main.dao.project_mzxml_file_dao import ProjectMzxmlFileDAO
+from app.main.dao.project_mzxml_file_dao import ProjectMZXmlFileDAO
 
 endpoint = Namespace('project-mzxml-files-endpoint', description='mzXML files belonging to a project api endpoints')
 
@@ -20,8 +20,8 @@ project_mzxmlfile_field = endpoint.model('Resource', {
 @endpoint.route('/mzxml_files')
 @endpoint.param('slug', 'The project slug identifier')
 @endpoint.doc(params={'mzxml_file_<index>': 'mzxml file object', 'slug': 'The project slug identifier'})
-class ZmXMLFileProject(Resource):
-    @endpoint.doc(description='Associate Mzxml file(s) with a project', responses={
+class MZXmlFileProject(Resource):
+    @endpoint.doc(description='Associate mzXML file(s) with a project', responses={
         400: 'Bad request',
         404: 'Not Found',
         201: 'File(s) added to project'
@@ -29,7 +29,7 @@ class ZmXMLFileProject(Resource):
     @endpoint.expect(model=project_mzxmlfile_field)
     def put(self, slug):
         try:
-            return ProjectMzxmlFileDAO(slug, request.files).upload(), 201
+            return ProjectMZXmlFileDAO(slug, request.files).upload(), 201
         except (NameError, IndexError):
             abort(400)
         except (NotFound):

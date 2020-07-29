@@ -21,7 +21,7 @@ class MetadataShipment(db.Model):
 	file_name = db.Column(db.TEXT, index=True, nullable=False)
 	extension = db.Column(db.String, nullable=False)
 	mzxml_file_id = db.Column(db.Integer, db.ForeignKey('mzxml_files.id'), index=True, nullable=False)
-	mzxml_file = db.relationship('MzxmlFile', back_populates='metadata_shipments', lazy='joined')
+	mzxml_file = db.relationship('MZXmlFile', back_populates='metadata_shipments', lazy='joined')
 	content = db.Column(pg.JSON, nullable=False)
 	created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
 	updated_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)

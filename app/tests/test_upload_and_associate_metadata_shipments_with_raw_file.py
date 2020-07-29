@@ -14,11 +14,11 @@ from app.tests.base_test_case import BaseTestCase
 from app.main.models.project import Project
 from app.tests.support.factories import SessionFactory
 from app.tests.support.factories import ProjectFactory
-from app.tests.support.factories import MzxmlFileFactory
+from app.tests.support.factories import MZXmlFileFactory
 
-class TestUploadAndAssociateWithMzxmlFile(BaseTestCase):
+class TestUploadAndAssociateWithMZXmlFile(BaseTestCase):
     def setUp(self):
-        super(TestUploadAndAssociateWithMzxmlFile, self).setUp()
+        super(TestUploadAndAssociateWithMZXmlFile, self).setUp()
         self.current_session = SessionFactory.create()
         self.project = ProjectFactory.create(mzxml_files=1)
         self.mzxml_file = self.project.mzxml_files[0]
@@ -44,7 +44,7 @@ class TestUploadAndAssociateWithMzxmlFile(BaseTestCase):
         self.destination = ''
 
     def tearDown(self):
-        super(TestUploadAndAssociateWithMzxmlFile, self).tearDown()
+        super(TestUploadAndAssociateWithMZXmlFile, self).tearDown()
 
     @freeze_time('2020-06-02 08:57:53')
     def test_when_user_access_token_with_mzxml_file_id_and_multiple_metadata_shipment_are_valid(self):

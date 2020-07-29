@@ -6,10 +6,10 @@ from pathlib import Path
 
 from app.main import db
 from app.main.models.project import Project
-from app.main.lib.project_mzxml_files_builder import ProjectMzxmlFilesBuilder
+from app.main.lib.project_mzxml_files_builder import ProjectMZXmlFilesBuilder
 
-class ProjectMzxmlFileDAO:
-    def __init__(self, slug, mzxml_files, builder=ProjectMzxmlFilesBuilder):
+class ProjectMZXmlFileDAO:
+    def __init__(self, slug, mzxml_files, builder=ProjectMZXmlFilesBuilder):
         self.slug = slug
         self.locations = []
         self.builder = builder

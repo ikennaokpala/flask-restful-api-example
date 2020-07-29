@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from app.main import db
 
 @dataclass
-class MzxmlFile(db.Model):
+class MZXmlFile(db.Model):
     __tablename__ = 'mzxml_files'
 
     id: int
