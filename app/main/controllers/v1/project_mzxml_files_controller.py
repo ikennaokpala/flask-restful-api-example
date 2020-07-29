@@ -3,11 +3,11 @@ from flask import request, abort
 from werkzeug.exceptions import NotFound
 from werkzeug.exceptions import BadRequest
 
-from app.main.dao.project_raw_file_dao import ProjectRawFileDAO
+from app.main.dao.project_mzxml_file_dao import ProjectMzxmlFileDAO
 
-endpoint = Namespace('project-raw-files-endpoint', description='raw files belonging to a project api endpoints')
+endpoint = Namespace('project-mzxml-files-endpoint', description='mzXML files belonging to a project api endpoints')
 
-project_rawfile_field = endpoint.model('Resource', {
+project_mzxmlfile_field = endpoint.model('Resource', {
     'id': fields.Integer,
     'name': fields.String,
     'extension': fields.String,
@@ -16,20 +16,20 @@ project_rawfile_field = endpoint.model('Resource', {
     'slug': fields.String,
 })
 
-@endpoint.route('/raw_file')
-@endpoint.route('/raw_files')
+@endpoint.route('/mzxml_file')
+@endpoint.route('/mzxml_files')
 @endpoint.param('slug', 'The project slug identifier')
-@endpoint.doc(params={'raw_file_<index>': 'Raw file object', 'slug': 'The project slug identifier'})
-class RawFileProject(Resource):
-    @endpoint.doc(description='Associate Raw file(s) with a project', responses={
+@endpoint.doc(params={'mzxml_file_<index>': 'mzxml file object', 'slug': 'The project slug identifier'})
+class ZmXMLFileProject(Resource):
+    @endpoint.doc(description='Associate Mzxml file(s) with a project', responses={
         400: 'Bad request',
         404: 'Not Found',
         201: 'File(s) added to project'
     })
-    @endpoint.expect(model=project_rawfile_field)
+    @endpoint.expect(model=project_mzxmlfile_field)
     def put(self, slug):
         try:
-            return ProjectRawFileDAO(slug, request.files).upload(), 201
+            return ProjectMzxmlFileDAO(slug, request.files).upload(), 201
         except (NameError, IndexError):
             abort(400)
         except (NotFound):

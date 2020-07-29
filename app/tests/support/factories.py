@@ -3,12 +3,12 @@ import factory
 from app.main import db
 from app.main.models.session import Session
 from app.main.models.project import Project
-from app.main.models.raw_file import RawFile
+from app.main.models.mzxml_file import MzxmlFile
 
 
-class RawFileFactory(factory.alchemy.SQLAlchemyModelFactory):
+class MzxmlFileFactory(factory.alchemy.SQLAlchemyModelFactory):
 	class Meta:
-		model = RawFile
+		model = MzxmlFile
 		sqlalchemy_session = db.session
 
 	name = 'sample'
@@ -27,7 +27,7 @@ class ProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
 	collaborators = ['collab@ucal.ca']
 
 	@factory.post_generation
-	def raw_files(project, create, extracted, **kwargs):
+	def mzxml_files(project, create, extracted, **kwargs):
 		if not create:
 			return
 
@@ -37,7 +37,7 @@ class ProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
 			db.session.add(project)
 			db.session.commit()
 
-			RawFileFactory.create_batch(size=extracted, project_id=project.id, **kwargs)
+			MzxmlFileFactory.create_batch(size=extracted, project_id=project.id, **kwargs)
 
 class SessionFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
