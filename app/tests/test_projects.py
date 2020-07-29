@@ -8,15 +8,18 @@ from app.main.models.project import Project
 from app.tests.support.factories import SessionFactory
 from app.tests.support.factories import ProjectFactory
 
-class TestCreateProject(BaseTestCase):
+
+class TestProjectBase(BaseTestCase):
     def setUp(self):
-        super(TestCreateProject, self).setUp()
+        super(TestProjectBase, self).setUp()
         self.current_session = SessionFactory.create()
         self.owner = self.current_session.tokenized_user['email']
-        self.expected = { 'slug': 'metabolomics-project-1' }
-        self.headers = { 'Authorization': 'Bearer ' + self.current_session.access_token }
-        self.params = { 'name': 'Metabolomics Project 1', 'description': 'Very good science based description', 'collaborators': ['collab@ucal.ca']  }
+        self.expected = {'slug': 'metabolomics-project-1'}
+        self.headers = {'Authorization': 'Bearer ' + self.current_session.access_token}
+        self.params = {'name': 'Metabolomics Project 1',
+                    'description': 'Very good science based description', 'collaborators': ['collab@ucal.ca']}
 
+class TestCreateProject(TestProjectBase):
     @freeze_time('2020-06-02 09:57:54') # After an hour and 1 second
     def test_when_user_access_token_is_expired(self):
         with self.client as rdbclient:
@@ -187,7 +190,7 @@ class TestCreateProject(BaseTestCase):
             self.assertTrue(outcome.owner == self.owner)
             self.assertTrue(results.count() == 1)
 
-class TestProjects(TestCreateProject):
+class TestProjects(TestProjectBase):
     def setUp(self):
         super(TestProjects, self).setUp()
 
@@ -206,8 +209,9 @@ class TestProjects(TestCreateProject):
 
             outcome = json.loads(response.data.decode())
             self.assertTrue(len(outcome) == 3)
+            self.assertTrue(outcome[0]['slug'] == self.projects[1].slug)
 
-class TestFetchAProject(TestCreateProject):
+class TestFetchAProject(TestProjectBase):
     def setUp(self):
         super(TestFetchAProject, self).setUp()
 
@@ -227,7 +231,7 @@ class TestFetchAProject(TestCreateProject):
             outcome.pop('id')
             self.assertTrue(outcome == self.expected)
 
-class TestUpdateAProject(TestCreateProject):
+class TestUpdateAProject(TestProjectBase):
     def setUp(self):
         super(TestUpdateAProject, self).setUp()
 
@@ -251,7 +255,7 @@ class TestUpdateAProject(TestCreateProject):
             self.assertTrue(outcome.description == self.params['description'])
             self.assertTrue(outcome.collaborators == self.params['collaborators'])
 
-class TestDeleteAProject(TestCreateProject):
+class TestDeleteAProject(TestProjectBase):
     def setUp(self):
         super(TestDeleteAProject, self).setUp()
 
