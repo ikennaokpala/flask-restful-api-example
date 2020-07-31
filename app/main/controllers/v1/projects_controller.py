@@ -4,9 +4,9 @@ from flask_restplus import Namespace, Resource, fields
 from flask import request, session, jsonify
 from werkzeug.exceptions import BadRequest
 from requests.exceptions import HTTPError
-from sqlalchemy import or_
 
 from app.main.dao.project_dao import ProjectDAO
+from app.main.dao.projects_dao import ProjectsDAO
 from app.main.models.project import Project
 from app.main import db
 
@@ -16,14 +16,19 @@ project_field = endpoint.model('Resource', {
     'slug': fields.String,
 })
 
-project_fields = endpoint.model('Resource', {
-    'name': fields.String,
-    'description': fields.String,
-    'slug': fields.String,
-    'owner': fields.String,
-    'collaboarators': fields.List(fields.String),
-    'created_at': fields.String,
-    'updated_at': fields.String,
+project_fields = endpoint.model('Resource',{
+    'page': fields.Integer,
+    'per_page': fields.Integer,
+    'total': fields.Integer,
+    'projects': {
+        'name': fields.String,
+        'description': fields.String,
+        'slug': fields.String,
+        'owner': fields.String,
+        'collaboarators': fields.List(fields.String),
+        'created_at': fields.String,
+        'updated_at': fields.String,
+    }
 })
 
 @endpoint.route('/<slug>')
@@ -61,7 +66,8 @@ class Projects(Resource):
             raise BadRequest
 
     @endpoint.doc('List of a user\'s projects')
-    @endpoint.expect(model=project_fields)
+    @endpoint.doc(params={'page': 'Page or Offset for projects', 'per_page': 'Number of projects per page', 'direction': 'Sort desc or asc'})
+    @endpoint.expect(project_fields)
     def get(self):
-        owner = session['token_user']['email'] 
-        return jsonify(Project.query.filter(or_(Project.owner == owner, Project.collaborators.any(owner))).all())
+        projects = ProjectsDAO.call(request.args, session['token_user']['email'])
+        return jsonify(projects._asdict())

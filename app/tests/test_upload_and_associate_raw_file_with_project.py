@@ -33,7 +33,7 @@ class TestUploadAndAssociateWithProject(BaseTestCase):
             content_type='text/xml',
         ), FileStorage(
             stream=open(self.mzxml_file_path, 'rb'),
-            filename='sample.mzXML',
+            filename='another_sample.mzXML',
             content_type='text/xml',
         )]
         self.params = { 'mzxml_file_0': self.mzxml_file_stores[0] }
@@ -60,7 +60,7 @@ class TestUploadAndAssociateWithProject(BaseTestCase):
                 mzxml_file_destination = self.destination + '/' + outcome['checksum'] + '_' + mzxml_file.filename
 
                 self.assertTrue(outcome['id'] == index + 1)
-                self.assertTrue(outcome['name'] == self.mzxml_file_name)
+                self.assertTrue(outcome['name'] == [self.mzxml_file_name, 'another_sample'][index])
                 self.assertTrue(outcome['extension'] == self.mzxml_file_ext)
                 self.assertTrue(outcome['path'] == mzxml_file_destination)
                 self.assertTrue(re.match(r'^[a-f0-9]{32}$', outcome['checksum']))

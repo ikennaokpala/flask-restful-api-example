@@ -1,7 +1,10 @@
-import unittest
 import json
 import factory
+import unittest
+
 from freezegun import freeze_time
+from unittest.mock import patch
+from flask import current_app
 
 from app.tests.base_test_case import BaseTestCase
 from app.main.models.project import Project
@@ -195,7 +198,8 @@ class TestProjects(TestProjectBase):
         super(TestProjects, self).setUp()
 
     @freeze_time('2020-06-02 08:57:53')
-    def test_fetch_all_owned_and_collaboarating_projects(self):
+    @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
+    def test_fetch_all_owned_and_collaboarating_projects_without_page_and_per_page_and_direction(self):
         ProjectFactory.create(collaborators=[self.owner], owner='another@email.com')
         ProjectFactory.create(owner='another@email.com')
         ProjectFactory.create(collaborators=['another@email.com'], owner='another@email.com')
@@ -208,8 +212,106 @@ class TestProjects(TestProjectBase):
             self.assertTrue(response.content_type == 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertTrue(len(outcome) == 3)
-            self.assertTrue(outcome[0]['slug'] == self.projects[1].slug)
+            projects = outcome['projects']
+
+            self.assertTrue(outcome['page'] == 1)
+            self.assertTrue(outcome['per_page'] == 2)
+            self.assertTrue(outcome['total'] == 3)
+
+            self.assertTrue(len(projects) == 2)
+            self.assertTrue(projects[0]['slug'] == self.projects[1].slug)
+
+    @freeze_time('2020-06-02 08:57:53')
+    @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
+    def test_fetch_owned_and_collaboarating_projects_with_page_1_and_per_page_with_direction_desc(self):
+        ProjectFactory.create(collaborators=[self.owner], owner='another@email.com')
+        ProjectFactory.create(owner='another@email.com')
+        ProjectFactory.create(collaborators=['another@email.com'], owner='another@email.com')
+        self.projects = ProjectFactory.create_batch(size=2, owner=self.owner)
+
+        with self.client as rdbclient:
+            response = rdbclient.get('/v1/projects?page=1&per_page=2&direction=desc', headers=self.headers)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            projects = outcome['projects']
+
+            self.assertTrue(outcome['page'] == 1)
+            self.assertTrue(outcome['per_page'] == 2)
+            self.assertTrue(outcome['total'] == 3)
+            self.assertTrue(len(projects) == 2)
+            self.assertTrue(projects[0]['slug'] == self.projects[1].slug)
+
+    @freeze_time('2020-06-02 08:57:53')
+    @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
+    def test_fetch_owned_and_collaboarating_projects_with_page_1_and_per_page_with_direction_asc(self):
+        ProjectFactory.create(collaborators=[self.owner], owner='another@email.com')
+        ProjectFactory.create(owner='another@email.com')
+        ProjectFactory.create(collaborators=['another@email.com'], owner='another@email.com')
+        self.projects = ProjectFactory.create_batch(size=2, owner=self.owner)
+
+        with self.client as rdbclient:
+            response = rdbclient.get('/v1/projects?page=1&per_page=2&direction=asc', headers=self.headers)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            projects = outcome['projects']
+
+            self.assertTrue(outcome['page'] == 1)
+            self.assertTrue(outcome['per_page'] == 2)
+            self.assertTrue(outcome['total'] == 3)
+            self.assertTrue(len(projects) == 2)
+            self.assertTrue(projects[0]['slug'] == self.expected['slug'])
+
+    @freeze_time('2020-06-02 08:57:53')
+    @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
+    def test_fetch_owned_and_collaboarating_projects_with_page_2_nd_per_page_with_direction_desc(self):
+        ProjectFactory.create(collaborators=[self.owner], owner='another@email.com')
+        ProjectFactory.create(owner='another@email.com')
+        ProjectFactory.create(collaborators=['another@email.com'], owner='another@email.com')
+        self.projects = ProjectFactory.create_batch(size=2, owner=self.owner)
+
+        with self.client as rdbclient:
+            response = rdbclient.get('/v1/projects?page=2&per_page=2&direction=desc', headers=self.headers)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            projects = outcome['projects']
+
+            self.assertTrue(outcome['page'] == 2)
+            self.assertTrue(outcome['per_page'] == 2)
+            self.assertTrue(outcome['total'] == 3)
+            self.assertTrue(len(projects) == 1)
+            self.assertTrue(projects[0]['slug'] == self.expected['slug'])
+
+    @freeze_time('2020-06-02 08:57:53')
+    @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
+    def test_fetch_owned_and_collaboarating_projects_with_page_2_and_per_page_with_direction_asc(self):
+        ProjectFactory.create(collaborators=[self.owner], owner='another@email.com')
+        ProjectFactory.create(owner='another@email.com')
+        ProjectFactory.create(collaborators=['another@email.com'], owner='another@email.com')
+        self.projects = ProjectFactory.create_batch(size=2, owner=self.owner)
+
+        with self.client as rdbclient:
+            response = rdbclient.get('/v1/projects?page=2&per_page=2&direction=asc', headers=self.headers)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.content_type == 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            projects = outcome['projects']
+
+            self.assertTrue(outcome['page'] == 2)
+            self.assertTrue(outcome['per_page'] == 2)
+            self.assertTrue(outcome['total'] == 3)
+            self.assertTrue(len(projects) == 1)
+            self.assertTrue(projects[0]['slug'] == self.projects[1].slug)
 
 class TestFetchAProject(TestProjectBase):
     def setUp(self):
