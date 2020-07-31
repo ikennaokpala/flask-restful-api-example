@@ -66,17 +66,19 @@ def createdb(environment):
         create_database(app.config['SQLALCHEMY_DATABASE_URI'])
 
 @manager.command
-def tests():
+def tests(pattern='test*.py'):
     """Runs the unit tests."""
     app.config.from_object(environments['test'])
     createdb('test')
-    tests = unittest.TestLoader().discover('app/tests', pattern='test*.py')
+    tests = unittest.TestLoader().discover('app/tests', pattern=pattern)
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
         return 0
     return 1
 
-test = tests
+@manager.command
+def test(test_file_name_or_pattern):
+    tests(test_file_name_or_pattern)
 
 if __name__ == '__main__':
     manager.run()
