@@ -18,8 +18,7 @@ class MZXmlFileMetadataShipmentDAO:
 
 		mzxml_file = MZXmlFile.query.filter_by(id=self.mzxml_file_id).first_or_404()
 
-		for mzxml_file_metadata_shipment_file in self.metadata_shipment_files:
-			file_content = self.file_content_extractor(mzxml_file_metadata_shipment_file).call()
+		for file_content in self.file_content_extractor.call(self.metadata_shipment_files):
 			file_detail = file_content.detail
 			metadata_shipment = MetadataShipment(
 				file_name=file_detail.name, extension=file_detail.extension, mzxml_file_id=mzxml_file.id, content=file_content.content)

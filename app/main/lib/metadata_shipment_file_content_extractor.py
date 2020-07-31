@@ -6,6 +6,11 @@ from app.main.models.metadata_shipment import MetadataShipment
 from app.main.validators.metadata_shipment_validator import MetadataShipmentValidator
 
 class MetadataShipmentFileContentExtractor:
+	@classmethod
+	def call(klazz, metdata_shipment_files):
+		for metdata_shipment_file in metdata_shipment_files:
+			yield klazz(metdata_shipment_file).each()
+
 	def __init__(self, metdata_shipment_file, validator=MetadataShipmentValidator):
 		self.file_detail = namedtuple('FileDetail', ['name', 'extension', 'filename'])
 		self.file_content = namedtuple('FileContent', ['detail', 'content'])
@@ -19,7 +24,7 @@ class MetadataShipmentFileContentExtractor:
 		self.current_child = {}
 		self.validator = validator
 
-	def call(self):
+	def each(self):
 		file_detail = self.file_detail(name=self.filename, extension=self.extension, filename=self.file_name)
 		self.validator(file_detail).call()
 
@@ -30,7 +35,7 @@ class MetadataShipmentFileContentExtractor:
 			parent_node_key = str(parent_child_node)
 			if self.valid_new_parent_node(parent_child_node, parent_node_key): self.current[parent_node_key] = []
 
-			for _index, row in metdata_shipments.iterrows():
+			for _, row in metdata_shipments.iterrows():
 				child_node_key = str(row[self.columns[1]])
 				if self.valid_new_child_node(child_node_key): self.current_child[child_node_key] = []
 				self.current_child[child_node_key].append([*row.values[-3:]]) 
