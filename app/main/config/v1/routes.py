@@ -16,7 +16,7 @@ class RouterV1:
 	def draw(klazz, api, prefix=''):
 		api.add_namespace(auth_endpoint, path=prefix + '/auth')
 		api.add_namespace(projects_endpoint, path=prefix + '/projects')
-		api.add_namespace(data_types_endpoint, path=prefix + '/projects/<slug>')
+		api.add_namespace(data_types_endpoint, path=prefix + '/projects/<slug>/data_types')
 		api.add_namespace(project_mzxml_files_endpoint, path=prefix + '/projects/<slug>')
 		api.add_namespace(mzxml_files_metadata_endpoint, path=prefix + '/projects/<slug>/mzxml_files/<mzxml_file_id>')
 

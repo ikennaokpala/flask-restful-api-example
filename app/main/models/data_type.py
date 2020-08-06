@@ -27,4 +27,3 @@ class DataType(db.Model):
 	def __init__(self, *args, **kwargs):
 		super(DataType, self).__init__(*args, **kwargs)
 		self.slug = Slugifier(self, self.name).call()
-

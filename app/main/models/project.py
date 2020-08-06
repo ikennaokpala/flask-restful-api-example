@@ -1,5 +1,3 @@
-import re
-import unidecode
 import datetime
 
 from sqlalchemy.dialects import postgresql as pg
@@ -18,6 +16,7 @@ class Project(db.Model):
     slug: str
     owner: str
     collaborators: list
+    data_types: list
     mzxml_files: list
 
     id = db.Column(db.Integer, primary_key=True)

@@ -12,7 +12,7 @@ class DataTypeFactory(factory.alchemy.SQLAlchemyModelFactory):
 		model = DataType
 		sqlalchemy_session = db.session
 
-	name = 'Metabolomics DataType'
+	name = 'Metabolomics DataType Factory'
 	description = 'A particular kind of data item, as defined by the file formats (mzXML, xlsx) and values it can take in.'
 
 class MZXmlFileFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -47,6 +47,19 @@ class ProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
 			db.session.commit()
 
 			MZXmlFileFactory.create_batch(size=extracted, project_id=project.id, **kwargs)
+
+	@factory.post_generation
+	def data_types(project, create, extracted, **kwargs):
+		if not create:
+			return
+
+		if extracted:
+			assert isinstance(extracted, int)
+
+			db.session.add(project)
+			db.session.commit()
+
+			DataTypeFactory.create_batch(size=extracted, project_id=project.id, **kwargs)
 
 class SessionFactory(factory.alchemy.SQLAlchemyModelFactory):
 	class Meta:
