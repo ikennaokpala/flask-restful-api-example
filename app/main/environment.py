@@ -7,7 +7,7 @@ class Environment:
     MZXML_FILES_UPLOAD_FOLDER = os.getenv('MZXML_FILES_UPLOAD_FOLDER', '/tmp/')
     ALLOWED_MZXML_FILE_EXTENSIONS = os.getenv('ALLOWED_MZXML_FILE_EXTENSIONS', 'mzXML').split(',')
     ALLOWED_METADATA_SHIPMENTS_EXTENSIONS = os.getenv('ALLOWED_METADATA_SHIPMENTS_EXTENSIONS', 'xlsx').split(',')
-    PAGINATION_MAX_PER_PAGE = os.getenv('PAGINATION_MAX_PER_PAGE', 100)
+    PAGINATION_MAX_PER_PAGE = int(os.getenv('PAGINATION_MAX_PER_PAGE', 100))
     DEBUG = False
     TEST = False
     SQLALCHEMY_DATABASE_URI = ''
@@ -19,9 +19,10 @@ class Development(Environment):
     SQLALCHEMY_DATABASE_URI = os.environ.get('LSARP_DATABASE_URL') + '/lsarp_development'
 
 class Test(Environment):
-    DEBUG = True
     TEST = True
+    DEBUG = True
     TESTING = True
+    TEST_PROGRESS_VERBOSITY = int(os.getenv('TEST_PROGRESS_VERBOSITY', 1))
     SQLALCHEMY_DATABASE_URI = os.environ.get('LSARP_DATABASE_URL') + '/lsarp_test'
 
 class Production(Environment):
