@@ -1,5 +1,3 @@
-import openid_connect
-
 from flask_restplus import Namespace, Resource, fields
 from flask import request, session, jsonify
 from werkzeug.exceptions import BadRequest
