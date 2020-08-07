@@ -8,20 +8,21 @@ from contextlib import contextmanager
 from app.main.models.mzxml_file import MZXmlFile
 from app.main.validators.mzxml_file_validator import MZXmlFileValidator
 
-class ProjectMZXmlFilesBuilder:
-	def __init__(self, project, mzxml_files, validator=MZXmlFileValidator):
+class ProjectDataTypeMZXmlFilesBuilder:
+	def __init__(self, data_type, mzxml_files, validator=MZXmlFileValidator):
 		self.project_mzxml = None
-		self.project = project
+		self.data_type = data_type
+		self.project = data_type.project
 		self.validator = validator
 		self.mzxml_files = mzxml_files
 		self.mzxml_files_values = [*mzxml_files.to_dict().values()]
 		self.mzxml_files_keys = [*mzxml_files.to_dict().keys()]
-		self.mzxml_files_projects_directory = os.path.join(
-			current_app.config['MZXML_FILES_UPLOAD_FOLDER'], 'projects')
-		self.destination = os.path.join(self.mzxml_files_projects_directory, project.slug)
-		self.location = namedtuple('ProjectMZXmlFileLocation', ['name', 'extension', 'path', 'checksum', 'slug'])
+		self.mzxml_files_projects__data_type_directory = os.path.join(
+			current_app.config['MZXML_FILES_UPLOAD_FOLDER'], 'projects', self.project.slug, 'data_types')
+		self.destination = os.path.join(self.mzxml_files_projects__data_type_directory, self.data_type.slug)
+		self.location = namedtuple('ProjectDataTypeMZXmlFileLocation', ['name', 'extension', 'path', 'checksum', 'project_slug', 'data_type_slug'])
 		self.mzxml_files_key_prefix = current_app.config['MZXML_FILES_KEY_PREFIX']
-		self.project_mzxml_file = namedtuple('ProjectMZXmlFile', ['model', 'location', 'mzxml_file', 'filename', 'name_extension', 'name', 'extension', 'destination'])
+		self.project_mzxml_file = namedtuple('ProjectDataTypeMZXmlFile', ['model', 'location', 'mzxml_file', 'filename', 'name_extension', 'name', 'extension', 'destination'])
 		self.counter = 0
 		self.total = len(self.mzxml_files_values)
 
@@ -40,8 +41,8 @@ class ProjectMZXmlFilesBuilder:
 		name_extension = file_name.split('.')
 		checksum = md5(name_extension[0].encode('utf-8')).hexdigest()
 		path_to_mzxml_file = os.path.join(self.destination, checksum + '_' + file_name)
-		model = MZXmlFile(name=name_extension[0], extension=name_extension[1], location=path_to_mzxml_file, checksum=checksum, project_id=self.project.id)
-		location = self.location(name=name_extension[0], extension=name_extension[1], path=path_to_mzxml_file, checksum=checksum, slug=self.project.slug)
+		model = MZXmlFile(name=name_extension[0], extension=name_extension[1], location=path_to_mzxml_file, checksum=checksum, data_type_id=self.data_type.id)
+		location = self.location(name=name_extension[0], extension=name_extension[1], path=path_to_mzxml_file, checksum=checksum, project_slug=self.project.slug, data_type_slug=self.data_type.slug)
 
 		self.project_mzxml = self.project_mzxml_file(
 			model=model,

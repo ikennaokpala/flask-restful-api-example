@@ -13,15 +13,15 @@ from flask import current_app
 from app.tests.base_test_case import BaseTestCase
 from app.main.models.project import Project
 from app.tests.support.factories import SessionFactory
-from app.tests.support.factories import ProjectFactory
-from app.tests.support.factories import MZXmlFileFactory
+from app.tests.support.factories import DataTypeWithProjectFactory
 
 class TestUploadAndAssociateWithMZXmlFile(BaseTestCase):
     def setUp(self):
         super(TestUploadAndAssociateWithMZXmlFile, self).setUp()
         self.current_session = SessionFactory.create()
-        self.project = ProjectFactory.create(mzxml_files=1)
-        self.mzxml_file = self.project.mzxml_files[0]
+        self.data_type = DataTypeWithProjectFactory.create(mzxml_files=1)
+        self.project = self.data_type.project
+        self.mzxml_file = self.data_type.mzxml_files[0]
         self.test_request_path = '/v1/projects/' + self.project.slug + '/mzxml_files/' + str(self.mzxml_file.id) + '/metadata_shipments'
         self.email = self.current_session.tokenized_user['email']
         self.headers = { 'Authorization': 'Bearer ' + self.current_session.access_token }
@@ -126,7 +126,7 @@ class TestUploadAndAssociateWithMZXmlFile(BaseTestCase):
 
     @freeze_time('2020-06-02 08:57:53')
     def test_when_user_access_token_is_valid_and_none_existing_mzxml_file(self):
-        mzxml_file_id = str(self.project.mzxml_files[-1].id + 50)
+        mzxml_file_id = str(self.data_type.mzxml_files[-1].id + 50)
         with self.client as rdbclient:
             response = rdbclient.put('/v1/projects/'+ self.project.slug +'/mzxml_files/'+ mzxml_file_id +'/metadata_shipment', headers=self.headers, data=self.params, content_type='multipart/form-data')
 

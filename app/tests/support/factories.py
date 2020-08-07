@@ -6,15 +6,6 @@ from app.main.models.project import Project
 from app.main.models.data_type import DataType
 from app.main.models.mzxml_file import MZXmlFile
 
-
-class DataTypeFactory(factory.alchemy.SQLAlchemyModelFactory):
-	class Meta:
-		model = DataType
-		sqlalchemy_session = db.session
-
-	name = 'Metabolomics DataType Factory'
-	description = 'A particular kind of data item, as defined by the file formats (mzXML, xlsx) and values it can take in.'
-
 class MZXmlFileFactory(factory.alchemy.SQLAlchemyModelFactory):
 	class Meta:
 		model = MZXmlFile
@@ -25,6 +16,14 @@ class MZXmlFileFactory(factory.alchemy.SQLAlchemyModelFactory):
 	location = '/tmp/projects/metabolomics-project-1/5e8ff9bf55ba3508199d22e984129be6_sample.mzXML'
 	checksum = '5e8ff9bf55ba3508199d22e984129be6'
 
+class DataTypeFactory(factory.alchemy.SQLAlchemyModelFactory):
+	class Meta:
+		model = DataType
+		sqlalchemy_session = db.session
+
+	name = 'Metabolomics DataType Factory'
+	description = 'A particular kind of data item, as defined by the file formats (mzXML, xlsx) and values it can take in.'
+
 class ProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
 	class Meta:
 		model = Project
@@ -34,19 +33,6 @@ class ProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
 	description = 'Very good science based description'
 	owner = 'test@example.com'
 	collaborators = ['collab@ucal.ca']
-
-	@factory.post_generation
-	def mzxml_files(project, create, extracted, **kwargs):
-		if not create:
-			return
-
-		if extracted:
-			assert isinstance(extracted, int)
-
-			db.session.add(project)
-			db.session.commit()
-
-			MZXmlFileFactory.create_batch(size=extracted, project_id=project.id, **kwargs)
 
 	@factory.post_generation
 	def data_types(project, create, extracted, **kwargs):
@@ -60,6 +46,31 @@ class ProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
 			db.session.commit()
 
 			DataTypeFactory.create_batch(size=extracted, project_id=project.id, **kwargs)
+
+class DataTypeWithProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
+	class Meta:
+		model = DataType
+		sqlalchemy_session = db.session
+
+	name = 'Metabolomics DataType Factory'
+	description = 'A particular kind of data item, as defined by the file formats (mzXML, xlsx) and values it can take in.'
+
+	@classmethod
+	def _create(_cls, _data_type_model_class, *_args, **_kwargs):
+		return ProjectFactory.create(data_types=1).data_types[0]
+
+	@factory.post_generation
+	def mzxml_files(data_type, create, extracted, **kwargs):
+		if not create:
+			return
+
+		if extracted:
+			assert isinstance(extracted, int)
+
+			db.session.add(data_type)
+			db.session.commit()
+
+			MZXmlFileFactory.create_batch(size=extracted, data_type_id=data_type.id, **kwargs)
 
 class SessionFactory(factory.alchemy.SQLAlchemyModelFactory):
 	class Meta:

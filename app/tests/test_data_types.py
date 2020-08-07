@@ -10,7 +10,6 @@ from app.main.models.data_type import DataType
 from app.tests.base_test_case import BaseTestCase
 from app.tests.support.factories import SessionFactory
 from app.tests.support.factories import ProjectFactory
-from app.tests.support.factories import DataTypeFactory
 
 
 class TestDataTypeBase(BaseTestCase):
@@ -198,7 +197,7 @@ class TestFetchADataType(TestDataTypeBase):
 
 			outcome = json.loads(response.data.decode())
 			self.expected.update(self.params)
-			self.expected.update({'name': self.data_types[0].name, 'slug': self.data_types[0].slug, 'project_id': self.project.id})
+			self.expected.update({'name': self.data_types[0].name, 'slug': self.data_types[0].slug, 'project_id': self.project.id, 'mzxml_files': [] })
 			outcome.pop('id')
 			self.assertTrue(outcome == self.expected)
 

@@ -329,7 +329,7 @@ class TestFetchAProject(TestProjectBase):
 
 			outcome = json.loads(response.data.decode())
 			self.expected.update(self.params)
-			self.expected.update({ 'owner':'another@anotherexample.com', 'mzxml_files': [], 'data_types': [] })
+			self.expected.update({ 'owner':'another@anotherexample.com', 'data_types': [] })
 			outcome.pop('id')
 			self.assertTrue(outcome == self.expected)
 
