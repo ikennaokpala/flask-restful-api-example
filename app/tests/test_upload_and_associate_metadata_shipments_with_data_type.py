@@ -21,7 +21,7 @@ class TestUploadAndAssociateWithMZXmlFile(BaseTestCase):
         self.current_session = SessionFactory.create()
         self.data_type = DataTypeWithProjectFactory.create(data_types=1)
         self.project = self.data_type.project
-        self.test_request_path = '/v1/projects/' + self.project.slug + '/data_types/' + str(self.data_type.id) + '/metadata_shipments'
+        self.test_request_path = '/v1/projects/' + self.project.slug + '/data_types/' + str(self.data_type.slug) + '/metadata_shipments'
         self.email = self.current_session.tokenized_user['email']
         self.headers = { 'Authorization': 'Bearer ' + self.current_session.access_token }
         self.metadata_shipment_path = os.path.abspath('app/tests/support/fixtures/metadata_shipments/sample_lsarp_metadata_shipment.xlsx')
@@ -125,9 +125,8 @@ class TestUploadAndAssociateWithMZXmlFile(BaseTestCase):
 
     @freeze_time('2020-06-02 08:57:53')
     def test_when_user_access_token_is_valid_and_none_existing_data_type(self):
-        data_type_id = str(self.data_type.id + 50)
         with self.client as rdbclient:
-            response = rdbclient.put('/v1/projects/'+ self.project.slug +'/data_types/'+ data_type_id +'/metadata_shipment', headers=self.headers, data=self.params, content_type='multipart/form-data')
+            response = rdbclient.put('/v1/projects/'+ self.project.slug +'/data_types/none-existing-data-type-slug/metadata_shipment', headers=self.headers, data=self.params, content_type='multipart/form-data')
 
             self.assertEqual(response.status_code, 404)
             self.assertTrue(response.content_type == 'application/json')

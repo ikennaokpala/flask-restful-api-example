@@ -18,7 +18,7 @@ class RouterV1:
 		api.add_namespace(projects_endpoint, path=prefix + '/projects')
 		api.add_namespace(data_types_endpoint, path=prefix + '/projects/<slug>/data_types')
 		api.add_namespace(data_type_mzxml_files_endpoint, path=prefix + '/projects/<slug>/data_types/<data_type_slug>')
-		api.add_namespace(data_types_metadata_endpoint, path=prefix + '/projects/<slug>/data_types/<data_type_id>')
+		api.add_namespace(data_types_metadata_endpoint, path=prefix + '/projects/<slug>/data_types/<data_type_slug>')
 
 v1_blueprint = Blueprint('api_version_one', __name__, url_prefix='/v1')
 RouterV1().draw(Api(v1_blueprint))
