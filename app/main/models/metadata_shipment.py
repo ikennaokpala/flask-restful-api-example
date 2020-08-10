@@ -14,14 +14,14 @@ class MetadataShipment(db.Model):
 	id: int
 	file_name: str
 	extension: str
-	mzxml_file_id: str
+	data_type_id: int
 	content: dict
 
 	id = db.Column(db.Integer, primary_key=True)
 	file_name = db.Column(db.TEXT, index=True, nullable=False)
 	extension = db.Column(db.String, nullable=False)
-	mzxml_file_id = db.Column(db.Integer, db.ForeignKey('mzxml_files.id'), index=True, nullable=False)
-	mzxml_file = db.relationship('MZXmlFile', back_populates='metadata_shipments', lazy='joined')
+	data_type_id = db.Column(db.Integer, db.ForeignKey('data_types.id'), index=True, nullable=False)
+	data_type = db.relationship('DataType', back_populates='metadata_shipments')
 	content = db.Column(pg.JSON, nullable=False)
 	created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
 	updated_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)

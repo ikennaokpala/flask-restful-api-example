@@ -1,5 +1,3 @@
-import re
-import unidecode
 import datetime
 
 from sqlalchemy.dialects import postgresql as pg
@@ -18,7 +16,7 @@ class Project(db.Model):
     slug: str
     owner: str
     collaborators: list
-    mzxml_files: list
+    data_types: list
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, index=True, nullable=False)
@@ -26,7 +24,7 @@ class Project(db.Model):
     slug = db.Column(db.TEXT, index=True, unique=True, nullable=False)
     owner = db.Column(db.String, index=True, nullable=False)
     collaborators = db.Column(pg.ARRAY(db.String))
-    mzxml_files = db.relationship('MZXmlFile', cascade='all,delete', backref='projects', lazy='joined')
+    data_types = db.relationship('DataType', cascade='all,delete', backref='projects', lazy='joined')
     created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
 

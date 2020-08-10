@@ -79,6 +79,10 @@ tests:
 	source ./env-packages/bin/activate; \
 	python manage.py tests
 
+test:
+	source ./env-packages/bin/activate; \
+	python manage.py test $(call args, test*.py)
+
 run:
 	source ./env-packages/bin/activate; \
 	python manage.py run
