@@ -15,6 +15,7 @@ class DataType(db.Model):
 	description: str
 	project_id: str
 	mzxml_files: list
+	metadata_shipments: list
 
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String, index=True, nullable=False)
@@ -23,6 +24,7 @@ class DataType(db.Model):
 	project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), index=True, nullable=False)
 	project = db.relationship('Project', back_populates='data_types')
 	mzxml_files = db.relationship('MZXmlFile', cascade='all,delete', backref='data_types', lazy='joined')
+	metadata_shipments = db.relationship('MetadataShipment', cascade='all,delete', backref='data_types', lazy='joined')
 	created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
 	updated_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
 

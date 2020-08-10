@@ -3,25 +3,25 @@ from dataclasses import asdict
 
 from app.main.lib.metadata_shipment_file_content_extractor import MetadataShipmentFileContentExtractor
 from app.main.models.metadata_shipment import MetadataShipment
-from app.main.models.mzxml_file import MZXmlFile
+from app.main.models.data_type import DataType
 from app.main import db
 
-class MZXmlFileMetadataShipmentDAO:
-	def __init__(self, mzxml_file_id, metadata_shipment_files, file_content_extractor=MetadataShipmentFileContentExtractor):
+class DataTypeMetadataShipmentDAO:
+	def __init__(self, data_type_id, metadata_shipment_files, file_content_extractor=MetadataShipmentFileContentExtractor):
 		self.shipments = []
-		self.mzxml_file_id = mzxml_file_id
+		self.data_type_id = data_type_id
 		self.file_content_extractor = file_content_extractor
 		self.metadata_shipment_files = [*metadata_shipment_files.to_dict().values()]
 
 	def upload(self):
 		if len(self.metadata_shipment_files) == 0: abort(400)
 
-		mzxml_file = MZXmlFile.query.filter_by(id=self.mzxml_file_id).first_or_404()
+		data_type = DataType.query.filter_by(id=self.data_type_id).first_or_404()
 
 		for file_content in self.file_content_extractor.call(self.metadata_shipment_files):
 			file_detail = file_content.detail
 			metadata_shipment = MetadataShipment(
-				file_name=file_detail.name, extension=file_detail.extension, mzxml_file_id=mzxml_file.id, content=file_content.content)
+				file_name=file_detail.name, extension=file_detail.extension, data_type_id=data_type.id, content=file_content.content)
 
 			db.session.add(metadata_shipment)
 			db.session.commit()

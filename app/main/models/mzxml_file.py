@@ -13,7 +13,6 @@ class MZXmlFile(db.Model):
     location: str
     checksum: str
     data_type_id: int
-    metadata_shipments: list
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.TEXT, index=True, nullable=False)
@@ -22,6 +21,5 @@ class MZXmlFile(db.Model):
     checksum = db.Column(db.String, index=True, nullable=False)
     data_type_id = db.Column(db.Integer, db.ForeignKey('data_types.id'), index=True, nullable=False)
     data_type = db.relationship('DataType', back_populates='mzxml_files')
-    metadata_shipments = db.relationship('MetadataShipment', cascade='all,delete', lazy='joined')
     created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)

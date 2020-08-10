@@ -197,7 +197,7 @@ class TestFetchADataType(TestDataTypeBase):
 
 			outcome = json.loads(response.data.decode())
 			self.expected.update(self.params)
-			self.expected.update({'name': self.data_types[0].name, 'slug': self.data_types[0].slug, 'project_id': self.project.id, 'mzxml_files': [] })
+			self.expected.update({'name': self.data_types[0].name, 'slug': self.data_types[0].slug, 'project_id': self.project.id, 'mzxml_files': [], 'metadata_shipments': [] })
 			outcome.pop('id')
 			self.assertTrue(outcome == self.expected)
 

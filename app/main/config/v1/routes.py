@@ -10,7 +10,7 @@ from app.main.controllers.v1.auth_controller import endpoint as auth_endpoint
 from app.main.controllers.v1.projects_controller import endpoint as projects_endpoint
 from app.main.controllers.v1.data_types_controller import endpoint as data_types_endpoint
 from app.main.controllers.v1.data_type_mzxml_files_controller import endpoint as data_type_mzxml_files_endpoint
-from app.main.controllers.v1.mzxml_file_metadata_shipments_controller import endpoint as mzxml_files_metadata_endpoint
+from app.main.controllers.v1.data_type_metadata_shipments_controller import endpoint as data_types_metadata_endpoint
 
 class RouterV1:
 	def draw(klazz, api, prefix=''):
@@ -18,7 +18,7 @@ class RouterV1:
 		api.add_namespace(projects_endpoint, path=prefix + '/projects')
 		api.add_namespace(data_types_endpoint, path=prefix + '/projects/<slug>/data_types')
 		api.add_namespace(data_type_mzxml_files_endpoint, path=prefix + '/projects/<slug>/data_types/<data_type_slug>')
-		api.add_namespace(mzxml_files_metadata_endpoint, path=prefix + '/projects/<slug>/mzxml_files/<mzxml_file_id>')
+		api.add_namespace(data_types_metadata_endpoint, path=prefix + '/projects/<slug>/data_types/<data_type_id>')
 
 v1_blueprint = Blueprint('api_version_one', __name__, url_prefix='/v1')
 RouterV1().draw(Api(v1_blueprint))
