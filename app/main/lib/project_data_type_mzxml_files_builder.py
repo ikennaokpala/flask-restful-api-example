@@ -17,9 +17,9 @@ class ProjectDataTypeMZXmlFilesBuilder:
 		self.mzxml_files = mzxml_files
 		self.mzxml_files_values = [*mzxml_files.to_dict().values()]
 		self.mzxml_files_keys = [*mzxml_files.to_dict().keys()]
-		self.mzxml_files_projects__data_type_directory = os.path.join(
+		self.mzxml_files_projects_data_type_directory = os.path.join(
 			current_app.config['MZXML_FILES_UPLOAD_FOLDER'], 'projects', self.project.slug, 'data_types')
-		self.destination = os.path.join(self.mzxml_files_projects__data_type_directory, self.data_type.slug)
+		self.destination = os.path.join(self.mzxml_files_projects_data_type_directory, self.data_type.slug)
 		self.location = namedtuple('ProjectDataTypeMZXmlFileLocation', ['name', 'extension', 'path', 'checksum', 'project_slug', 'data_type_slug'])
 		self.mzxml_files_key_prefix = current_app.config['MZXML_FILES_KEY_PREFIX']
 		self.project_mzxml_file = namedtuple('ProjectDataTypeMZXmlFile', ['model', 'location', 'mzxml_file', 'filename', 'name_extension', 'name', 'extension', 'destination'])
