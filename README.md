@@ -35,14 +35,18 @@ Database: PostgreSQL
 ### Running Tests
 
 To run all the tests
+
     $ make tests
 
 To run a single the test
+
     $ make test <name_of_test_file>
 
 To run tests with verbosity set 
+
     $ TEST_PROGRESS_VERBOSITY=2  make tests
 
 or 
+
     $ TEST_PROGRESS_VERBOSITY=2  make test <name_of_test_file>
 
