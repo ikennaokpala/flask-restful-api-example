@@ -2,7 +2,7 @@ import os
 
 from hashlib import md5
 from flask import current_app
-from collections import namedtuple
+from dataclasses import make_dataclass
 from contextlib import contextmanager
 
 from app.main.models.mzxml import MZXml
@@ -20,9 +20,9 @@ class ProjectDataTypeMZXmlsBuilder:
 		self.mzxml_files_projects_data_type_directory = os.path.join(
 			current_app.config['MZXML_FILES_UPLOAD_FOLDER'], 'projects', self.project.slug, 'data_types')
 		self.destination = os.path.join(self.mzxml_files_projects_data_type_directory, self.data_type.slug)
-		self.location = namedtuple('ProjectDataTypeMZXmlLocation', ['name', 'extension', 'path', 'checksum', 'project_slug', 'data_type_slug'])
+		self.location = make_dataclass('ProjectDataTypeMZXmlLocation', ['name', 'extension', 'path', 'checksum', 'project_slug', 'data_type_slug'])
 		self.mzxml_files_key_prefix = current_app.config['MZXML_FILES_KEY_PREFIX']
-		self.project_mzxml_file = namedtuple('ProjectDataTypeMZXml', ['model', 'location', 'mzxml_file', 'filename', 'name_extension', 'name', 'extension', 'destination'])
+		self.project_mzxml_file = make_dataclass('ProjectDataTypeMZXml', ['model', 'location', 'mzxml_file', 'filename', 'name_extension', 'name', 'extension', 'destination'])
 		self.counter = 0
 		self.total = len(self.mzxml_files_values)
 

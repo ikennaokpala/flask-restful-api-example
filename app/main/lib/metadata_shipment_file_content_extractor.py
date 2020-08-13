@@ -1,6 +1,6 @@
 import pandas as pd
 
-from collections import namedtuple
+from dataclasses import make_dataclass
 
 from app.main.models.metadata_shipment import MetadataShipment
 from app.main.validators.metadata_shipment_validator import MetadataShipmentValidator
@@ -12,8 +12,7 @@ class MetadataShipmentFileContentExtractor:
 			yield klazz(metdata_shipment_file).each()
 
 	def __init__(self, metdata_shipment_file, validator=MetadataShipmentValidator):
-		self.file_detail = namedtuple('FileDetail', ['name', 'extension', 'filename'])
-		self.file_content = namedtuple('FileContent', ['detail', 'content'])
+		self.file_detail = make_dataclass('FileDetail', ['name', 'extension', 'filename', 'content'])
 		self.metdata_shipment_file = metdata_shipment_file
 		self.file_name = metdata_shipment_file.filename
 		name_extension = self.file_name.split('.')
@@ -25,7 +24,7 @@ class MetadataShipmentFileContentExtractor:
 		self.validator = validator
 
 	def each(self):
-		file_detail = self.file_detail(name=self.filename, extension=self.extension, filename=self.file_name)
+		file_detail = self.file_detail(name=self.filename, extension=self.extension, filename=self.file_name, content={})
 		self.validator(file_detail).call()
 
 		metdata_shipments = pd.read_excel(self.metdata_shipment_file)
@@ -41,8 +40,8 @@ class MetadataShipmentFileContentExtractor:
 				self.current_child[child_node_key].append([*row.values[-3:]]) 
 
 			self.current[parent_node_key].append(self.current_child)
-
-		return self.file_content(detail=file_detail, content={ 'columns': self.columns, 'rows': self.current })
+			file_detail.content = { 'columns': self.columns, 'rows': self.current }
+		return file_detail
 
 	def	valid_new_parent_node(self, node, node_key):
 		try:

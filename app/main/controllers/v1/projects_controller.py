@@ -2,6 +2,7 @@ from flask_restplus import Namespace, Resource, fields
 from flask import request, session, jsonify
 from werkzeug.exceptions import BadRequest
 from requests.exceptions import HTTPError
+from dataclasses import asdict
 
 from app.main.dao.project_dao import ProjectDAO
 from app.main.dao.projects_dao import ProjectsDAO
@@ -68,4 +69,4 @@ class Projects(Resource):
     @endpoint.expect(project_fields)
     def get(self):
         projects = ProjectsDAO.call(request.args, session['token_user']['email'])
-        return jsonify(projects._asdict())
+        return jsonify(asdict(projects))

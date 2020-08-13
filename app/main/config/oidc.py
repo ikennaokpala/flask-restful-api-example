@@ -2,7 +2,7 @@ import os
 import vcr
 
 from urllib.parse import urlencode
-from collections import namedtuple
+from dataclasses import make_dataclass
 from  openid_connect._oidc import OpenIDClient
 from  openid_connect._verify import verify
 
@@ -15,7 +15,7 @@ class OIDC:
     OIDCTokenAttributes = ['access_token', 'id_token', 'refresh_token', 'token_type', 'expires_in']
     UserAttributes = ['name', 'given_name', 'family_name', 'middle_name', 'nickname', 'email', 'locale']
     TokenizedUserAttributes = (UserAttributes + OIDCTokenAttributes + ['code', 'redirect_uri'])
-    TokenizedUser = namedtuple('TokenizedUser', TokenizedUserAttributes)
+    TokenizedUser = make_dataclass('TokenizedUser', TokenizedUserAttributes)
 
     issuer = os.getenv('OIDC_ISSUER', 'https://idp.mit.c3.ca')
     authorization_endpoint = os.getenv('OIDC_AUTHORIZATION_ENDPOINT', 'https://idp.mit.c3.ca/idp/profile/oidc/authorize')

@@ -18,9 +18,8 @@ class DataTypeMetadataShipmentDAO:
 
 		data_type = DataType.query.filter_by(slug=self.data_type_slug).first_or_404()
 
-		for file_content in self.file_content_extractor.call(self.metadata_shipment_files):
-			file_detail = file_content.detail
-			metadata_shipment = MetadataShipment(name=file_detail.name, extension=file_detail.extension, data_type_id=data_type.id, content=file_content.content)
+		for file_detail in self.file_content_extractor.call(self.metadata_shipment_files):
+			metadata_shipment = MetadataShipment(name=file_detail.name, extension=file_detail.extension, data_type_id=data_type.id, content=file_detail.content)
 
 			db.session.add(metadata_shipment)
 			db.session.commit()

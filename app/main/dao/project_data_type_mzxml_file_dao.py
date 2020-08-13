@@ -1,6 +1,6 @@
 import os
 
-from collections import namedtuple
+from dataclasses import make_dataclass, asdict
 from flask import current_app, abort
 from pathlib import Path
 
@@ -29,7 +29,7 @@ class ProjectDataTypeMZXmlDAO:
 			db.session.add(project_data_type_mzxml.model)
 			db.session.commit()
 
-			location = location._asdict()
+			location = asdict(location)
 			location.update({ 'id': project_data_type_mzxml.model.id })
 
 			self.locations.append(location)
