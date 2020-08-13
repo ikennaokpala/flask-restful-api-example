@@ -5,6 +5,7 @@ from flask import current_app, abort
 from pathlib import Path
 
 from app.main import db
+from app.main.models.mzxml import MZXml
 from app.main.models.data_type import DataType
 from app.main.lib.project_data_type_mzxml_files_builder import ProjectDataTypeMZXmlsBuilder
 
@@ -20,18 +21,23 @@ class ProjectDataTypeMZXmlDAO:
 
 		data_type = DataType.query.filter_by(slug=self.slug).first_or_404()
 
-		for project_data_type_mzxml in self.builder(data_type, self.mzxml_files):
-			location = project_data_type_mzxml.location
+		for info in self.builder(data_type, self.mzxml_files):
+			Path(info.destination).mkdir(parents=True, exist_ok=True)
+			info.mzxml_file.save(info.path)
+			model = MZXml.compose(info, data_type.id)
 
-			Path(project_data_type_mzxml.destination).mkdir(parents=True, exist_ok=True)
-			project_data_type_mzxml.mzxml_file.save(location.path)
-
-			db.session.add(project_data_type_mzxml.model)
+			db.session.add(model)
 			db.session.commit()
 
-			location = asdict(location)
-			location.update({ 'id': project_data_type_mzxml.model.id })
-
-			self.locations.append(location)
+			self.locations.append(
+				{ 'id': model.id, 
+					'name': info.name, 
+					'extension': info.extension, 
+					'path': info.path, 
+					'checksum': info.checksum,
+					'project_slug': data_type.project.slug, 
+					'data_type_slug':data_type.slug
+					}
+			)
 
 		return self.locations

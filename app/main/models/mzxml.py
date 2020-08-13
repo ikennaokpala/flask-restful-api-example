@@ -18,3 +18,7 @@ class MZXml(DataFormat):
 	__mapper_args__ = {
 		'polymorphic_identity': 'MZXml'
 	}
+
+	@classmethod
+	def compose(klazz, info, data_type_id):
+		return klazz(name=info.name, extension=info.extension, location=info.path, checksum=info.checksum, data_type_id=data_type_id)
