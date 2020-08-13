@@ -20,8 +20,7 @@ class DataTypeMetadataShipmentDAO:
 
 		for file_content in self.file_content_extractor.call(self.metadata_shipment_files):
 			file_detail = file_content.detail
-			metadata_shipment = MetadataShipment(
-				file_name=file_detail.name, extension=file_detail.extension, data_type_id=data_type.id, content=file_content.content)
+			metadata_shipment = MetadataShipment(name=file_detail.name, extension=file_detail.extension, data_type_id=data_type.id, content=file_content.content)
 
 			db.session.add(metadata_shipment)
 			db.session.commit()

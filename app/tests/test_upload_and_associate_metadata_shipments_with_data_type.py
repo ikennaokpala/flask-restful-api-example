@@ -52,15 +52,15 @@ class TestUploadAndAssociateWithMZXmlFile(BaseTestCase):
             response = rdbclient.put(self.test_request_path, headers=self.headers, data=params, content_type='multipart/form-data')
 
             self.assertEqual(response.status_code, 201)
-            self.assertTrue(response.content_type == 'application/json')
+            self.assertEqual(response.content_type, 'application/json')
 
             outcomes = json.loads(response.data.decode())
             for index in range(len(outcomes)):
                 outcome = outcomes[index]
 
-                self.assertTrue(outcome['data_type_id'] == self.data_type.id)
-                self.assertTrue(outcome['extension'] == self.metadata_shipment_ext)
-                self.assertTrue(outcome['file_name'] == self.metadata_shipment_name)
+                self.assertEqual(outcome['data_type_id'], self.data_type.id)
+                self.assertEqual(outcome['extension'], self.metadata_shipment_ext)
+                self.assertEqual(outcome['name'], self.metadata_shipment_name)
                 self.assertDictEqual(outcome['content'], self.metadata_shipment_content)
 
     @freeze_time('2020-06-02 08:57:53')
@@ -69,12 +69,12 @@ class TestUploadAndAssociateWithMZXmlFile(BaseTestCase):
             response = rdbclient.put(self.test_request_path, headers=self.headers, data=self.params, content_type='multipart/form-data')
 
             self.assertEqual(response.status_code, 201)
-            self.assertTrue(response.content_type == 'application/json')
+            self.assertEqual(response.content_type, 'application/json')
 
             outcome = json.loads(response.data.decode())[0]
-            self.assertTrue(outcome['data_type_id'] == self.data_type.id)
-            self.assertTrue(outcome['extension'] == self.metadata_shipment_ext)
-            self.assertTrue(outcome['file_name'] == self.metadata_shipment_name)
+            self.assertEqual(outcome['data_type_id'], self.data_type.id)
+            self.assertEqual(outcome['extension'], self.metadata_shipment_ext)
+            self.assertEqual(outcome['name'], self.metadata_shipment_name)
             self.assertDictEqual(outcome['content'], self.metadata_shipment_content)
 
     @freeze_time('2020-06-02 08:57:53')
