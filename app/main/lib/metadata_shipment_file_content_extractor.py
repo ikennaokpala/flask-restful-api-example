@@ -42,7 +42,7 @@ class MetadataShipmentFileContentExtractor:
 
 			self.current[parent_node_key].append(self.current_child)
 
-		return self.file_content(detail=file_detail, content=self.current)
+		return self.file_content(detail=file_detail, content={ 'columns': self.columns, 'rows': self.current })
 
 	def	valid_new_parent_node(self, node, node_key):
 		try:
