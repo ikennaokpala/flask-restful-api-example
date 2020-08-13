@@ -9,7 +9,7 @@ from app.main.models.mzxml import MZXml
 from app.main.models.data_type import DataType
 from app.main.lib.mzxml_files_info_builder import MZXmlFilesInfoBuilder
 
-class ProjectDataTypeMZXmlDAO:
+class DataTypeMZXmlFilesDAO:
 	def __init__(self, slug, mzxml_files, builder=MZXmlFilesInfoBuilder):
 		self.slug = slug
 		self.locations = []

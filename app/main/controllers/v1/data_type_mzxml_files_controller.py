@@ -3,7 +3,7 @@ from flask import request, abort
 from werkzeug.exceptions import NotFound
 from werkzeug.exceptions import BadRequest
 
-from app.main.dao.project_data_type_mzxml_file_dao import ProjectDataTypeMZXmlDAO
+from app.main.dao.data_type_mzxml_files_dao import DataTypeMZXmlFilesDAO
 
 endpoint = Namespace('project-data-type-mzxml-files-endpoint', description='mzXML files belonging to a project via data type group api endpoints')
 
@@ -31,7 +31,7 @@ class MZXmlProject(Resource):
     @endpoint.expect(model=data_type_MZXml_field)
     def put(self, slug, data_type_slug):
         try:
-            return ProjectDataTypeMZXmlDAO(data_type_slug, request.files).upload(), 201
+            return DataTypeMZXmlFilesDAO(data_type_slug, request.files).upload(), 201
         except (NameError, IndexError):
             abort(400)
         except (NotFound):
