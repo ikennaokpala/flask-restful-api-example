@@ -7,10 +7,10 @@ from pathlib import Path
 from app.main import db
 from app.main.models.mzxml import MZXml
 from app.main.models.data_type import DataType
-from app.main.lib.project_data_type_mzxml_files_builder import ProjectDataTypeMZXmlsBuilder
+from app.main.lib.mzxml_files_info_builder import MZXmlFilesInfoBuilder
 
 class ProjectDataTypeMZXmlDAO:
-	def __init__(self, slug, mzxml_files, builder=ProjectDataTypeMZXmlsBuilder):
+	def __init__(self, slug, mzxml_files, builder=MZXmlFilesInfoBuilder):
 		self.slug = slug
 		self.locations = []
 		self.builder = builder

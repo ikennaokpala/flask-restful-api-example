@@ -7,7 +7,7 @@ from contextlib import contextmanager
 
 from app.main.validators.mzxml_file_validator import MZXmlValidator
 
-class ProjectDataTypeMZXmlsBuilder:
+class MZXmlFilesInfoBuilder:
 	def __init__(self, data_type, mzxml_files, validator=MZXmlValidator):
 		self.mzxml_info = None
 		self.data_type = data_type
