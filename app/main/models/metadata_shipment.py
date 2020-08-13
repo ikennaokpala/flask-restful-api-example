@@ -24,4 +24,4 @@ class MetadataShipment(db.Model):
 	data_type = db.relationship('DataType', back_populates='metadata_shipments')
 	content = db.Column(pg.JSON, nullable=False)
 	created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
-	updated_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
+	updated_at = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now, index=True)

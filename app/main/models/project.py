@@ -26,7 +26,7 @@ class Project(db.Model):
     collaborators = db.Column(pg.ARRAY(db.String))
     data_types = db.relationship('DataType', cascade='all,delete', backref='projects', lazy='joined')
     created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now, index=True)
 
     def __init__(self, *args, **kwargs):
         super(Project, self).__init__(*args, **kwargs)

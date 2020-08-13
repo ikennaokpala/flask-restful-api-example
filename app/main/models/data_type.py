@@ -26,7 +26,7 @@ class DataType(db.Model):
 	mzxml_files = db.relationship('MZXmlFile', cascade='all,delete', backref='data_types', lazy='joined')
 	metadata_shipments = db.relationship('MetadataShipment', cascade='all,delete', backref='data_types', lazy='joined')
 	created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
-	updated_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
+	updated_at = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now, index=True)
 
 	def __init__(self, *args, **kwargs):
 		super(DataType, self).__init__(*args, **kwargs)

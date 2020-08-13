@@ -22,4 +22,4 @@ class MZXmlFile(db.Model):
     data_type_id = db.Column(db.Integer, db.ForeignKey('data_types.id'), index=True, nullable=False)
     data_type = db.relationship('DataType', back_populates='mzxml_files')
     created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now, index=True)
