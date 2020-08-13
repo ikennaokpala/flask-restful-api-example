@@ -14,7 +14,8 @@ class MetadataShipment(DataFormat):
 	content: dict
 
 	content = db.Column(pg.JSON, nullable=False, default={})
+	data_type = db.relationship('DataType', back_populates='metadata_shipments')
 
 	__mapper_args__ = {
-		'polymorphic_identity': 'metadata_shipment'
+		'polymorphic_identity': 'MetadataShipment'
 	}

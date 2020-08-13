@@ -1,6 +1,7 @@
 import json
 import factory
 import unittest
+import dataclasses
 
 from freezegun import freeze_time
 from unittest.mock import patch
@@ -10,6 +11,7 @@ from app.main.models.data_type import DataType
 from app.tests.base_test_case import BaseTestCase
 from app.tests.support.factories import SessionFactory
 from app.tests.support.factories import ProjectFactory
+from app.tests.support.factories import DataTypeWithProjectFactory
 
 
 class TestDataTypeBase(BaseTestCase):
@@ -86,7 +88,6 @@ class TestCreateDataType(TestDataTypeBase):
 class TestDataTypes(TestDataTypeBase):
 	def setUp(self):
 		super(TestDataTypes, self).setUp()
-
 	@freeze_time('2020-06-02 08:57:53')
 	@patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
 	def test_fetch_all_data_types_without_page_and_per_page_and_direction(self):
@@ -189,17 +190,18 @@ class TestFetchADataType(TestDataTypeBase):
 
 	@freeze_time('2020-06-02 08:57:53')
 	def test_fetch_a_data_type(self):
+		data_type = DataTypeWithProjectFactory.create(mzxmls=1, metadata_shipments=1)
+		project = data_type.project
+		self.expected = dataclasses.asdict(data_type)
+
 		with self.client as rdbclient:
-			response = rdbclient.get(self.project_path + '/data_types/' + self.data_types[0].slug, headers=self.headers)
+			response = rdbclient.get(self.project_path + '/data_types/' + data_type.slug, headers=self.headers)
 
 			self.assertEqual(response.status_code, 200)
-			self.assertTrue(response.content_type == 'application/json')
+			self.assertEqual(response.content_type, 'application/json')
 
 			outcome = json.loads(response.data.decode())
-			self.expected.update(self.params)
-			self.expected.update({'name': self.data_types[0].name, 'slug': self.data_types[0].slug, 'project_id': self.project.id, 'mzxml_files': [], 'metadata_shipments': [] })
-			outcome.pop('id')
-			self.assertTrue(outcome == self.expected)
+			self.assertEqual(outcome, self.expected)
 
 class TestUpdateADataType(TestDataTypeBase):
 	def setUp(self):

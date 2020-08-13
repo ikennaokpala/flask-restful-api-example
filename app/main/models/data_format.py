@@ -1,6 +1,8 @@
 import datetime
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from sqlalchemy import orm, types
+
 from app.main import db
 
 @dataclass
@@ -11,7 +13,7 @@ class DataFormat(db.Model):
 	name: str
 	extension: str
 	type: str
-	data_type_id: int
+	data_type_slug: str = field(init=False)
 
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.TEXT, index=True, nullable=False)
@@ -22,9 +24,13 @@ class DataFormat(db.Model):
 	created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
 	updated_at = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now, index=True)
 
+	@property
+	def data_type_slug(self) -> str:
+		return self.data_type.slug
+
 	__mapper_args__ = {
 		'polymorphic_on': type,
-		'polymorphic_identity': 'data_format'
+		'polymorphic_identity': 'DataFormat'
 	}
 
 

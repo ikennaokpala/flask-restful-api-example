@@ -15,11 +15,11 @@ from app.main.models.project import Project
 from app.tests.support.factories import SessionFactory
 from app.tests.support.factories import DataTypeWithProjectFactory
 
-class TestUploadAndAssociateWithMZXmlFile(BaseTestCase):
+class TestUploadAndAssociateWithMZXml(BaseTestCase):
     def setUp(self):
-        super(TestUploadAndAssociateWithMZXmlFile, self).setUp()
+        super(TestUploadAndAssociateWithMZXml, self).setUp()
         self.current_session = SessionFactory.create()
-        self.data_type = DataTypeWithProjectFactory.create(data_types=1)
+        self.data_type = DataTypeWithProjectFactory.create()
         self.project = self.data_type.project
         self.test_request_path = '/v1/projects/' + self.project.slug + '/data_types/' + str(self.data_type.slug) + '/metadata_shipments'
         self.email = self.current_session.tokenized_user['email']
@@ -43,10 +43,10 @@ class TestUploadAndAssociateWithMZXmlFile(BaseTestCase):
         self.destination = ''
 
     def tearDown(self):
-        super(TestUploadAndAssociateWithMZXmlFile, self).tearDown()
+        super(TestUploadAndAssociateWithMZXml, self).tearDown()
 
     @freeze_time('2020-06-02 08:57:53')
-    def test_when_user_access_token_with_data_type_id_and_multiple_metadata_shipment_are_valid(self):
+    def test_when_user_access_token_with_data_type_slug_and_multiple_metadata_shipment_are_valid(self):
         params = {'metadata_shipment_0': self.metadata_shipment_stores[0], 'metadata_shipment_1': self.metadata_shipment_stores[1]}
         with self.client as rdbclient:
             response = rdbclient.put(self.test_request_path, headers=self.headers, data=params, content_type='multipart/form-data')
@@ -58,13 +58,13 @@ class TestUploadAndAssociateWithMZXmlFile(BaseTestCase):
             for index in range(len(outcomes)):
                 outcome = outcomes[index]
 
-                self.assertEqual(outcome['data_type_id'], self.data_type.id)
+                self.assertEqual(outcome['data_type_slug'], self.data_type.slug)
                 self.assertEqual(outcome['extension'], self.metadata_shipment_ext)
                 self.assertEqual(outcome['name'], self.metadata_shipment_name)
                 self.assertDictEqual(outcome['content'], self.metadata_shipment_content)
 
     @freeze_time('2020-06-02 08:57:53')
-    def test_when_user_access_token_with_data_type_id_and_metadata_shipment_are_valid(self):
+    def test_when_user_access_token_with_data_type_slug_and_metadata_shipment_are_valid(self):
         with self.client as rdbclient:
             response = rdbclient.put(self.test_request_path, headers=self.headers, data=self.params, content_type='multipart/form-data')
 
@@ -72,7 +72,7 @@ class TestUploadAndAssociateWithMZXmlFile(BaseTestCase):
             self.assertEqual(response.content_type, 'application/json')
 
             outcome = json.loads(response.data.decode())[0]
-            self.assertEqual(outcome['data_type_id'], self.data_type.id)
+            self.assertEqual(outcome['data_type_slug'], self.data_type.slug)
             self.assertEqual(outcome['extension'], self.metadata_shipment_ext)
             self.assertEqual(outcome['name'], self.metadata_shipment_name)
             self.assertDictEqual(outcome['content'], self.metadata_shipment_content)
