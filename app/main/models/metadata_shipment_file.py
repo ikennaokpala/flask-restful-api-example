@@ -8,7 +8,7 @@ from sqlalchemy.dialects import postgresql as pg
 
 
 @dataclass
-class MetadataShipment(DataFormatFile):
+class MetadataShipmentFile(DataFormatFile):
 	MNEMONIC = 'metadata_shipments'
 	EXCEL_FILE_COLUMNS = ['DATE shipped', 'MATRIX_BOX', 'MATRIX_LOCN', 'ORGM', 'ISOLATE_NBR']
 

@@ -5,7 +5,7 @@ from flask import current_app, abort
 from pathlib import Path
 
 from app.main import db
-from app.main.models.mzxml import MZXml
+from app.main.models.mzxml_file import MZXmlFile
 from app.main.models.data_type import DataType
 from app.main.lib.mzxml_files_info_builder import MZXmlFilesInfoBuilder
 
@@ -24,7 +24,7 @@ class DataTypeMZXmlFilesDAO:
 		for info in self.builder(data_type, self.mzxml_files):
 			Path(info.destination).mkdir(parents=True, exist_ok=True)
 			info.mzxml_file.save(info.path)
-			model = MZXml.compose(info, data_type.id)
+			model = MZXmlFile.compose(info, data_type.id)
 
 			db.session.add(model)
 			db.session.commit()
@@ -37,7 +37,7 @@ class DataTypeMZXmlFilesDAO:
 					'checksum': info.checksum,
 					'project_slug': data_type.project.slug, 
 					'data_type_slug':data_type.slug
-					}
+				}
 			)
 
 		return self.locations

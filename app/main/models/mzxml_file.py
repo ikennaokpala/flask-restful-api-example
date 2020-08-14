@@ -6,7 +6,7 @@ from app.main.models.data_format_file import DataFormatFile
 from app.main import db
 
 @dataclass
-class MZXml(DataFormatFile):
+class MZXmlFile(DataFormatFile):
 	MNEMONIC = 'mzxmls'
 
 	location: str

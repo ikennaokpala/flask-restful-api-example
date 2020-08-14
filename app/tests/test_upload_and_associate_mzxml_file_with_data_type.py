@@ -70,7 +70,7 @@ class TestUploadAndAssociateWithDataType(BaseTestCase):
 				self.assertTrue(os.path.exists(mzxml_file_destination))
 
 				data_type = DataType.query.filter_by(slug=outcome['data_type_slug']).first()
-				mzxmls = data_type.mzxmls
+				mzxmls = data_type.mzxml_files
 				mzxmls.sort(key=lambda mzxml_file: mzxml_file.name, reverse=True)
 				outcome = mzxmls[index]
 
@@ -102,7 +102,7 @@ class TestUploadAndAssociateWithDataType(BaseTestCase):
 			self.assertTrue(os.path.exists(mzxml_file_destination))
 
 			data_type = DataType.query.filter_by(slug=outcome['data_type_slug']).first()
-			outcome = data_type.mzxmls[0]
+			outcome = data_type.mzxml_files[0]
 
 			self.assertTrue(outcome.location == mzxml_file_destination)
 			self.assertTrue(outcome.extension == self.mzxml_file_ext)

@@ -2,7 +2,7 @@ import pandas as pd
 
 from dataclasses import make_dataclass
 
-from app.main.models.metadata_shipment import MetadataShipment
+from app.main.models.metadata_shipment_file import MetadataShipmentFile
 from app.main.validators.metadata_shipment_validator import MetadataShipmentValidator
 
 class MetadataShipmentFileContentExtractor:
@@ -18,7 +18,7 @@ class MetadataShipmentFileContentExtractor:
 		name_extension = self.file_name.split('.')
 		self.extension = name_extension[1]
 		self.filename = name_extension[0]
-		self.columns = MetadataShipment.EXCEL_FILE_COLUMNS
+		self.columns = MetadataShipmentFile.EXCEL_FILE_COLUMNS
 		self.current = {}
 		self.current_child = {}
 		self.validator = validator
