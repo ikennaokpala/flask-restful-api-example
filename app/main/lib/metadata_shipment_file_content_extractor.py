@@ -7,11 +7,11 @@ from app.main.validators.metadata_shipment_validator import MetadataShipmentVali
 
 class MetadataShipmentFileContentExtractor:
 	@classmethod
-	def call(klazz, metdata_shipment_files):
+	def call(klazz, metdata_shipment_files, data_type):
 		for metdata_shipment_file in metdata_shipment_files:
-			yield klazz(metdata_shipment_file).each()
+			yield klazz(metdata_shipment_file, data_type).each()
 
-	def __init__(self, metdata_shipment_file, validator=MetadataShipmentValidator):
+	def __init__(self, metdata_shipment_file, data_type, validator=MetadataShipmentValidator):
 		self.file_detail = make_dataclass('FileDetail', ['name', 'extension', 'filename', 'content'])
 		self.metdata_shipment_file = metdata_shipment_file
 		self.file_name = metdata_shipment_file.filename
@@ -22,10 +22,11 @@ class MetadataShipmentFileContentExtractor:
 		self.current = {}
 		self.current_child = {}
 		self.validator = validator
+		self.data_type = data_type
 
 	def each(self):
 		file_detail = self.file_detail(name=self.filename, extension=self.extension, filename=self.file_name, content={})
-		self.validator(file_detail).call()
+		self.validator(file_detail, self.data_type.data_formats).call()
 
 		metdata_shipments = pd.read_excel(self.metdata_shipment_file)
 		groups = metdata_shipments.groupby(self.columns[0])

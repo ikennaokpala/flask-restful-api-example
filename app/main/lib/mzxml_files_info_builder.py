@@ -51,4 +51,4 @@ class MZXmlFilesInfoBuilder:
 			destination=self.destination
 		)
 
-		self.validator(self.mzxml_info).call()
+		self.validator(self.mzxml_info, self.data_type.data_formats).call()

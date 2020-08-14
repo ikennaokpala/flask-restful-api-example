@@ -33,6 +33,7 @@ class DataTypeFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 	name = 'Metabolomics DataType Factory'
 	description = 'A particular kind of data item, as defined by the file formats (mzXML, xlsx) and values it can take in.'
+	data_formats = ['mzXML', 'xlsx', 'csv']
 
 class ProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
 	class Meta:

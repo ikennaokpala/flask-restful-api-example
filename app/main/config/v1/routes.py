@@ -9,6 +9,7 @@ from app.main.models.session import Session
 from app.main.controllers.v1.auth_controller import endpoint as auth_endpoint
 from app.main.controllers.v1.projects_controller import endpoint as projects_endpoint
 from app.main.controllers.v1.data_types_controller import endpoint as data_types_endpoint
+from app.main.controllers.v1.data_formats_controller import endpoint as data_formats_endpoint
 from app.main.controllers.v1.data_type_mzxml_files_controller import endpoint as data_type_mzxml_files_endpoint
 from app.main.controllers.v1.data_type_metadata_shipments_controller import endpoint as data_types_metadata_endpoint
 
@@ -16,6 +17,7 @@ class RouterV1:
 	def draw(klazz, api, prefix=''):
 		api.add_namespace(auth_endpoint, path=prefix + '/auth')
 		api.add_namespace(projects_endpoint, path=prefix + '/projects')
+		api.add_namespace(data_formats_endpoint, path=prefix + '/data_formats')
 		api.add_namespace(data_types_endpoint, path=prefix + '/projects/<slug>/data_types')
 		api.add_namespace(data_type_mzxml_files_endpoint, path=prefix + '/projects/<slug>/data_types/<data_type_slug>')
 		api.add_namespace(data_types_metadata_endpoint, path=prefix + '/projects/<slug>/data_types/<data_type_slug>')

@@ -5,8 +5,7 @@ class Environment:
     SECRET_KEY = os.getenv('SECRET_KEY', 'lsarp_secret_key')
     MZXML_FILES_KEY_PREFIX = os.getenv('MZXML_FILES_KEY_PREFIX', 'mzxml_file_')
     MZXML_FILES_UPLOAD_FOLDER = os.getenv('MZXML_FILES_UPLOAD_FOLDER', '/tmp/')
-    ALLOWED_MZXML_FILE_EXTENSIONS = os.getenv('ALLOWED_MZXML_FILE_EXTENSIONS', 'mzXML').split(',')
-    ALLOWED_METADATA_SHIPMENTS_EXTENSIONS = os.getenv('ALLOWED_METADATA_SHIPMENTS_EXTENSIONS', 'xlsx').split(',')
+    DATA_FORMAT_FILE_EXTENSIONS = os.getenv('DATA_FORMAT_FILE_EXTENSIONS', 'mzXML,mzML,mzData,xlsx,csv,raw,BAF,DAT,FID,YEP,WIFF,XMS').split(',')
     PAGINATION_MAX_PER_PAGE = int(os.getenv('PAGINATION_MAX_PER_PAGE', 100))
     DEBUG = False
     TEST = False

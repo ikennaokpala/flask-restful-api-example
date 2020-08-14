@@ -33,7 +33,7 @@ class DataTypes(Resource):
 	def post(self, slug):
 		try:
 			dao = DataTypeDAO(request.json, slug).create()
-			return {'slug': dao.data_type.slug}, 201
+			return {'slug': dao.data_type.slug, 'name': dao.data_type.name, 'description': dao.data_type.description, 'data_formats': dao.data_type.data_formats }, 201
 		except (KeyError):
 			raise BadRequest
 

@@ -4,20 +4,22 @@ import shutil
 import unittest
 import json
 import factory
-from freezegun import freeze_time
 
-from werkzeug.datastructures import FileStorage
+from unittest.mock import patch
 
+from app.main import db
 from flask import current_app
+from freezegun import freeze_time
+from werkzeug.datastructures import FileStorage
 
 from app.tests.base_test_case import BaseTestCase
 from app.main.models.data_type import DataType
 from app.tests.support.factories import SessionFactory
 from app.tests.support.factories import ProjectFactory
 
-class TestUploadAndAssociateWithDataType(BaseTestCase):
+class TestUploadMZXMLFileAndAssociateWithDataType(BaseTestCase):
 	def setUp(self):
-		super(TestUploadAndAssociateWithDataType, self).setUp()
+		super(TestUploadMZXMLFileAndAssociateWithDataType, self).setUp()
 		self.current_session = SessionFactory.create()
 		self.project = ProjectFactory.create(data_types=1)
 		self.data_type = self.project.data_types[0]
@@ -42,7 +44,7 @@ class TestUploadAndAssociateWithDataType(BaseTestCase):
 		self.destination = os.path.join(current_app.config['MZXML_FILES_UPLOAD_FOLDER'], 'projects', self.project.slug, 'data_types', self.data_type.slug)
 
 	def tearDown(self):
-		super(TestUploadAndAssociateWithDataType, self).tearDown()
+		super(TestUploadMZXMLFileAndAssociateWithDataType, self).tearDown()
 		shutil.rmtree(os.path.join(current_app.config['MZXML_FILES_UPLOAD_FOLDER'], 'projects'), ignore_errors=True)
 
 	@freeze_time('2020-06-02 08:57:53')
@@ -141,12 +143,13 @@ class TestUploadAndAssociateWithDataType(BaseTestCase):
 			self.assertFalse(os.path.exists(self.destination))
 
 	@freeze_time('2020-06-02 08:57:53')
-	def test_when_user_access_token_is_valid_and_mzxml_file_extension_is_not_mzXML(self):
+	def test_when_user_access_token_is_valid_and_mzxml_file_extension_is_not_an_allowed_data_format(self):
 		mzxml_file_store =  FileStorage(
 				stream=open(self.mzxml_file_path, 'rb'),
 				filename='sample.not_mzXML',
 				content_type='text/xml',
 			)
+
 		with self.client as rdbclient:
 			response = rdbclient.put(self.request_path, headers=self.headers, data={ 'mzxml_file_0': mzxml_file_store }, content_type='multipart/form-data')
 
@@ -156,6 +159,61 @@ class TestUploadAndAssociateWithDataType(BaseTestCase):
 			outcome = json.loads(response.data.decode())
 			self.assertTrue(outcome['message'] == 'The request was well-formed but was unable to be followed due to semantic errors.')
 			self.assertFalse(os.path.exists(self.destination))
+
+	@freeze_time('2020-06-02 08:57:53')
+	@patch.dict(current_app.config, {'DATA_FORMAT_FILE_EXTENSIONS': ['some_other_valid_data_format']})
+	def test_when_user_access_token_is_valid_and_mzxml_file_extension_is_configured_in_data_type_data_formats(self):
+		mzxml_file_store =  FileStorage(
+				stream=open(self.mzxml_file_path, 'rb'),
+				filename='sample.not_mzXML',
+				content_type='text/xml',
+			)
+
+		self.data_type.data_formats = ['some_other_valid_data_format']
+
+		db.session.flush()
+		db.session.commit()
+
+		with self.client as rdbclient:
+			response = rdbclient.put(self.request_path, headers=self.headers, data={ 'mzxml_file_0': mzxml_file_store }, content_type='multipart/form-data')
+
+			self.assertEqual(response.status_code, 422)
+			self.assertTrue(response.content_type == 'application/json')
+
+			outcome = json.loads(response.data.decode())
+			self.assertTrue(outcome['message'] == 'The request was well-formed but was unable to be followed due to semantic errors.')
+			self.assertFalse(os.path.exists(self.destination))
+
+	@freeze_time('2020-06-02 08:57:53')
+	def test_when_user_access_token_is_valid_and_mzxml_file_extension_is_configured_in_data_type_data_formats(self):
+		mzxml_file_store =  FileStorage(
+				stream=open(self.mzxml_file_path, 'rb'),
+				filename='sample.some_other_valid_data_format',
+				content_type='text/xml',
+			)
+
+		self.data_type.data_formats = ['some_other_valid_data_format']
+
+		db.session.flush()
+		db.session.commit()
+
+		with self.client as rdbclient:
+			response = rdbclient.put(self.request_path, headers=self.headers, data={ 'mzxml_file_0': mzxml_file_store }, content_type='multipart/form-data')
+
+			self.assertEqual(response.status_code, 201)
+			self.assertEqual(response.content_type, 'application/json')
+
+			outcome = json.loads(response.data.decode())[0]
+			mzxml_file_destination = self.destination + '/' + outcome['checksum'] + '_' + mzxml_file_store.filename
+
+			self.assertEqual(outcome['data_type_slug'], self.data_type.slug)
+			self.assertEqual(outcome['extension'], 'some_other_valid_data_format')
+			self.assertEqual(outcome['name'], 'sample')
+			self.assertEqual(outcome['path'], mzxml_file_destination)
+			self.assertTrue(re.match(r'^[a-f0-9]{32}$', outcome['checksum']))
+			self.assertEqual(outcome['project_slug'], self.project.slug)
+			self.assertEqual(outcome['data_type_slug'], self.data_type.slug)
+			self.assertTrue(os.path.exists(mzxml_file_destination))
 
 	@freeze_time('2020-06-02 08:57:53')
 	def test_when_user_access_token_is_valid_and_none_existing_data_type_slug(self):
