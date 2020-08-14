@@ -22,7 +22,7 @@ data_type_MZXml_field = endpoint.model('Resource', {
 @endpoint.param('slug', 'The project slug identifier')
 @endpoint.param('data_type_slug', 'The data type slug identifier')
 @endpoint.doc(params={'mzxml_file_<index>': 'mzxml file object', 'slug': 'The project slug identifier', 'data_type_slug': 'The data type slug identifier'})
-class MZXmlProject(Resource):
+class MZXmlDataType(Resource):
     @endpoint.doc(description='Associate mzXML file(s) with a project via data type group', responses={
         400: 'Bad request',
         404: 'Not Found',
