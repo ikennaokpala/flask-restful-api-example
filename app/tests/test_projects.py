@@ -1,6 +1,7 @@
 import json
 import factory
 import unittest
+import dataclasses
 
 from freezegun import freeze_time
 from unittest.mock import patch
@@ -10,6 +11,7 @@ from app.tests.base_test_case import BaseTestCase
 from app.main.models.project import Project
 from app.tests.support.factories import SessionFactory
 from app.tests.support.factories import ProjectFactory
+from app.tests.support.factories import DataTypeWithProjectFactory
 
 
 class TestProjectBase(BaseTestCase):
@@ -319,19 +321,18 @@ class TestFetchAProject(TestProjectBase):
 
 	@freeze_time('2020-06-02 08:57:53')
 	def test_fetch_a_project(self):
-		self.another_project = ProjectFactory.create(owner='another@anotherexample.com')
+		data_type = DataTypeWithProjectFactory.create()
+		project = data_type.project
+		self.expected = dataclasses.asdict(project)
 
 		with self.client as rdbclient:
-			response = rdbclient.get('/v1/projects/metabolomics-project-1', headers=self.headers)
+			response = rdbclient.get('/v1/projects/' + project.slug, headers=self.headers)
 
 			self.assertEqual(response.status_code, 200)
-			self.assertTrue(response.content_type == 'application/json')
+			self.assertEqual(response.content_type, 'application/json')
 
 			outcome = json.loads(response.data.decode())
-			self.expected.update(self.params)
-			self.expected.update({ 'owner':'another@anotherexample.com', 'data_types': [] })
-			outcome.pop('id')
-			self.assertTrue(outcome == self.expected)
+			self.assertEqual(outcome, self.expected)
 
 class TestUpdateAProject(TestProjectBase):
 	def setUp(self):

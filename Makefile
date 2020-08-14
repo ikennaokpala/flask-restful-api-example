@@ -67,14 +67,6 @@ python-packages:
 
 install: system-packages python-packages
 
-createdb:
-	source ./env-packages/bin/activate; \
-	python manage.py createdb $(call args, development)
-
-dropdb:
-	source ./env-packages/bin/activate; \
-	python manage.py dropdb $(call args, development)
-
 tests:
 	source ./env-packages/bin/activate; \
 	python manage.py tests
@@ -90,5 +82,13 @@ run:
 db_init:
 	source ./env-packages/bin/activate; \
 	python manage.py db init
+
+db_create:
+	source ./env-packages/bin/activate; \
+	python manage.py createdb $(call args, development)
+
+db_drop:
+	source ./env-packages/bin/activate; \
+	python manage.py dropdb $(call args, development)
 
 all: clean install tests run

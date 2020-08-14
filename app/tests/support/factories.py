@@ -1,13 +1,15 @@
 import factory
 
+from flask import current_app
+
 from app.main import db
 from app.main.models.session import Session
 from app.main.models.project import Project
 from app.main.models.data_type import DataType
 from app.main.models.mzxml_file import MZXmlFile
-from app.main.models.metadata_shipment import MetadataShipment
+from app.main.models.metadata_shipment_file import MetadataShipmentFile
 
-class MZXmlFileFactory(factory.alchemy.SQLAlchemyModelFactory):
+class MZXmlFactory(factory.alchemy.SQLAlchemyModelFactory):
 	class Meta:
 		model = MZXmlFile
 		sqlalchemy_session = db.session
@@ -19,12 +21,12 @@ class MZXmlFileFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 class MetadataShipmentFactory(factory.alchemy.SQLAlchemyModelFactory):
 	class Meta:
-		model = MetadataShipment
+		model = MetadataShipmentFile
 		sqlalchemy_session = db.session
 
-	file_name = 'sample'
+	name = 'sample'
 	extension = 'xlsx'
-	content = {'2019-05-07 00:00:00': [{'LSARP_SA009': [['A,1', 'SA', 'QC01'], ['D,6', 'MRSA', 'QC02'], ['A,2', 'SA', 'BI_16_3052'], ['A,3', 'SA', 'BI_16_3054'], ['A,4', 'SA', 'BI_16_3055'], ['A,5', 'SA', 'BI_16_3060']], 'LSARP_SA010': [['A,1', 'SA', 'QC01'], ['D,6', 'MRSA', 'QC02'], ['A,2', 'SA', 'BI_16_3490'], ['A,3', 'SA', 'BI_16_3499'], ['A,4', 'SA', 'BI_16_3503'], ['A,5', 'SA', 'BI_16_3520'], ['A,6', 'SA2', 'BI_16_3532'], ['A,7', 'SA', 'BI_16_3555'], ['A,8', 'SA', 'BI_16_3558'], ['A,9', 'MRSA', 'BI_17_0002'], ['A,10', 'SA', 'BI_17_0004'], ['B,1', 'SA', 'BI_17_0006']], 'LSARP_SA011': [['A,1', 'SA', 'SA_QC01'], ['D,6', 'MRSA', 'SA_QC02'], ['A,2', 'SA', 'BI_17_0470'], ['A,3', 'SA', 'BI_17_0482'], ['A,4', 'MRSA', 'BI_17_0487'], ['A,5', 'SA', 'BI_17_0499'], ['A,6', 'MRSA', 'BI_17_0508'], ['A,7', 'SA', 'BI_17_0511'], ['A,8', 'SA', 'BI_17_0512'], ['A,9', 'SA', 'BI_17_0513'], ['A,10', 'MRSA', 'BI_17_0516'], ['H,10', 'SA', 'BI_17_0918']], 'LSARP_SA012': [['A,1', 'SA', 'SA_QC01'], ['D,6', 'MRSA', 'SA_QC02'], ['A,2', 'SA', 'BI_17_0919'], ['A,3', 'SA', 'BI_17_0926'], ['A,4', 'SA', 'BI_17_0937'], ['A,5', 'SA', 'BI_17_0938'], ['A,6', 'MRSA', 'BI_17_0942'], ['A,7', 'MRSA', 'BI_17_0950'], ['A,8', 'SA', 'BI_17_0973'], ['A,9', 'SA', 'BI_17_0979'], ['A,10', 'SA', 'BI_17_0980'], ['B,1', 'SA', 'BI_17_0982']]}]}
+	content =  { 'columns': current_app.config.get('METADATA_SHIPMENTS_FILE_COLUMNS'), 'rows': {'2019-05-07 00:00:00': [{'LSARP_SA009': [['A,1', 'SA', 'QC01'], ['D,6', 'MRSA', 'QC02'], ['A,2', 'SA', 'BI_16_3052'], ['A,3', 'SA', 'BI_16_3054'], ['A,4', 'SA', 'BI_16_3055'], ['A,5', 'SA', 'BI_16_3060']], 'LSARP_SA010': [['A,1', 'SA', 'QC01'], ['D,6', 'MRSA', 'QC02'], ['A,2', 'SA', 'BI_16_3490'], ['A,3', 'SA', 'BI_16_3499'], ['A,4', 'SA', 'BI_16_3503'], ['A,5', 'SA', 'BI_16_3520'], ['A,6', 'SA2', 'BI_16_3532'], ['A,7', 'SA', 'BI_16_3555'], ['A,8', 'SA', 'BI_16_3558'], ['A,9', 'MRSA', 'BI_17_0002'], ['A,10', 'SA', 'BI_17_0004'], ['B,1', 'SA', 'BI_17_0006']], 'LSARP_SA011': [['A,1', 'SA', 'SA_QC01'], ['D,6', 'MRSA', 'SA_QC02'], ['A,2', 'SA', 'BI_17_0470'], ['A,3', 'SA', 'BI_17_0482'], ['A,4', 'MRSA', 'BI_17_0487'], ['A,5', 'SA', 'BI_17_0499'], ['A,6', 'MRSA', 'BI_17_0508'], ['A,7', 'SA', 'BI_17_0511'], ['A,8', 'SA', 'BI_17_0512'], ['A,9', 'SA', 'BI_17_0513'], ['A,10', 'MRSA', 'BI_17_0516'], ['H,10', 'SA', 'BI_17_0918']], 'LSARP_SA012': [['A,1', 'SA', 'SA_QC01'], ['D,6', 'MRSA', 'SA_QC02'], ['A,2', 'SA', 'BI_17_0919'], ['A,3', 'SA', 'BI_17_0926'], ['A,4', 'SA', 'BI_17_0937'], ['A,5', 'SA', 'BI_17_0938'], ['A,6', 'MRSA', 'BI_17_0942'], ['A,7', 'MRSA', 'BI_17_0950'], ['A,8', 'SA', 'BI_17_0973'], ['A,9', 'SA', 'BI_17_0979'], ['A,10', 'SA', 'BI_17_0980'], ['B,1', 'SA', 'BI_17_0982']]}]}}
 
 class DataTypeFactory(factory.alchemy.SQLAlchemyModelFactory):
 	class Meta:
@@ -33,6 +35,7 @@ class DataTypeFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 	name = 'Metabolomics DataType Factory'
 	description = 'A particular kind of data item, as defined by the file formats (mzXML, xlsx) and values it can take in.'
+	data_formats = ['mzXML', 'xlsx', 'csv']
 
 class ProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
 	class Meta:
@@ -45,17 +48,17 @@ class ProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
 	collaborators = ['collab@ucal.ca']
 
 	@factory.post_generation
-	def data_types(project, create, extracted, **kwargs):
+	def data_types(project, create, size, **kwargs):
 		if not create:
 			return
 
-		if extracted:
-			assert isinstance(extracted, int)
+		if size:
+			assert isinstance(size, int)
 
 			db.session.add(project)
 			db.session.commit()
 
-			DataTypeFactory.create_batch(size=extracted, project_id=project.id, **kwargs)
+			DataTypeFactory.create_batch(size=size, project_id=project.id, **kwargs)
 
 class DataTypeWithProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
 	class Meta:
@@ -70,17 +73,30 @@ class DataTypeWithProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
 		return ProjectFactory.create(data_types=1).data_types[0]
 
 	@factory.post_generation
-	def mzxml_files(data_type, create, extracted, **kwargs):
+	def mzxmls(data_type, create, size, **kwargs):
 		if not create:
 			return
 
-		if extracted:
-			assert isinstance(extracted, int)
+		if size:
+			assert isinstance(size, int)
 
 			db.session.add(data_type)
 			db.session.commit()
 
-			MZXmlFileFactory.create_batch(size=extracted, data_type_id=data_type.id, **kwargs)
+			MZXmlFactory.create_batch(size=size, data_type_id=data_type.id, **kwargs)
+
+	@factory.post_generation
+	def metadata_shipments(data_type, create, size, **kwargs):
+		if not create:
+			return
+
+		if size:
+			assert isinstance(size, int)
+
+			db.session.add(data_type)
+			db.session.commit()
+
+			MetadataShipmentFactory.create_batch(size=size, data_type_id=data_type.id, **kwargs)
 
 class SessionFactory(factory.alchemy.SQLAlchemyModelFactory):
 	class Meta:

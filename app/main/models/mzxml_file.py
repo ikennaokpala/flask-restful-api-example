@@ -1,25 +1,24 @@
 import datetime
 
 from dataclasses import dataclass
+
+from app.main.models.data_format_file import DataFormatFile
 from app.main import db
 
 @dataclass
-class MZXmlFile(db.Model):
-    __tablename__ = 'mzxml_files'
+class MZXmlFile(DataFormatFile):
+	MNEMONIC = 'mzxmls'
 
-    id: int
-    name: str
-    extension: str
-    location: str
-    checksum: str
-    data_type_id: int
+	location: str
+	checksum: str
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.TEXT, index=True, nullable=False)
-    extension = db.Column(db.String, index=True, nullable=False)
-    location = db.Column(db.TEXT, index=True, nullable=False)
-    checksum = db.Column(db.String, index=True, nullable=False)
-    data_type_id = db.Column(db.Integer, db.ForeignKey('data_types.id'), index=True, nullable=False)
-    data_type = db.relationship('DataType', back_populates='mzxml_files')
-    created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
+	location = db.Column(db.TEXT)
+	checksum = db.Column(db.String)
+
+	__mapper_args__ = {
+		'polymorphic_identity': 'MZXml'
+	}
+
+	@classmethod
+	def compose(klazz, info, data_type_id):
+		return klazz(name=info.name, extension=info.extension, location=info.path, checksum=info.checksum, data_type_id=data_type_id)

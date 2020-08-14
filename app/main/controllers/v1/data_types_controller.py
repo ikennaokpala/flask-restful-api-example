@@ -1,6 +1,7 @@
 from flask_restplus import Namespace, Resource, fields
 from flask import request, jsonify
 from werkzeug.exceptions import BadRequest
+from dataclasses import asdict
 
 from app.main.dao.data_type_dao import DataTypeDAO
 from app.main.dao.data_types_dao import DataTypesDAO
@@ -32,7 +33,7 @@ class DataTypes(Resource):
 	def post(self, slug):
 		try:
 			dao = DataTypeDAO(request.json, slug).create()
-			return {'slug': dao.data_type.slug}, 201
+			return {'slug': dao.data_type.slug, 'name': dao.data_type.name, 'description': dao.data_type.description, 'data_formats': dao.data_type.data_formats }, 201
 		except (KeyError):
 			raise BadRequest
 
@@ -41,7 +42,7 @@ class DataTypes(Resource):
 	@endpoint.expect(data_type_fields)
 	def get(self, slug):
 		data_types = DataTypesDAO.call(request.args, slug)
-		return jsonify(data_types._asdict())
+		return jsonify(asdict(data_types))
 
 @endpoint.route('/<data_type_slug>')
 @endpoint.param('slug', 'The project identifier')

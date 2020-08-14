@@ -1,7 +1,7 @@
 from flask import current_app
 
-from app.main.validators.base_file_validator import BaseFileValidator
+from app.main.validators.data_format_file_validator import DataFormatFileValidator
 
-class MZXmlFileValidator(BaseFileValidator):
-	def __init__(self, mzxml_file):
-		super().__init__(mzxml_file, current_app.config['ALLOWED_MZXML_FILE_EXTENSIONS'])
+class MZXmlValidator(DataFormatFileValidator):
+	def __init__(self, mzxml_file, allowed_data_formats = None):
+		super().__init__(mzxml_file, allowed_data_formats)

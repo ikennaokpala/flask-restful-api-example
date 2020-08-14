@@ -28,7 +28,7 @@ Database: PostgreSQL
     # Run this on another terminal tab
     $ docker exec -it api /bin/bash
 	$ source ./env-packages/bin/activate 
-        $ make createdb
+        $ make db_create
         $ python manage.py db upgrade head
         $ make tests
 

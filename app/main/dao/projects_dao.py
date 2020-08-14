@@ -1,4 +1,4 @@
-from collections import namedtuple
+from dataclasses import make_dataclass
 from sqlalchemy import or_, desc, asc
 from flask import current_app
 
@@ -12,7 +12,7 @@ class ProjectsDAO:
 
 	@staticmethod
 	def projects_decorator(callable):
-		projects_info = namedtuple('ProjectsInfo', ['page', 'per_page', 'total', 'projects'])
+		projects_info = make_dataclass('ProjectsInfo', ['page', 'per_page', 'total', 'projects'])
 
 		def wrapper(*args, **kwargs):
 			projects = callable(*args, **kwargs).__dict__

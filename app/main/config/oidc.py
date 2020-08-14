@@ -1,11 +1,5 @@
 import os
-import vcr
-
-from urllib.parse import urlencode
-from collections import namedtuple
-from  openid_connect._oidc import OpenIDClient
-from  openid_connect._verify import verify
-
+from dataclasses import make_dataclass
 
 class OIDC:
     ExemptedUserAttributes = [
@@ -15,7 +9,7 @@ class OIDC:
     OIDCTokenAttributes = ['access_token', 'id_token', 'refresh_token', 'token_type', 'expires_in']
     UserAttributes = ['name', 'given_name', 'family_name', 'middle_name', 'nickname', 'email', 'locale']
     TokenizedUserAttributes = (UserAttributes + OIDCTokenAttributes + ['code', 'redirect_uri'])
-    TokenizedUser = namedtuple('TokenizedUser', TokenizedUserAttributes)
+    TokenizedUser = make_dataclass('TokenizedUser', TokenizedUserAttributes)
 
     issuer = os.getenv('OIDC_ISSUER', 'https://idp.mit.c3.ca')
     authorization_endpoint = os.getenv('OIDC_AUTHORIZATION_ENDPOINT', 'https://idp.mit.c3.ca/idp/profile/oidc/authorize')
@@ -35,39 +29,7 @@ class OIDC:
     client_secret = os.getenv('OIDC_CLIENT_SECRET', '46bdf96f-4cec-44b6-b6c7-e49d72f6840c')
 
     @classmethod
-    def authorization_code_url(klazz):
-        return klazz.authorization_endpoint + '?' + urlencode(klazz.__authorization_code_params())
-
-    @classmethod
-    def tokenized_user(klazz, code, redirect_uri):
-        client = OpenIDClient(klazz.issuer, klazz.client_id, klazz.client_secret)
-        token_response = client.request_token(redirect_uri, code)
-        user_info = token_response.userinfo
-        refresh_token = None
-
-        return klazz.TokenizedUser(
-          name=user_info.get('name', None),
-          given_name=user_info.get('given_name', None),
-          family_name=user_info.get('family_name', None),
-          middle_name=user_info.get('middle_name', None),
-          nickname=user_info.get('nickname', None),
-          email=user_info.get('email', None),
-          locale=user_info.get('locale', None),
-          access_token=token_response.access_token,
-          id_token=token_response.id_token,
-          refresh_token=refresh_token,
-          token_type='bearer',
-          expires_in=600,
-          redirect_uri=redirect_uri,
-          code=code,
-        )
-
-    @classmethod
-    def valid(klazz, id_token):
-        return verify(OpenIDClient(klazz.issuer, klazz.client_id, klazz.client_secret), id_token)
-
-    @classmethod
-    def __authorization_code_params(klazz):
+    def authorization_code_params(klazz):
         return {
           'response_type': klazz.response_types[0],
           'scope': ','.join(klazz.scopes),

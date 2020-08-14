@@ -7,5 +7,6 @@
 import app.main.models.session
 import app.main.models.project
 import app.main.models.data_type
-import app.main.models.mzxml_file
+import app.main.models.data_format_file
+import app.main.models.mzxml
 import app.main.models.metadata_shipment

@@ -1,4 +1,4 @@
-from collections import namedtuple
+from dataclasses import make_dataclass
 from sqlalchemy import or_, desc, asc
 from flask import current_app
 
@@ -13,7 +13,7 @@ class DataTypesDAO:
 
 	@staticmethod
 	def data_types_decorator(callable):
-		data_types_info = namedtuple('DataTypesInfo', ['page', 'per_page', 'total', 'data_types'])
+		data_types_info = make_dataclass('DataTypesInfo', ['page', 'per_page', 'total', 'data_types'])
 
 		def wrapper(*args, **kwargs):
 			data_types = callable(*args, **kwargs).__dict__
