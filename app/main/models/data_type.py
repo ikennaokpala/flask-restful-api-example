@@ -23,7 +23,7 @@ class DataType(db.Model):
 	slug = db.Column(db.TEXT, index=True, unique=True, nullable=False)
 	project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), index=True, nullable=False)
 	project = db.relationship('Project', back_populates='data_types')
-	data_formats = db.relationship('DataFormat', cascade='all,delete', lazy='joined')
+	data_format_files = db.relationship('DataFormatFile', cascade='all,delete', lazy='joined')
 	mzxmls = db.relationship('MZXml', cascade='all,delete', backref='data_types', lazy='joined')
 	metadata_shipments = db.relationship('MetadataShipment', cascade='all,delete', backref='data_types', lazy='joined')
 	created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)

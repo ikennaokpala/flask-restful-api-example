@@ -6,8 +6,8 @@ from sqlalchemy import orm, types
 from app.main import db
 
 @dataclass
-class DataFormat(db.Model):
-	MNEMONIC = 'data_formats'
+class DataFormatFile(db.Model):
+	MNEMONIC = 'data_format_files'
 	__tablename__ = MNEMONIC
 
 	id: int

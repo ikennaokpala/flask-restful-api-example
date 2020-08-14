@@ -2,11 +2,11 @@ import datetime
 
 from dataclasses import dataclass
 
-from app.main.models.data_format import DataFormat
+from app.main.models.data_format_file import DataFormatFile
 from app.main import db
 
 @dataclass
-class MZXml(DataFormat):
+class MZXml(DataFormatFile):
 	MNEMONIC = 'mzxmls'
 
 	location: str
