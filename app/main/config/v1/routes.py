@@ -3,7 +3,7 @@ import openid_connect
 from flask_restplus import Api
 from flask import Blueprint, request, abort, session
 
-from app.main.config.oidc import OIDC
+from app.main.services.session_service import SessionService
 from app.main.models.session import Session
 
 from app.main.controllers.v1.auth_controller import endpoint as auth_endpoint
@@ -36,7 +36,7 @@ def authenticate():
         current_session = Session.query.filter_by(
             access_token=access_token).first()
         if not request.path.startswith(SKIP_OIDC_VALIDATIONS):
-            OIDC.valid(current_session.tokenized_user['id_token'])
+            SessionService.valid(current_session.tokenized_user['id_token'])
         session['token_user'] = current_session.tokenized_user
 
     except (openid_connect.errors.Forbidden, AttributeError, IndexError):

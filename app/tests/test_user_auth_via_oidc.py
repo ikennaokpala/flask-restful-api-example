@@ -3,9 +3,9 @@ import json
 from freezegun import freeze_time
 
 from app.tests.base_test_case import BaseTestCase
-from app.main.config.oidc import OIDC
 from app.main.models.session import Session
 from app.tests.support.factories import SessionFactory
+from app.main.services.session_service import SessionService
 
 class TestAuthorizationCodeURL(BaseTestCase):
     def test_authorization_code_url(self):
@@ -16,7 +16,7 @@ class TestAuthorizationCodeURL(BaseTestCase):
             self.assertTrue(response.content_type == 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertTrue(outcome['url'] == OIDC.authorization_code_url())
+            self.assertTrue(outcome['url'] == 'https://idp.mit.c3.ca/idp/profile/oidc/authorize?response_type=code&scope=openid%2Cprofile%2Cemail%2Cca.computecanada.userinfo&client_id=rdb-dev-test-staging&grant_type=authorization_code')
 
 class TestSkipAuth(BaseTestCase):
     def test_when_browser_sends_an_options_check_request(self):
