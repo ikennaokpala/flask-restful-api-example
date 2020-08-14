@@ -18,7 +18,7 @@ class MetadataShipmentFileContentExtractor:
 		name_extension = self.file_name.split('.')
 		self.extension = name_extension[1]
 		self.filename = name_extension[0]
-		self.columns = MetadataShipmentFile.EXCEL_FILE_COLUMNS
+		self.columns = None
 		self.current = {}
 		self.current_child = {}
 		self.validator = validator
@@ -26,9 +26,10 @@ class MetadataShipmentFileContentExtractor:
 
 	def each(self):
 		file_detail = self.file_detail(name=self.filename, extension=self.extension, filename=self.file_name, content={})
-		self.validator(file_detail, self.data_type.data_formats).call()
-
 		metdata_shipments = pd.read_excel(self.metdata_shipment_file)
+		self.columns = list(metdata_shipments.columns)
+		self.validator(file_detail, self.columns, self.data_type.data_formats).call()
+
 		groups = metdata_shipments.groupby(self.columns[0])
 
 		for parent_child_node, _collection in groups:

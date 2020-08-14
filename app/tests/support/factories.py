@@ -1,5 +1,7 @@
 import factory
 
+from flask import current_app
+
 from app.main import db
 from app.main.models.session import Session
 from app.main.models.project import Project
@@ -24,7 +26,7 @@ class MetadataShipmentFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 	name = 'sample'
 	extension = 'xlsx'
-	content =  { 'columns': MetadataShipmentFile.EXCEL_FILE_COLUMNS, 'rows': {'2019-05-07 00:00:00': [{'LSARP_SA009': [['A,1', 'SA', 'QC01'], ['D,6', 'MRSA', 'QC02'], ['A,2', 'SA', 'BI_16_3052'], ['A,3', 'SA', 'BI_16_3054'], ['A,4', 'SA', 'BI_16_3055'], ['A,5', 'SA', 'BI_16_3060']], 'LSARP_SA010': [['A,1', 'SA', 'QC01'], ['D,6', 'MRSA', 'QC02'], ['A,2', 'SA', 'BI_16_3490'], ['A,3', 'SA', 'BI_16_3499'], ['A,4', 'SA', 'BI_16_3503'], ['A,5', 'SA', 'BI_16_3520'], ['A,6', 'SA2', 'BI_16_3532'], ['A,7', 'SA', 'BI_16_3555'], ['A,8', 'SA', 'BI_16_3558'], ['A,9', 'MRSA', 'BI_17_0002'], ['A,10', 'SA', 'BI_17_0004'], ['B,1', 'SA', 'BI_17_0006']], 'LSARP_SA011': [['A,1', 'SA', 'SA_QC01'], ['D,6', 'MRSA', 'SA_QC02'], ['A,2', 'SA', 'BI_17_0470'], ['A,3', 'SA', 'BI_17_0482'], ['A,4', 'MRSA', 'BI_17_0487'], ['A,5', 'SA', 'BI_17_0499'], ['A,6', 'MRSA', 'BI_17_0508'], ['A,7', 'SA', 'BI_17_0511'], ['A,8', 'SA', 'BI_17_0512'], ['A,9', 'SA', 'BI_17_0513'], ['A,10', 'MRSA', 'BI_17_0516'], ['H,10', 'SA', 'BI_17_0918']], 'LSARP_SA012': [['A,1', 'SA', 'SA_QC01'], ['D,6', 'MRSA', 'SA_QC02'], ['A,2', 'SA', 'BI_17_0919'], ['A,3', 'SA', 'BI_17_0926'], ['A,4', 'SA', 'BI_17_0937'], ['A,5', 'SA', 'BI_17_0938'], ['A,6', 'MRSA', 'BI_17_0942'], ['A,7', 'MRSA', 'BI_17_0950'], ['A,8', 'SA', 'BI_17_0973'], ['A,9', 'SA', 'BI_17_0979'], ['A,10', 'SA', 'BI_17_0980'], ['B,1', 'SA', 'BI_17_0982']]}]}}
+	content =  { 'columns': current_app.config.get('METADATA_SHIPMENTS_FILE_COLUMNS'), 'rows': {'2019-05-07 00:00:00': [{'LSARP_SA009': [['A,1', 'SA', 'QC01'], ['D,6', 'MRSA', 'QC02'], ['A,2', 'SA', 'BI_16_3052'], ['A,3', 'SA', 'BI_16_3054'], ['A,4', 'SA', 'BI_16_3055'], ['A,5', 'SA', 'BI_16_3060']], 'LSARP_SA010': [['A,1', 'SA', 'QC01'], ['D,6', 'MRSA', 'QC02'], ['A,2', 'SA', 'BI_16_3490'], ['A,3', 'SA', 'BI_16_3499'], ['A,4', 'SA', 'BI_16_3503'], ['A,5', 'SA', 'BI_16_3520'], ['A,6', 'SA2', 'BI_16_3532'], ['A,7', 'SA', 'BI_16_3555'], ['A,8', 'SA', 'BI_16_3558'], ['A,9', 'MRSA', 'BI_17_0002'], ['A,10', 'SA', 'BI_17_0004'], ['B,1', 'SA', 'BI_17_0006']], 'LSARP_SA011': [['A,1', 'SA', 'SA_QC01'], ['D,6', 'MRSA', 'SA_QC02'], ['A,2', 'SA', 'BI_17_0470'], ['A,3', 'SA', 'BI_17_0482'], ['A,4', 'MRSA', 'BI_17_0487'], ['A,5', 'SA', 'BI_17_0499'], ['A,6', 'MRSA', 'BI_17_0508'], ['A,7', 'SA', 'BI_17_0511'], ['A,8', 'SA', 'BI_17_0512'], ['A,9', 'SA', 'BI_17_0513'], ['A,10', 'MRSA', 'BI_17_0516'], ['H,10', 'SA', 'BI_17_0918']], 'LSARP_SA012': [['A,1', 'SA', 'SA_QC01'], ['D,6', 'MRSA', 'SA_QC02'], ['A,2', 'SA', 'BI_17_0919'], ['A,3', 'SA', 'BI_17_0926'], ['A,4', 'SA', 'BI_17_0937'], ['A,5', 'SA', 'BI_17_0938'], ['A,6', 'MRSA', 'BI_17_0942'], ['A,7', 'MRSA', 'BI_17_0950'], ['A,8', 'SA', 'BI_17_0973'], ['A,9', 'SA', 'BI_17_0979'], ['A,10', 'SA', 'BI_17_0980'], ['B,1', 'SA', 'BI_17_0982']]}]}}
 
 class DataTypeFactory(factory.alchemy.SQLAlchemyModelFactory):
 	class Meta:
