@@ -63,17 +63,18 @@ clean:
 
 python-packages:
 	source ./env-packages/bin/activate; \
-	pip install -r requirements.txt
+	$(SUDO) pip install --upgrade pandas --ignore-installed
+	pip install -r requirements.txt --upgrade --ignore-installed
 
 install: system-packages python-packages
 
 tests:
 	source ./env-packages/bin/activate; \
-	python manage.py tests
+	pytest app/tests
 
 test:
 	source ./env-packages/bin/activate; \
-	python manage.py test $(call args, test*.py)
+	pytest app/tests/$(call args, test*.py)
 
 run:
 	source ./env-packages/bin/activate; \

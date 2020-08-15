@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from app.main.lib.slugifier import Slugifier
 from app.main import db
 
+
 @dataclass
 class Project(db.Model):
     __tablename__ = 'projects'
@@ -24,9 +25,16 @@ class Project(db.Model):
     slug = db.Column(db.TEXT, index=True, unique=True, nullable=False)
     owner = db.Column(db.String, index=True, nullable=False)
     collaborators = db.Column(pg.ARRAY(db.String))
-    data_types = db.relationship('DataType', cascade='all,delete', backref='projects', lazy='joined')
+    data_types = db.relationship(
+        'DataType', cascade='all,delete', backref='projects', lazy='joined'
+    )
     created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now, index=True)
+    updated_at = db.Column(
+        db.DateTime,
+        default=datetime.datetime.now,
+        onupdate=datetime.datetime.now,
+        index=True,
+    )
 
     def __init__(self, *args, **kwargs):
         super(Project, self).__init__(*args, **kwargs)

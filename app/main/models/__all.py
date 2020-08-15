@@ -4,9 +4,10 @@
 # are all loaded.
 
 # noinspection PyUnresolvedReferences
-import app.main.models.session
-import app.main.models.project
-import app.main.models.data_type
-import app.main.models.data_format_file
-import app.main.models.mzxml
-import app.main.models.metadata_shipment
+
+import app.main.models.session  # pragma: no cover
+import app.main.models.project  # pragma: no cover
+import app.main.models.data_type  # pragma: no cover
+import app.main.models.data_format_file  # pragma: no cover
+import app.main.models.mzxml_file  # pragma: no cover
+import app.main.models.metadata_shipment_file  # pragma: no cover

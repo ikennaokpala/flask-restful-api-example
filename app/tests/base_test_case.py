@@ -7,6 +7,7 @@ from manage import app
 
 from app.main.environment import environments
 
+
 class BaseTestCase(TestCase):
     """ Base Tests """
 
