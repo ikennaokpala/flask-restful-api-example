@@ -153,7 +153,7 @@ class TestUploadMetadataShipmentFileAndAssociateWithDataType(BaseTestCase):
             self.assertFalse(os.path.exists(self.destination))
 
     @freeze_time('2020-06-02 08:57:53')
-    def test_when_user_access_token_is_valid_and_metadata_shipment_extension_is_not_xlsx(self):
+    def test_when_user_access_token_is_valid_and_metadata_shipment_file_with_wrong_column_names(self):
         metadata_shipment_path = os.path.abspath('app/tests/support/fixtures/metadata_shipments/sample_lsarp_metadata_shipment_wrong_columns.xlsx')
         metadata_shipment_store =  FileStorage(
                 stream=open(metadata_shipment_path, 'rb'),
