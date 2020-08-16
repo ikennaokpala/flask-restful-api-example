@@ -22,15 +22,20 @@ Database: PostgreSQL
     Open the following url on your browser to view swagger documentation
     http://127.0.0.1:3000/
 
-### Docker development setup
+### Docker development setup (default CentOS)
 
     $ docker-compose up
     # Run this on another terminal tab
     $ docker exec -it api /bin/bash
-	$ source ./env-packages/bin/activate 
+    $ source $(pipenv --venv)/bin/activate
         $ make db_create
-        $ python manage.py db upgrade head
+        $ make db_migrate
         $ make tests
+
+#### Docker development setup (Ubuntu)
+
+    $ LSARP_OS_PLATFORM=ubuntu docker-compose up
+     Run the other steps from  Docker development setup (default CentOS) section
 
 ### Running Tests
 
@@ -38,9 +43,26 @@ To run all the tests
 
     $ make tests
 
-To run a single the test
+To run a single the test file
 
     $ make test <name_of_test_file>
+
+Example: 
+    $ make test app/tests/test_projects.py
+
+To run a single the test class
+
+    $ make test <name_of_test_file>::TestClass
+
+Example: 
+    $ make test app/tests/test_projects.py::TestProjects
+
+To run a single the test method
+
+    $ make test <name_of_test_file>::TestClass::test_method
+
+Example: 
+    $ make test app/tests/test_projects.py::TestProjects::test_fetch_all_owned_and_collaboarating_projects_without_page_and_per_page_and_direction
 
 To run tests with verbosity set 
 

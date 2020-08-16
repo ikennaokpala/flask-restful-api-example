@@ -1,6 +1,7 @@
 api:
   build: .
   container_name: api
+  dockerfile: Dockerfile.${LSARP_OS_PLATFORM}
   command: /etc/entrypoint.sh
   volumes:
     - .:/api
@@ -9,6 +10,7 @@ api:
   links:
     - db
   environment:
+    LSARP_DATABASE_URL: postgresql://postgres:postgres@db:5432
     ALLOWED_CORS_CLIENTS: '206.12.120.8,https://resistancedb.org,http://proteomics.resistancedb.org'
     FLASK_ENV: development
     PYTHONUNBUFFERED: 1

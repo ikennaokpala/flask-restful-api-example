@@ -3,8 +3,12 @@
 set -e
 set -x
 
-python -m venv env-packages
-source ./env-packages/bin/activate; \
-pip install -r requirements.txt
-python manage.py run
+source $(pipenv --venv)/bin/activate
 
+if [ ${FLASK_ENV} == "development" ]; then
+  pipenv sync --dev
+  pipenv run dev
+else
+  pipenv sync
+  FLASK_ENV=production pipenv run prod
+fi

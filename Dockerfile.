@@ -1,0 +1,22 @@
+FROM centos:8
+
+ENV LANG C.UTF-8x
+ENV LC_ALL C.UTF-8
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PIPENV_IGNORE_VIRTUALENVS 1
+ENV VENV_HOME_DIR $(pipenv --venv)
+ENV DEBIAN_FRONTEND noninteractive
+ENV LSARP_DATABASE_URL postgresql://postgres:postgres@db:5432
+
+WORKDIR /api
+
+RUN yum update -y && yum groupinstall 'Development Tools' -y
+
+COPY Makefile ./
+COPY Pipfile.lock Pipfile.lock
+COPY entrypoint.sh /etc/entrypoint.sh
+RUN chmod +x /etc/entrypoint.sh
+
+RUN make install
+
+EXPOSE 3000/tcp

@@ -1,4 +1,8 @@
-SHELL=/bin/bash
+SHELL = /bin/bash
+PYTHON_VERSION = 3.8
+PYTHON_MAIN_VERSION = 3
+PYTHON_INSTALL_VERSION = 3.8.5
+PYTHON_BIN_PATH = /usr/local/bin
 
 SUDO := $(shell which sudo)
 
@@ -16,80 +20,88 @@ system-packages:
 
 .PHONY: yum-packages
 yum-packages:
+	yum install sudo -y
 	$(SUDO) yum update -y
-	$(SUDO) yum install -y python-pip
-	$(SUDO) pip install --user virtualenv
-	python3 -m venv env-packages
-	source ./env-packages/bin/activate; \
-	pip install --upgrade pip
+	$(SUDO) yum groupinstall 'Development Tools' -y 
+	$(SUDO) yum install -y curl which wget make openssl-devel bzip2-devel xz-devel libffi-devel zlib-devel python$(PYTHON_MAIN_VERSION)-devel libevent-devel postgresql-devel -y
+	$(SUDO) wget https://www.python.org/ftp/python/$(PYTHON_INSTALL_VERSION)/Python-$(PYTHON_INSTALL_VERSION).tgz && tar xvf Python-$(PYTHON_INSTALL_VERSION).tgz && cd Python-$(PYTHON_INSTALL_VERSION)/ && ./configure --enable-optimizations && make altinstall && cd .. && rm -rf Python-$(PYTHON_INSTALL_VERSION)/
+	$(SUDO) curl --silent https://bootstrap.pypa.io/get-pip.py | python$(PYTHON_VERSION)
+	$(SUDO) rm -fr $(PYTHON_BIN_PATH)/python$(PYTHON_MAIN_VERSION) && ln $(PYTHON_BIN_PATH)/python$(PYTHON_VERSION) $(PYTHON_BIN_PATH)/python$(PYTHON_MAIN_VERSION)
+	pip3 install --upgrade --no-cache-dir pipenv
 
 .PHONY: apk-packages
 apk-packages:
+	apt-get install sudo -y
 	$(SUDO) apk update -y
-	$(SUDO) apk install -y python-pip
-	$(SUDO) pip install --user virtualenv
-	python3 -m venv env-packages
-	source ./env-packages/bin/activate; \
-	pip install --upgrade pip
+	$(SUDO) apk install -y python-pip curl wget build-essential liblzma-dev make zlib1g-dev python$(PYTHON_MAIN_VERSION)-dev libevent-dev libblas-dev libatlas-base-dev python$(PYTHON_MAIN_VERSION)-venv pipenv python-psycopg2 libpq-dev -y
+	$(SUDO) apk clean
+	$(SUDO) wget https://www.python.org/ftp/python/$(PYTHON_INSTALL_VERSION)/Python-$(PYTHON_INSTALL_VERSION).tgz && tar xvf Python-$(PYTHON_INSTALL_VERSION).tgz && cd Python-$(PYTHON_INSTALL_VERSION)/ && ./configure --enable-optimizations --with-zlib && make altinstall && cd .. && rm -rf Python-$(PYTHON_INSTALL_VERSION)/
+	$(SUDO) curl --silent https://bootstrap.pypa.io/get-pip.py | python$(PYTHON_VERSION)
+	$(SUDO) rm -fr $(PYTHON_BIN_PATH)/python$(PYTHON_MAIN_VERSION) && ln $(PYTHON_BIN_PATH)/python$(PYTHON_VERSION) $(PYTHON_BIN_PATH)/python$(PYTHON_MAIN_VERSION)
+	pip3 install --upgrade --no-cache-dir pipenv
 
 .PHONY: apt-packages
 apt-packages:
+	apt-get install sudo -y --no-install-recommends
 	$(SUDO) apt-get update -y
-	$(SUDO) apt-get install python3-venv -y
-	$(SUDO) apt-get install -y python-pip
-	$(SUDO) pip install --user virtualenv
-	python3 -m venv env-packages
-	source ./env-packages/bin/activate; \
-	pip install --upgrade pip
+	$(SUDO) apt-get install -y python-pip curl wget build-essential liblzma-dev make zlib1g-dev python$(PYTHON_MAIN_VERSION)-dev libevent-dev libblas-dev libatlas-base-dev python$(PYTHON_MAIN_VERSION)-venv pipenv python-psycopg2 libpq-dev -y --no-install-recommends
+	$(SUDO) apt-get clean
+	$(SUDO) wget https://www.python.org/ftp/python/$(PYTHON_INSTALL_VERSION)/Python-$(PYTHON_INSTALL_VERSION).tgz && tar xvf Python-$(PYTHON_INSTALL_VERSION).tgz && cd Python-$(PYTHON_INSTALL_VERSION)/ && ./configure --enable-optimizations --with-zlib && make altinstall && cd .. && rm -rf Python-$(PYTHON_INSTALL_VERSION)/
+	$(SUDO) curl --silent https://bootstrap.pypa.io/get-pip.py | python$(PYTHON_VERSION)
+	$(SUDO) rm -fr $(PYTHON_BIN_PATH)/python$(PYTHON_MAIN_VERSION) && ln $(PYTHON_BIN_PATH)/python$(PYTHON_VERSION) $(PYTHON_BIN_PATH)/python$(PYTHON_MAIN_VERSION)
+	pip3 install --upgrade --no-cache-dir pipenv
 
 .PHONY: homebrew-packages
 homebrew-packages:
 	# Sudo is not required as running Homebrew as root is extremely dangerous and no longer supported as Homebrew does not drop privileges on installation you would be giving all build scripts full access to your system
 	# Fails if any of the packages are already installed, ignore and continue - if it's a problem the latest build steps will fail with missing headers
 	brew update
-	brew install python
+	brew install python pipenv
 	$(SUDO) easy_install pip
-	$(SUDO) pip install --user virtualenv
-	python3 -m venv env-packages
-	source ./env-packages/bin/activate; \
-	pip install --upgrade pip
+	python$(PYTHON_VERSION) -m pip install --upgrade pip pipenv
 
 .PHONY: clean python-packages install tests run all
 
 clean:
-	$(SUDO) rm -rf env-packages
+	pipenv clean
+	pipenv --rm
 	find . -type f -name '*.pyc' -delete
 	find . -type f -name '*.log' -delete
 
 python-packages:
-	source ./env-packages/bin/activate; \
-	$(SUDO) pip install --upgrade pandas --ignore-installed
-	pip install -r requirements.txt --upgrade --ignore-installed
+	pipenv sync --dev
 
 install: system-packages python-packages
 
 tests:
-	source ./env-packages/bin/activate; \
-	pytest app/tests
+	pipenv run db_create test
+	pipenv run tests
+	pipenv run db_drop test
 
 test:
-	source ./env-packages/bin/activate; \
-	pytest app/tests/$(call args, test*.py)
+	pipenv run db_create test
+	pipenv run test $(call args, app/tests/test*.py)
+	pipenv run db_drop test
+
+format:
+	pipenv run format
 
 run:
-	source ./env-packages/bin/activate; \
-	python manage.py run
+	FLASK_ENV=production pipenv run prod
+
+dev:
+	FLASK_ENV=development pipenv run dev
 
 db_init:
-	source ./env-packages/bin/activate; \
-	python manage.py db init
+	pipenv run db_init $(call args, development)
 
 db_create:
-	source ./env-packages/bin/activate; \
-	python manage.py createdb $(call args, development)
+	pipenv run db_create $(call args, development)
 
 db_drop:
-	source ./env-packages/bin/activate; \
-	python manage.py dropdb $(call args, development)
+	pipenv run db_drop $(call args, development)
+
+db_migrate:
+	pipenv run db_migrate
 
 all: clean install tests run
