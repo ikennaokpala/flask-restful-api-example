@@ -72,3 +72,12 @@ or
 
     $ TEST_PROGRESS_VERBOSITY=2  make test <name_of_test_file>
 
+### Seeding and generating sample data 
+
+By default you get a 100 rows of projects and data types and 2 MZXml and metadata shipments assigned to each data type/
+
+    $ make db_seed
+
+If you need more or less than 100 rows
+
+    $ SEED_DATA_COUNT=<however_many> make db_seed

@@ -34,6 +34,7 @@ class TestDevelopmentEnvironment(TestCase):
             app.config['DATA_FORMAT_FILE_EXTENSIONS'],
             'mzXML,mzML,mzData,xlsx,csv,raw,BAF,DAT,FID,YEP,WIFF,XMS'.split(','),
         )
+        self.assertEqual(app.config['SEED_DATA_COUNT'], 100)
         self.assertEqual(app.config['PAGINATION_MAX_PER_PAGE'], 100)
         self.assertEqual(
             app.config['METADATA_SHIPMENTS_FILE_COLUMNS'],
@@ -66,6 +67,7 @@ class TestTestingEnvironment(TestCase):
             app.config['DATA_FORMAT_FILE_EXTENSIONS'],
             'mzXML,mzML,mzData,xlsx,csv,raw,BAF,DAT,FID,YEP,WIFF,XMS'.split(','),
         )
+        self.assertEqual(app.config['SEED_DATA_COUNT'], 100)
         self.assertEqual(app.config['PAGINATION_MAX_PER_PAGE'], 100)
         self.assertEqual(
             app.config['METADATA_SHIPMENTS_FILE_COLUMNS'],

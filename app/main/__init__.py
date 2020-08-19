@@ -7,13 +7,15 @@ from flask_cors import CORS
 
 from .environment import environments
 
+environment = os.getenv('FLASK_ENV') or 'development'
+
 db = SQLAlchemy()
 flask_bcrypt = Bcrypt()
 
 CUSTOM_REQUEST_HEADERS = ['Content-Type', 'Authorization', 'X-ACCESS-TOKEN']
 
 
-def create_app(environment):
+def create_app():
     app = Flask(__name__)
     app.config.update(SECRET_KEY=os.urandom(24))
     app.config.from_object(environments[environment])
