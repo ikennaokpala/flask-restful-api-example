@@ -11,46 +11,52 @@ from app.main import db
 
 endpoint = Namespace('projects-endpoint', description='projects related api endpoints')
 
-project_field = endpoint.model('Resource', {'slug': fields.String,})
+project_field = endpoint.model('Slug', {'slug': fields.String,})
 
 project_fields = endpoint.model(
-    'Resource',
+    'Project',
+    {
+        'name': fields.String,
+        'description': fields.String,
+        'slug': fields.String,
+        'owner': fields.String,
+        'collaboarators': fields.List(fields.String),
+        'created_at': fields.String,
+        'updated_at': fields.String,
+        'data_types': fields.List(fields.String)
+    }
+)
+
+projects_fetch_fields = endpoint.model(
+    'ProjectsList',
     {
         'page': fields.Integer,
         'per_page': fields.Integer,
         'total': fields.Integer,
-        'projects': {
-            'name': fields.String,
-            'description': fields.String,
-            'slug': fields.String,
-            'owner': fields.String,
-            'collaboarators': fields.List(fields.String),
-            'created_at': fields.String,
-            'updated_at': fields.String,
-        },
+        'projects': fields.List(
+            fields.Nested(project_fields)
+        )
     },
 )
 
 
 @endpoint.route('/<slug>')
-@endpoint.param('slug', 'The User identifier')
-@endpoint.doc(
-    params={'name': 'Name of project', 'description': 'Description of the project'}
-)
 class AProject(Resource):
-    @endpoint.doc('Fetch a projects by slug')
-    @endpoint.expect(model=project_fields)
+    @endpoint.doc(
+        description='Fetch a projects by slug',
+        params={'slug': 'The project slug'})
+    @endpoint.response(200, 'Success', project_fields)
     def get(self, slug):
         return jsonify(Project.query.filter_by(slug=slug).first())
 
-    @endpoint.doc('Update a projects by slug')
-    @endpoint.expect(model=project_field)
+    @endpoint.doc(description='Update a project by slug', params={'slug':'The project slug'})
+    @endpoint.expect(project_fields)
     def put(self, slug):
         dao = ProjectDAO(request.json, session['token_user']['email']).update_by(slug)
         return jsonify({'slug': dao.project.slug})
 
     @endpoint.doc('Deletes a projects by slug')
-    @endpoint.expect(model=project_field)
+    @endpoint.response(204, 'Deleted')
     def delete(self, slug):
         Project.query.filter_by(slug=slug).delete()
         db.session.commit()
@@ -60,8 +66,8 @@ class AProject(Resource):
 @endpoint.route('/')  # with slash
 @endpoint.route('')  # without slash
 class Projects(Resource):
-    @endpoint.doc('Create a Project')
-    @endpoint.expect(model=project_field, validate=True)
+    @endpoint.doc(description='Create a Project', params={'name':'The project name', 'description':'The project description'})
+    @endpoint.response(201, 'Created', project_field)
     def post(self):
         try:
             dao = ProjectDAO(request.json, session['token_user']['email']).create()
@@ -69,15 +75,15 @@ class Projects(Resource):
         except (KeyError):
             raise BadRequest
 
-    @endpoint.doc('List of a user\'s projects')
     @endpoint.doc(
+        description='List of a user\'s projects',
         params={
             'page': 'Page or Offset for projects',
             'per_page': 'Number of projects per page',
             'direction': 'Sort desc or asc',
         }
     )
-    @endpoint.expect(project_fields)
+    @endpoint.response(200,'Success - Projects fetched', projects_fetch_fields)
     def get(self):
         projects = ProjectsDAO.call(request.args, session['token_user']['email'])
         return jsonify(asdict(projects))
