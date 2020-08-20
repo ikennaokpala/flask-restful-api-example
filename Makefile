@@ -74,32 +74,44 @@ python-packages:
 install: system-packages python-packages
 
 tests:
-	pipenv run db_create test
-	pipenv run tests
-	pipenv run db_drop test
+	FLASK_ENV=test pipenv run db_create
+	FLASK_ENV=test pipenv run tests
+	FLASK_ENV=test pipenv run db_drop
 
 test:
-	pipenv run db_create test
-	pipenv run test $(call args, app/tests/test*.py)
-	pipenv run db_drop test
+	FLASK_ENV=test pipenv run db_create
+	FLASK_ENV=test pipenv run test $(call args, app/tests/test*.py)
+	FLASK_ENV=test pipenv run db_drop
 
 format:
 	pipenv run format
 
 run:
-	FLASK_ENV=production pipenv run prod
+	FLASK_ENV=production pipenv run start
 
 dev:
-	FLASK_ENV=development pipenv run dev
+	FLASK_ENV=development pipenv run start
+
+console:
+	pipenv run console
+
+dev_console:
+	FLASK_ENV=development pipenv run console
 
 db_init:
-	pipenv run db_init $(call args, development)
+	pipenv run db_init
 
 db_create:
-	pipenv run db_create $(call args, development)
+	pipenv run db_create
+
+db_seed:
+	pipenv run db_seed
 
 db_drop:
-	pipenv run db_drop $(call args, development)
+	pipenv run db_drop
+
+db_migration:
+	pipenv run db_migration
 
 db_migrate:
 	pipenv run db_migrate

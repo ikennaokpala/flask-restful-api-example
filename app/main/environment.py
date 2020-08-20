@@ -17,12 +17,14 @@ class Environment:
 
 class Development(Environment):
     DEBUG = True
+    SEED_DATA_COUNT = int(os.getenv('SEED_DATA_COUNT', 100))
     SQLALCHEMY_DATABASE_URI = os.environ.get('LSARP_DATABASE_URL') + '/lsarp_development'
 
 class Test(Environment):
     TEST = True
     DEBUG = True
     TESTING = True
+    SEED_DATA_COUNT = int(os.getenv('SEED_DATA_COUNT', 100))
     TEST_PROGRESS_VERBOSITY = int(os.getenv('TEST_PROGRESS_VERBOSITY', 1))
     SQLALCHEMY_DATABASE_URI = os.environ.get('LSARP_DATABASE_URL') + '/lsarp_test'
 

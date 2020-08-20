@@ -1,0 +1,4 @@
+FLASK_APP=manage
+#FLASK_ENV=production
+FLASK_RUN_PORT=3000
+
