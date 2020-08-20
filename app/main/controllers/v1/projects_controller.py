@@ -68,6 +68,8 @@ class AProject(Resource):
 class Projects(Resource):
     @endpoint.doc(description='Create a Project', params={'name':'The project name', 'description':'The project description'})
     @endpoint.response(201, 'Created', project_field)
+    @endpoint.response(400, 'Bad Request')
+
     def post(self):
         try:
             dao = ProjectDAO(request.json, session['token_user']['email']).create()
