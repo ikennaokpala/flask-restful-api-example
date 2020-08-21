@@ -14,24 +14,28 @@ endpoint = Namespace(
 
 data_type_field = endpoint.model('Slug', {'slug': fields.String,})
 
-data_type_create = endpoint.model('Data_Type', {
-    'name': fields.String,
-    'description': fields.String,
-    'data_formats': fields.List(fields.String),
-    }
-)
-
-data_type_created = endpoint.model(
-    'DataType', 
+data_type_create = endpoint.model(
+    'Data_Type',
     {
-    'slug': fields.String,
-    'name': fields.String,
-    'description': fields.String,
-    'data_formats': fields.List(fields.String),
+        'name': fields.String,
+        'description': fields.String,
+        'data_formats': fields.List(fields.String),
     },
 )
 
-data_type_fields = endpoint.model('Data_Type_With_Files', {
+data_type_created = endpoint.model(
+    'DataType',
+    {
+        'slug': fields.String,
+        'name': fields.String,
+        'description': fields.String,
+        'data_formats': fields.List(fields.String),
+    },
+)
+
+data_type_fields = endpoint.model(
+    'Data_Type_With_Files',
+    {
         'id': fields.Integer,
         'name': fields.String,
         'description': fields.String,
@@ -40,7 +44,7 @@ data_type_fields = endpoint.model('Data_Type_With_Files', {
         'mzxml_files': fields.List(fields.String),
         'data_formats': fields.List(fields.String),
         'project_slug': fields.String,
-    }
+    },
 )
 
 data_types_list = endpoint.model(
@@ -57,7 +61,9 @@ data_types_list = endpoint.model(
 @endpoint.route('/')  # with slash
 @endpoint.route('')  # without slash
 class DataTypes(Resource):
-    @endpoint.doc(description='Create a DataType', params={'slug': 'The projects identifier'})
+    @endpoint.doc(
+        description='Create a DataType', params={'slug': 'The projects identifier'}
+    )
     @endpoint.expect(data_type_create)
     @endpoint.response(201, 'Created', data_type_created)
     @endpoint.response(400, 'Bad Request')
@@ -77,7 +83,10 @@ class DataTypes(Resource):
         except (KeyError):
             raise BadRequest
 
-    @endpoint.doc(description='List of a user\'s project data_types', params={'slug':'The project identifier'})
+    @endpoint.doc(
+        description='List of a user\'s project data_types',
+        params={'slug': 'The project identifier'},
+    )
     @endpoint.response(200, 'Success', data_types_list)
     @endpoint.response(400, 'Bad Request')
     @endpoint.response(404, 'Not Found')

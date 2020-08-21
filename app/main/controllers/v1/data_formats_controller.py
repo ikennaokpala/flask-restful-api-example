@@ -5,20 +5,17 @@ endpoint = Namespace(
     'data-formats-endpoint', description='Data formats related api endpoints'
 )
 
-data_formats_fields = endpoint.model('DataFormats',
-{
-    'data_formats': fields.List(fields.String)
-})
+data_formats_fields = endpoint.model(
+    'DataFormats', {'data_formats': fields.List(fields.String)}
+)
+
 
 @endpoint.route('/')
 @endpoint.route('')
 class DataFormats(Resource):
     @endpoint.doc(
         description='List of a allowed data formats',
-        responses={
-            400: 'Bad request',
-            404: 'Not Found',
-        },
+        responses={400: 'Bad request', 404: 'Not Found',},
     )
     @endpoint.response(200, 'Success - Data Formats fetched', data_formats_fields)
     def get(self):
