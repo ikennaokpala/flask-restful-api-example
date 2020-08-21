@@ -13,6 +13,11 @@ endpoint = Namespace('projects-endpoint', description='projects related api endp
 
 project_field = endpoint.model('Slug', {'slug': fields.String,})
 
+project_create = endpoint.model('CreateProject', {
+    'name': fields.String,
+    'description': fields.String,
+})
+
 project_fields = endpoint.model(
     'Project',
     {
@@ -53,6 +58,7 @@ class AProject(Resource):
 
     @endpoint.doc(description='Update a project by slug', params={'slug':'The project identifier'})
     @endpoint.expect(project_fields)
+    @endpoint.response(200, 'Success', project_fields)
     @endpoint.response(400, 'Bad Request')
     @endpoint.response(404, 'Not Found')
     def put(self, slug):

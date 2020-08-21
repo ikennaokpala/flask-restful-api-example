@@ -22,7 +22,9 @@ data_type_MZXml_field = endpoint.model(
         'data_type_slug': fields.String,
     },
 )
-
+upload_parser = endpoint.parser()
+upload_parser.add_argument('file', location='files',
+                            type='file', required=True)
 
 @endpoint.route('/mzxml_file')
 @endpoint.route('/mzxml_files')
@@ -44,7 +46,7 @@ class MZXmlDataType(Resource):
         },
     )
     @endpoint.response(201,'File(s) added to project', data_type_MZXml_field )
-    @endpoint.expect(model=data_type_MZXml_field)
+    @endpoint.expect(upload_parser)
     def put(self, slug, data_type_slug):
         try:
             return DataTypeMZXmlFilesDAO(data_type_slug, request.files).upload(), 201
