@@ -11,6 +11,18 @@ endpoint = Namespace(
     description='metadata shipments belonging to a data type api endpoints',
 )
 
+data_type_xlsx_fields = endpoint.model(
+    'Xlsx',
+    {
+        'id': fields.Integer,
+        'name': fields.String,
+        'extension': fields.String,
+        'path': fields.String,
+        'checksum': fields.String,
+        'project_slug': fields.String,
+        'data_type_slug': fields.String,
+    },
+)
 
 @endpoint.route('/metadata_shipment')
 @endpoint.route('/metadata_shipments')
@@ -29,9 +41,9 @@ class DataTypeMetadataShipment(Resource):
         responses={
             400: 'Bad request',
             404: 'Not Found',
-            201: 'Success - File(s) added',
         },
     )
+    @endpoint.response(201, 'Success - File(s) added', data_type_xlsx_fields)
     def put(self, slug, data_type_slug):
         try:
             return (

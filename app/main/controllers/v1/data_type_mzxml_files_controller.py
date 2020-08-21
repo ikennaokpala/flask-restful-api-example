@@ -41,9 +41,9 @@ class MZXmlDataType(Resource):
         responses={
             400: 'Bad request',
             404: 'Not Found',
-            201: 'File(s) added to project',
         },
     )
+    @endpoint.response(201,'File(s) added to project', data_type_MZXml_field )
     @endpoint.expect(model=data_type_MZXml_field)
     def put(self, slug, data_type_slug):
         try:

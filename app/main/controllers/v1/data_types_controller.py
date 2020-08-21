@@ -60,7 +60,8 @@ class DataTypes(Resource):
     @endpoint.doc(description='Create a DataType', params={'slug': 'The projects identifier'})
     @endpoint.expect(data_type_create)
     @endpoint.response(201, 'Created', data_type_created)
-    @endpoint.response(400, 'BadRequest')
+    @endpoint.response(400, 'Bad Request')
+    @endpoint.response(404, 'Not Found')
     def post(self, slug):
         try:
             dao = DataTypeDAO(request.json, slug).create()
@@ -78,6 +79,8 @@ class DataTypes(Resource):
 
     @endpoint.doc(description='List of a user\'s project data_types', params={'slug':'The project identifier'})
     @endpoint.response(200, 'Success', data_types_list)
+    @endpoint.response(400, 'Bad Request')
+    @endpoint.response(404, 'Not Found')
     def get(self, slug):
         data_types = DataTypesDAO.call(request.args, slug)
         return jsonify(asdict(data_types))
@@ -89,17 +92,23 @@ class DataTypes(Resource):
 class ADataType(Resource):
     @endpoint.doc(description='Fetch a DataType by slug')
     @endpoint.response(200, 'Success')
+    @endpoint.response(400, 'Bad Request')
+    @endpoint.response(404, 'Not Found')
     def get(self, slug, data_type_slug):
         return jsonify(DataType.query.filter_by(slug=data_type_slug).first())
 
     @endpoint.doc(description='Update a DataType by slug')
     @endpoint.response(200, 'Success')
+    @endpoint.response(400, 'Bad Request')
+    @endpoint.response(404, 'Not Found')
     def put(self, slug, data_type_slug):
         dao = DataTypeDAO(request.json, data_type_slug).update_by()
         return jsonify({'slug': dao.data_type.slug})
 
     @endpoint.doc(description='Deletes a data type by slug')
     @endpoint.response(204, 'Deleted')
+    @endpoint.response(400, 'Bad Request')
+    @endpoint.response(404, 'Not Found')
     def delete(self, slug, data_type_slug):
         DataType.query.filter_by(slug=data_type_slug).delete()
         db.session.commit()
