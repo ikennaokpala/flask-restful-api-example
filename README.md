@@ -35,6 +35,7 @@ Database: PostgreSQL
 #### Docker development setup (Ubuntu)
 
     $ LSARP_OS_PLATFORM=ubuntu docker-compose up
+
      Run the other steps from  Docker development setup (default CentOS) section
 
 ### Running Tests
@@ -61,16 +62,9 @@ To run a single the test method
 
     $ make test <name_of_test_file>::TestClass::test_method
 
-Example: 
-    $ make test app/tests/test_projects.py::TestProjects::test_fetch_all_owned_and_collaboarating_projects_without_page_and_per_page_and_direction
+Example:
 
-To run tests with verbosity set 
-
-    $ TEST_PROGRESS_VERBOSITY=2  make tests
-
-or 
-
-    $ TEST_PROGRESS_VERBOSITY=2  make test <name_of_test_file>
+    $ make test app/tests/test_projects.py::TestProjects::test_fetch_all_owned_and_collaborating_projects_without_page_and_per_page_and_direction
 
 ### Seeding and generating sample data 
 

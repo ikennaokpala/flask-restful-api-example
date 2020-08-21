@@ -60,7 +60,6 @@ class TestTestingEnvironment(TestCase):
                 app.config['SQLALCHEMY_DATABASE_URI'],
             )
         )
-        self.assertEqual(app.config['TEST_PROGRESS_VERBOSITY'], 1)
         self.assertEqual(app.config['MZXML_FILES_KEY_PREFIX'], 'mzxml_file_')
         self.assertEqual(app.config['MZXML_FILES_UPLOAD_FOLDER'], '/tmp/')
         self.assertEqual(

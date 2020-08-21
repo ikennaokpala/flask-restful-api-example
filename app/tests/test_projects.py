@@ -240,7 +240,7 @@ class TestProjects(TestProjectBase):
 
     @freeze_time('2020-06-02 08:57:53')
     @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
-    def test_fetch_all_owned_and_collaboarating_projects_without_page_and_per_page_and_direction(
+    def test_fetch_all_owned_and_collaborating_projects_without_page_and_per_page_and_direction(
         self,
     ):
         ProjectFactory.create(collaborators=[self.owner], owner='another@email.com')
@@ -268,7 +268,7 @@ class TestProjects(TestProjectBase):
 
     @freeze_time('2020-06-02 08:57:53')
     @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
-    def test_fetch_owned_and_collaboarating_projects_with_page_1_and_per_page_with_direction_desc(
+    def test_fetch_owned_and_collaborating_projects_with_page_1_and_per_page_with_direction_desc(
         self,
     ):
         ProjectFactory.create(collaborators=[self.owner], owner='another@email.com')
@@ -297,7 +297,7 @@ class TestProjects(TestProjectBase):
 
     @freeze_time('2020-06-02 08:57:53')
     @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
-    def test_fetch_owned_and_collaboarating_projects_with_page_1_and_per_page_with_direction_asc(
+    def test_fetch_owned_and_collaborating_projects_with_page_1_and_per_page_with_direction_asc(
         self,
     ):
         ProjectFactory.create(collaborators=[self.owner], owner='another@email.com')
@@ -326,7 +326,7 @@ class TestProjects(TestProjectBase):
 
     @freeze_time('2020-06-02 08:57:53')
     @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
-    def test_fetch_owned_and_collaboarating_projects_with_page_2_nd_per_page_with_direction_desc(
+    def test_fetch_owned_and_collaborating_projects_with_page_2_nd_per_page_with_direction_desc(
         self,
     ):
         ProjectFactory.create(collaborators=[self.owner], owner='another@email.com')
@@ -355,7 +355,7 @@ class TestProjects(TestProjectBase):
 
     @freeze_time('2020-06-02 08:57:53')
     @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
-    def test_fetch_owned_and_collaboarating_projects_with_page_2_and_per_page_with_direction_asc(
+    def test_fetch_owned_and_collaborating_projects_with_page_2_and_per_page_with_direction_asc(
         self,
     ):
         ProjectFactory.create(collaborators=[self.owner], owner='another@email.com')

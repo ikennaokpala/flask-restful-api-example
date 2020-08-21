@@ -10,7 +10,6 @@ class Environment:
     METADATA_SHIPMENTS_FILE_COLUMNS = os.getenv('METADATA_SHIPMENTS_FILE_COLUMNS', 'DATE shipped,MATRIX_BOX,MATRIX_LOCN,ORGM,ISOLATE_NBR').split(',')
     DEBUG = False
     TEST = False
-    TEST_PROGRESS_VERBOSITY = 1
     SQLALCHEMY_DATABASE_URI = ''
     PRESERVE_CONTEXT_ON_EXCEPTION = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -25,7 +24,6 @@ class Test(Environment):
     DEBUG = True
     TESTING = True
     SEED_DATA_COUNT = int(os.getenv('SEED_DATA_COUNT', 100))
-    TEST_PROGRESS_VERBOSITY = int(os.getenv('TEST_PROGRESS_VERBOSITY', 1))
     SQLALCHEMY_DATABASE_URI = os.environ.get('LSARP_DATABASE_URL') + '/lsarp_test'
 
 class Production(Environment):
