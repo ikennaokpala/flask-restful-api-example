@@ -23,8 +23,8 @@ data_type_MZXml_field = endpoint.model(
     },
 )
 upload_parser = endpoint.parser()
-upload_parser.add_argument('file', location='files',
-                            type='file', required=True)
+upload_parser.add_argument('file', location='files', type='file', required=True)
+
 
 @endpoint.route('/mzxml_file')
 @endpoint.route('/mzxml_files')
@@ -40,12 +40,9 @@ upload_parser.add_argument('file', location='files',
 class MZXmlDataType(Resource):
     @endpoint.doc(
         description='Associate mzXML file(s) with a project via data type group',
-        responses={
-            400: 'Bad request',
-            404: 'Not Found',
-        },
+        responses={400: 'Bad request', 404: 'Not Found',},
     )
-    @endpoint.response(201,'File(s) added to project', data_type_MZXml_field )
+    @endpoint.response(201, 'File(s) added to project', data_type_MZXml_field)
     @endpoint.expect(upload_parser)
     def put(self, slug, data_type_slug):
         try:
