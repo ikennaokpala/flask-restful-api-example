@@ -345,6 +345,33 @@ class TestUpdateADataType(TestDataTypeBase):
 
             self.assertEqual(outcome.name, self.params['name'])
             self.assertEqual(outcome.description, self.params['description'])
+
+    @freeze_time('2020-06-02 08:57:53')
+    def test_update_a_data_type_when_name_has_not_changed(self):
+        current_data_type = self.data_types[0]
+        self.params = {
+            'name': current_data_type.name,
+            'description': 'Updated description',
+            'data_formats': ['mzXML'],
+        }
+
+        with self.client as rdbclient:
+            response = rdbclient.put(
+                self.project_path + '/data_types/' + current_data_type.slug,
+                headers=self.headers,
+                json=self.params,
+            )
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.content_type, 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            self.assertEqual(outcome, {'slug': current_data_type.slug})
+
+            outcome = DataType.query.filter_by(slug=outcome['slug']).first()
+
+            self.assertEqual(outcome.name, current_data_type.name)
+            self.assertEqual(outcome.description, self.params['description'])
             self.assertEqual(outcome.data_formats, self.params['data_formats'])
 
     @freeze_time('2020-06-02 08:57:53')
