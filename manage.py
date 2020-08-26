@@ -7,7 +7,7 @@ from flask_migrate import Migrate
 from flask_restx import Api
 
 from app.main import create_app, db
-from app.main.config.tasks.db import cli as db_cli
+from app.main.config.tasks.db import cli as commands
 from app.main.config.v1.routes import v1_blueprint, RouterV1
 
 MIGRATION_DIR = os.path.join('app', 'main', 'config', 'db', 'migrations')
@@ -41,7 +41,7 @@ def cli():
     pass
 
 
-app.cli.add_command(db_cli)
+app.cli.add_command(commands)
 
 if __name__ == '__main__':
     cli()

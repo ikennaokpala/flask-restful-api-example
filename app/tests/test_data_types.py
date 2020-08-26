@@ -1,3 +1,4 @@
+import re
 import json
 import factory
 import unittest
@@ -29,7 +30,7 @@ class TestDataTypeBase(BaseTestCase):
             'description': self.description,
             'data_formats': self.data_formats,
         }
-        self.expected = {'slug': 'metabolomics-datatype-3'}
+        self.expected = {'slug': 'metabolomics-datatype-factory-3'}
         self.expected.update(self.params)
         self.data_formats.sort()
 
@@ -65,12 +66,16 @@ class TestCreateDataType(TestDataTypeBase):
 
             outcome = json.loads(response.data.decode())
             self.expected.update({'description': None})
-            self.assertEqual(outcome, self.expected)
+            self.assertTrue(
+                re.match(r'^metabolomics-datatype-[a-f0-9]{8}$', outcome['slug'])
+            )
 
             results = DataType.query.filter_by(slug=outcome['slug'])
             outcome = results.first()
             self.assertEqual(outcome.name, self.params['name'])
-            self.assertEqual(outcome.slug, self.expected['slug'])
+            self.assertTrue(
+                re.match(r'^metabolomics-datatype-[a-f0-9]{8}$', outcome.slug)
+            )
             self.assertEqual(outcome.project.slug, self.project.slug)
             self.assertEqual(outcome.description, None)
             self.assertEqual(outcome.data_formats, self.params['data_formats'])
@@ -107,12 +112,16 @@ class TestCreateDataType(TestDataTypeBase):
             self.assertEqual(response.content_type, 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertEqual(outcome, self.expected)
+            self.assertTrue(
+                re.match(r'^metabolomics-datatype-[a-f0-9]{8}$', outcome['slug'])
+            )
 
             results = DataType.query.filter_by(slug=outcome['slug'])
             outcome = results.first()
             self.assertEqual(outcome.name, self.params['name'])
-            self.assertEqual(outcome.slug, self.expected['slug'])
+            self.assertTrue(
+                re.match(r'^metabolomics-datatype-[a-f0-9]{8}$', outcome.slug)
+            )
             self.assertEqual(outcome.project.slug, self.project.slug)
             self.assertEqual(outcome.description, self.params['description'])
             self.assertEqual(outcome.data_formats, self.params['data_formats'])
@@ -138,12 +147,12 @@ class TestCreateDataType(TestDataTypeBase):
             self.assertEqual(response.content_type, 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertEqual(outcome, self.expected)
+            self.assertTrue(re.match(r'^updated-name-[a-f0-9]{8}$', outcome['slug']))
 
             results = DataType.query.filter_by(slug=outcome['slug'])
             outcome = results.first()
             self.assertEqual(outcome.name, self.expected['name'])
-            self.assertEqual(outcome.slug, self.expected['slug'])
+            self.assertTrue(re.match(r'^updated-name-[a-f0-9]{8}$', outcome.slug))
             self.assertEqual(outcome.project.slug, self.project.slug)
             self.assertEqual(outcome.description, self.expected['description'])
             self.assertEqual(outcome.data_formats, self.expected['data_formats'])
@@ -162,12 +171,16 @@ class TestCreateDataType(TestDataTypeBase):
             self.assertEqual(response.content_type, 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertEqual(outcome, self.expected)
+            self.assertTrue(
+                re.match(r'^metabolomics-datatype-[a-f0-9]{8}$', outcome['slug'])
+            )
 
             results = DataType.query.filter_by(slug=outcome['slug'])
             outcome = results.first()
             self.assertEqual(outcome.name, self.params['name'])
-            self.assertEqual(outcome.slug, self.expected['slug'])
+            self.assertTrue(
+                re.match(r'^metabolomics-datatype-[a-f0-9]{8}$', outcome.slug)
+            )
             self.assertEqual(outcome.project.slug, self.project.slug)
             self.assertEqual(outcome.description, self.params['description'])
             self.assertEqual(outcome.data_formats, self.params['data_formats'])
@@ -198,7 +211,12 @@ class TestDataTypes(TestDataTypeBase):
             self.assertEqual(outcome['total'], 3)
 
             self.assertEqual(len(data_types), 2)
-            self.assertEqual(data_types[0]['slug'], 'metabolomics-datatype-factory-2')
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-datatype-factory-[0-9]{1,4}-[a-f0-9]{8}$',
+                    data_types[0]['slug'],
+                )
+            )
 
     @freeze_time('2020-06-02 08:57:53')
     @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
@@ -222,7 +240,12 @@ class TestDataTypes(TestDataTypeBase):
             self.assertEqual(outcome['per_page'], 2)
             self.assertEqual(outcome['total'], 3)
             self.assertEqual(len(data_types), 2)
-            self.assertEqual(data_types[0]['slug'], 'metabolomics-datatype-factory-2')
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-datatype-factory-[0-9]{1,4}-[a-f0-9]{8}$',
+                    data_types[0]['slug'],
+                )
+            )
 
     @freeze_time('2020-06-02 08:57:53')
     @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
@@ -244,7 +267,12 @@ class TestDataTypes(TestDataTypeBase):
             self.assertEqual(outcome['per_page'], 2)
             self.assertEqual(outcome['total'], 3)
             self.assertEqual(len(data_types), 2)
-            self.assertEqual(data_types[0]['slug'], 'metabolomics-datatype-factory')
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-datatype-factory-[0-9]{1,4}-[a-f0-9]{8}$',
+                    data_types[0]['slug'],
+                )
+            )
 
     @freeze_time('2020-06-02 08:57:53')
     @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
@@ -268,7 +296,12 @@ class TestDataTypes(TestDataTypeBase):
             self.assertEqual(outcome['per_page'], 2)
             self.assertEqual(outcome['total'], 3)
             self.assertEqual(len(data_types), 1)
-            self.assertEqual(data_types[0]['slug'], 'metabolomics-datatype-factory')
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-datatype-factory-[0-9]{1,4}-[a-f0-9]{8}$',
+                    data_types[0]['slug'],
+                )
+            )
 
     @freeze_time('2020-06-02 08:57:53')
     @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
@@ -290,7 +323,12 @@ class TestDataTypes(TestDataTypeBase):
             self.assertEqual(outcome['per_page'], 2)
             self.assertEqual(outcome['total'], 3)
             self.assertEqual(len(data_types), 1)
-            self.assertEqual(data_types[0]['slug'], 'metabolomics-datatype-factory-2')
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-datatype-factory-[0-9]{1,4}-[a-f0-9]{8}$',
+                    data_types[0]['slug'],
+                )
+            )
 
 
 class TestFetchADataType(TestDataTypeBase):
@@ -339,12 +377,13 @@ class TestUpdateADataType(TestDataTypeBase):
             self.assertEqual(response.content_type, 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertEqual(outcome, {'slug': 'updated-name'})
+            self.assertTrue(re.match(r'^updated-name-[a-f0-9]{8}$', outcome['slug']))
 
             outcome = DataType.query.filter_by(slug=outcome['slug']).first()
 
             self.assertEqual(outcome.name, self.params['name'])
             self.assertEqual(outcome.description, self.params['description'])
+            self.assertTrue(re.match(r'^updated-name-[a-f0-9]{8}$', outcome.slug))
 
     @freeze_time('2020-06-02 08:57:53')
     def test_update_a_data_type_when_name_has_not_changed(self):
@@ -366,13 +405,24 @@ class TestUpdateADataType(TestDataTypeBase):
             self.assertEqual(response.content_type, 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertEqual(outcome, {'slug': current_data_type.slug})
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-datatype-factory-[0-9]{1,4}-[a-f0-9]{8}$',
+                    outcome['slug'],
+                )
+            )
 
             outcome = DataType.query.filter_by(slug=outcome['slug']).first()
 
             self.assertEqual(outcome.name, current_data_type.name)
             self.assertEqual(outcome.description, self.params['description'])
             self.assertEqual(outcome.data_formats, self.params['data_formats'])
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-datatype-factory-[0-9]{1,4}-[a-f0-9]{8}$',
+                    outcome.slug,
+                )
+            )
 
     @freeze_time('2020-06-02 08:57:53')
     def test_update_a_data_type_some_invalid_data_formats_are_sent(self):
@@ -393,13 +443,14 @@ class TestUpdateADataType(TestDataTypeBase):
             self.assertEqual(response.content_type, 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertEqual(outcome, {'slug': 'updated-name'})
+            self.assertTrue(re.match(r'^updated-name-[a-f0-9]{8}$', outcome['slug']))
 
             outcome = DataType.query.filter_by(slug=outcome['slug']).first()
 
             self.assertEqual(outcome.name, self.params['name'])
             self.assertEqual(outcome.description, self.params['description'])
             self.assertEqual(outcome.data_formats, ['mzXML'])
+            self.assertTrue(re.match(r'^updated-name-[a-f0-9]{8}$', outcome.slug))
 
 
 class TestDeleteADataType(TestDataTypeBase):

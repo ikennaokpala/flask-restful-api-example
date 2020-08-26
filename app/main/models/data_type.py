@@ -3,7 +3,6 @@ import datetime
 from sqlalchemy.dialects import postgresql as pg
 from dataclasses import dataclass
 
-from app.main.lib.slugifier import Slugifier
 from app.main import db
 
 
@@ -11,7 +10,6 @@ from app.main import db
 class DataType(db.Model):
     __tablename__ = 'data_types'
 
-    id: int
     name: str
     slug: str
     description: str
@@ -48,10 +46,6 @@ class DataType(db.Model):
         onupdate=datetime.datetime.now,
         index=True,
     )
-
-    def __init__(self, *args, **kwargs):
-        super(DataType, self).__init__(*args, **kwargs)
-        self.slug = Slugifier(self, self.name).call()
 
     @property
     def project_slug(self) -> str:

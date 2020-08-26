@@ -1,3 +1,4 @@
+import re
 import unittest
 
 from app.main import db
@@ -15,7 +16,7 @@ class TestSlugifyingProject(BaseTestCase):
         self.project = ProjectFactory.create(name='New Project')
 
         outcome = Project.query.order_by(Project.id.desc()).first()
-        self.assertEqual(outcome.slug, 'new-project')
+        self.assertTrue(re.match(r'^new-project-[a-f0-9]{8}$', outcome.slug))
 
     def test_when_new_project_is_created_with_the_same_name_with_an_existing_project(
         self,
@@ -24,7 +25,9 @@ class TestSlugifyingProject(BaseTestCase):
         self.project = ProjectFactory.create(name='Project Name Already Taken')
 
         outcome = Project.query.order_by(Project.id.desc()).first()
-        self.assertEqual(outcome.slug, 'project-name-already-taken-1')
+        self.assertTrue(
+            re.match(r'^project-name-already-taken-[a-f0-9]{8}$', outcome.slug)
+        )
 
     def test_when_new_project_is_created_with_the_same_name_with_an_existing_projects(
         self,
@@ -34,7 +37,9 @@ class TestSlugifyingProject(BaseTestCase):
         self.project = ProjectFactory.create(name='Project Name Already Taken')
 
         outcome = Project.query.order_by(Project.id.desc()).first()
-        self.assertEqual(outcome.slug, 'project-name-already-taken-2')
+        self.assertTrue(
+            re.match(r'^project-name-already-taken-[a-f0-9]{8}$', outcome.slug)
+        )
 
     def test_when_existing_project_name_is_updated(self):
         project = Project.query.first()
@@ -45,7 +50,7 @@ class TestSlugifyingProject(BaseTestCase):
 
         outcome = Project.query.order_by(Project.id.desc()).first()
         self.assertEqual(outcome.name, 'Updated Project Name')
-        self.assertEqual(outcome.slug, 'updated-project-name')
+        self.assertTrue(re.match(r'^updated-project-name-[a-f0-9]{8}$', outcome.slug))
 
     def test_when_existing_project_name_is_updated_with_the_same_name_with_an_existing_project(
         self,
@@ -61,7 +66,9 @@ class TestSlugifyingProject(BaseTestCase):
 
         outcome = Project.query.order_by(Project.id.desc()).first()
         self.assertEqual(outcome.name, 'Project Name Already Taken')
-        self.assertEqual(outcome.slug, 'project-name-already-taken-1')
+        self.assertTrue(
+            re.match(r'^project-name-already-taken-[a-f0-9]{8}$', outcome.slug)
+        )
 
     def test_when_existing_project_name_is_updated_with_the_same_name_with_an_existing_projects(
         self,
@@ -78,4 +85,6 @@ class TestSlugifyingProject(BaseTestCase):
 
         outcome = Project.query.order_by(Project.id.desc()).first()
         self.assertEqual(outcome.name, 'Project Name Already Taken')
-        self.assertEqual(outcome.slug, 'project-name-already-taken-2')
+        self.assertTrue(
+            re.match(r'^project-name-already-taken-[a-f0-9]{8}$', outcome.slug)
+        )
