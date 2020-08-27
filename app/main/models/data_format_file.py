@@ -11,7 +11,6 @@ class DataFormatFile(db.Model):
     MNEMONIC = 'data_format_files'
     __tablename__ = MNEMONIC
 
-    id: int
     name: str
     extension: str
     type: str

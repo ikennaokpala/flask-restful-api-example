@@ -3,7 +3,6 @@ import datetime
 from sqlalchemy.dialects import postgresql as pg
 from dataclasses import dataclass
 
-from app.main.lib.slugifier import Slugifier
 from app.main import db
 
 
@@ -11,7 +10,6 @@ from app.main import db
 class Project(db.Model):
     __tablename__ = 'projects'
 
-    id: int
     name: str
     description: str
     slug: str
@@ -26,7 +24,7 @@ class Project(db.Model):
     owner = db.Column(db.String, index=True, nullable=False)
     collaborators = db.Column(pg.ARRAY(db.String))
     data_types = db.relationship(
-        'DataType', cascade='all,delete', backref='projects', lazy='joined'
+        'DataType', cascade='all,delete-orphan', backref='projects', lazy='joined'
     )
     created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
     updated_at = db.Column(
@@ -35,7 +33,3 @@ class Project(db.Model):
         onupdate=datetime.datetime.now,
         index=True,
     )
-
-    def __init__(self, *args, **kwargs):
-        super(Project, self).__init__(*args, **kwargs)
-        self.slug = Slugifier(self, self.name).call()

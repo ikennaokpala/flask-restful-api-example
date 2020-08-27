@@ -46,21 +46,21 @@ To run all the tests
 
 To run a single the test file
 
-    $ make test <name_of_test_file>
+    $ make test <path/to/name_of_test_file>
 
 Example: 
     $ make test app/tests/test_projects.py
 
 To run a single the test class
 
-    $ make test <name_of_test_file>::TestClass
+    $ make test <path/to/name_of_test_file>::TestClass
 
 Example: 
     $ make test app/tests/test_projects.py::TestProjects
 
 To run a single the test method
 
-    $ make test <name_of_test_file>::TestClass::test_method
+    $ make test <path/to/name_of_test_file>::TestClass::test_method
 
 Example:
 

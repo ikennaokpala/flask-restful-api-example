@@ -3,7 +3,6 @@ import datetime
 from sqlalchemy.dialects import postgresql as pg
 from dataclasses import dataclass
 
-from app.main.lib.slugifier import Slugifier
 from app.main import db
 
 
@@ -11,7 +10,6 @@ from app.main import db
 class DataType(db.Model):
     __tablename__ = 'data_types'
 
-    id: int
     name: str
     slug: str
     description: str
@@ -30,14 +28,14 @@ class DataType(db.Model):
     project = db.relationship('Project', back_populates='data_types')
     data_formats = db.Column(pg.ARRAY(db.String))
     data_format_files = db.relationship(
-        'DataFormatFile', cascade='all,delete', lazy='joined'
+        'DataFormatFile', cascade='all,delete-orphan', lazy='joined'
     )
     mzxml_files = db.relationship(
-        'MZXmlFile', cascade='all,delete', backref='data_types', lazy='joined'
+        'MZXmlFile', cascade='all,delete-orphan', backref='data_types', lazy='joined'
     )
     metadata_shipment_files = db.relationship(
         'MetadataShipmentFile',
-        cascade='all,delete',
+        cascade='all,delete-orphan',
         backref='data_types',
         lazy='joined',
     )
@@ -48,10 +46,6 @@ class DataType(db.Model):
         onupdate=datetime.datetime.now,
         index=True,
     )
-
-    def __init__(self, *args, **kwargs):
-        super(DataType, self).__init__(*args, **kwargs)
-        self.slug = Slugifier(self, self.name).call()
 
     @property
     def project_slug(self) -> str:

@@ -1,3 +1,4 @@
+import re
 import json
 import factory
 import unittest
@@ -129,14 +130,18 @@ class TestCreateProject(TestProjectBase):
             self.assertTrue(response.content_type == 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertTrue(outcome == self.expected)
+            self.assertTrue(
+                re.match(r'^metabolomics-project-1-[a-f0-9]{8}$', outcome['slug'])
+            )
 
             results = Project.query.filter_by(slug=outcome['slug'])
             outcome = results.first()
             self.assertTrue(outcome.name == self.params['name'])
             self.assertTrue(outcome.description == self.params['description'])
             self.assertTrue(outcome.collaborators == ['collab@ucal.ca'])
-            self.assertTrue(outcome.slug == self.expected['slug'])
+            self.assertTrue(
+                re.match(r'^metabolomics-project-1-[a-f0-9]{8}$', outcome.slug)
+            )
             self.assertTrue(outcome.owner == self.owner)
             self.assertTrue(results.count() == 1)
 
@@ -167,13 +172,17 @@ class TestCreateProject(TestProjectBase):
             self.assertTrue(response.content_type == 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertTrue(outcome == self.expected)
+            self.assertTrue(
+                re.match(r'^metabolomics-project-1-[a-f0-9]{8}$', outcome['slug'])
+            )
             results = Project.query.filter_by(slug=outcome['slug'])
             outcome = results.first()
             self.assertTrue(outcome.name == self.params['name'])
             self.assertTrue(outcome.description == None)
             self.assertTrue(outcome.collaborators == [])
-            self.assertTrue(outcome.slug == self.expected['slug'])
+            self.assertTrue(
+                re.match(r'^metabolomics-project-1-[a-f0-9]{8}$', outcome.slug)
+            )
             self.assertTrue(outcome.owner == self.owner)
             self.assertTrue(results.count() == 1)
 
@@ -186,13 +195,17 @@ class TestCreateProject(TestProjectBase):
             self.assertEqual(response.status_code, 201)
             self.assertTrue(response.content_type == 'application/json')
             outcome = json.loads(response.data.decode())
-            self.assertTrue(outcome == self.expected)
+            self.assertTrue(
+                re.match(r'^metabolomics-project-1-[a-f0-9]{8}$', outcome['slug'])
+            )
             results = Project.query.filter_by(slug=outcome['slug'])
             outcome = results.first()
             self.assertTrue(outcome.name == self.params['name'])
             self.assertTrue(outcome.description == 'desc')
             self.assertTrue(outcome.collaborators == [])
-            self.assertTrue(outcome.slug == self.expected['slug'])
+            self.assertTrue(
+                re.match(r'^metabolomics-project-1-[a-f0-9]{8}$', outcome.slug)
+            )
             self.assertTrue(outcome.owner == self.owner)
             self.assertTrue(results.count() == 1)
 
@@ -223,13 +236,17 @@ class TestCreateProject(TestProjectBase):
             self.assertTrue(response.content_type == 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertTrue(outcome == self.expected)
+            self.assertTrue(
+                re.match(r'^metabolomics-project-1-[a-f0-9]{8}$', outcome['slug'])
+            )
 
             results = Project.query.filter_by(slug=outcome['slug'])
             outcome = results.first()
             self.assertTrue(outcome.name == self.params['name'])
             self.assertTrue(outcome.description == self.params['description'])
-            self.assertTrue(outcome.slug == self.expected['slug'])
+            self.assertTrue(
+                re.match(r'^metabolomics-project-1-[a-f0-9]{8}$', outcome.slug)
+            )
             self.assertTrue(outcome.owner == self.owner)
             self.assertTrue(results.count() == 1)
 
@@ -322,7 +339,12 @@ class TestProjects(TestProjectBase):
             self.assertTrue(outcome['per_page'] == 2)
             self.assertTrue(outcome['total'] == 3)
             self.assertTrue(len(projects) == 2)
-            self.assertTrue(projects[0]['slug'] == self.expected['slug'])
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-project-[0-9]{1,4}-[a-f0-9]{8}$',
+                    projects[0]['slug'],
+                )
+            )
 
     @freeze_time('2020-06-02 08:57:53')
     @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
@@ -351,7 +373,12 @@ class TestProjects(TestProjectBase):
             self.assertTrue(outcome['per_page'] == 2)
             self.assertTrue(outcome['total'] == 3)
             self.assertTrue(len(projects) == 1)
-            self.assertTrue(projects[0]['slug'] == self.expected['slug'])
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-project-[0-9]{1,4}-[a-f0-9]{8}$',
+                    projects[0]['slug'],
+                )
+            )
 
     @freeze_time('2020-06-02 08:57:53')
     @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
@@ -420,22 +447,54 @@ class TestUpdateAProject(TestProjectBase):
 
         with self.client as rdbclient:
             response = rdbclient.put(
-                '/v1/projects/metabolomics-project-1',
+                '/v1/projects/' + self.another_project.slug,
                 headers=self.headers,
                 json=self.params,
             )
 
             self.assertEqual(response.status_code, 200)
-            self.assertTrue(response.content_type == 'application/json')
+            self.assertEqual(response.content_type, 'application/json')
 
             outcome = json.loads(response.data.decode())
-            self.assertTrue(outcome == {'slug': 'updated-name'})
+            self.assertTrue(re.match(r'^updated-name-[a-f0-9]{8}$', outcome['slug']))
 
             outcome = Project.query.filter_by(slug=outcome['slug']).first()
 
-            self.assertTrue(outcome.name == self.params['name'])
-            self.assertTrue(outcome.description == self.params['description'])
-            self.assertTrue(outcome.collaborators == self.params['collaborators'])
+            self.assertEqual(outcome.name, self.params['name'])
+            self.assertEqual(outcome.description, self.params['description'])
+            self.assertEqual(outcome.collaborators, self.params['collaborators'])
+
+    @freeze_time('2020-06-02 08:57:53')
+    def test_update_a_project_when_name_has_not_changed(self):
+        self.another_project = ProjectFactory.create(owner='another@anotherexample.com')
+        self.params = {
+            'name': self.another_project.name,
+            'description': 'Updated description',
+            'collaborators': ['update@ucal.ca'],
+        }
+
+        with self.client as rdbclient:
+            response = rdbclient.put(
+                '/v1/projects/' + self.another_project.slug,
+                headers=self.headers,
+                json=self.params,
+            )
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.content_type, 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-project-[0-9]{1,4}-[a-f0-9]{8}$', outcome['slug']
+                )
+            )
+
+            outcome = Project.query.filter_by(slug=outcome['slug']).first()
+
+            self.assertEqual(outcome.name, self.another_project.name)
+            self.assertEqual(outcome.description, self.params['description'])
+            self.assertEqual(outcome.collaborators, self.params['collaborators'])
 
     @freeze_time('2020-06-02 08:57:53')
     def test_update_a_project_when_not_found(self):
@@ -453,7 +512,7 @@ class TestUpdateAProject(TestProjectBase):
             )
 
             self.assertEqual(response.status_code, 404)
-            self.assertTrue(response.content_type == 'application/json')
+            self.assertEqual(response.content_type, 'application/json')
 
             outcome = json.loads(response.data.decode())
             self.assertTrue(outcome['message'] != '')
@@ -472,13 +531,13 @@ class TestDeleteAProject(TestProjectBase):
             )
 
             self.assertEqual(response.status_code, 204)
-            self.assertTrue(response.content_type == 'application/json')
+            self.assertEqual(response.content_type, 'application/json')
 
             outcome = response.data.decode()
-            self.assertTrue(outcome == '')
+            self.assertEqual(outcome, '')
 
             outcome = Project.query.filter_by(slug='metabolomics-project-1').first()
-            self.assertTrue(outcome == None)
+            self.assertEqual(outcome, None)
 
 
 if __name__ == '__main__':

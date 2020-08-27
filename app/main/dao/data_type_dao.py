@@ -3,7 +3,6 @@ from werkzeug.exceptions import UnprocessableEntity
 
 from app.main.models.data_type import DataType
 from app.main.models.project import Project
-from app.main.lib.slugifier import Slugifier
 from app.main import db
 
 
@@ -40,7 +39,6 @@ class DataTypeDAO:
         self.data_type.name = self.name
         self.data_type.description = self.description
         self.data_type.data_formats = self.__valid_data_formats()
-        self.data_type.slug = self.slug = Slugifier(self.data_type, self.name).call()
 
         db.session.flush()
         db.session.commit()

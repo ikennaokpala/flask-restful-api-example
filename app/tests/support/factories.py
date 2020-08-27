@@ -94,7 +94,7 @@ class DataTypeFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = DataType
         sqlalchemy_session = db.session
 
-    name = 'Metabolomics DataType Factory'
+    name = factory.Sequence(lambda n: 'Metabolomics DataType Factory {}'.format(n + 1))
     description = 'A particular kind of data item, as defined by the file formats (mzXML, xlsx) and values it can take in.'
     data_formats = ['mzXML', 'xlsx', 'csv']
 
@@ -104,16 +104,18 @@ class ProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = Project
         sqlalchemy_session = db.session
 
-    name = 'Metabolomics Project 1'
+    name = factory.Sequence(lambda n: 'Metabolomics Project {}'.format(n + 1))
     description = 'Very good science based description'
     owner = 'test@example.com'
     collaborators = [
         'collab@ucal.ca',
         'kaylan.horne@westgrid.ca',
         'dev@westgrid.ca',
+        'ikenna.okpala@computecanada.ca',
         'ikenna.okpala@westgrid.ca',
         'swacker@ucalgary.ca',
         'patrick.mann@westgrid.ca',
+        'patrick.mann@computecanada.ca',
         'snoskov@ucalgary.ca',
         'ian.lewis2@ucalgary.ca',
         'ian.percel@ucalgary.ca',
@@ -139,7 +141,7 @@ class DataTypeWithProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = DataType
         sqlalchemy_session = db.session
 
-    name = 'Metabolomics DataType Factory'
+    name = factory.Sequence(lambda n: 'Metabolomics DataType Factory {}'.format(n + 1))
     description = 'A particular kind of data item, as defined by the file formats (mzXML, xlsx) and values it can take in.'
 
     @classmethod
