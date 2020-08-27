@@ -4,10 +4,13 @@ import factory
 import unittest
 import dataclasses
 
+from app.main import db
+
 from freezegun import freeze_time
 from unittest.mock import patch
 from flask import current_app
 
+from app.main.models.project import Project
 from app.main.models.data_type import DataType
 from app.tests.base_test_case import BaseTestCase
 from app.tests.support.factories import SessionFactory
@@ -323,6 +326,174 @@ class TestDataTypes(TestDataTypeBase):
             self.assertEqual(outcome['per_page'], 2)
             self.assertEqual(outcome['total'], 3)
             self.assertEqual(len(data_types), 1)
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-datatype-factory-[0-9]{1,4}-[a-f0-9]{8}$',
+                    data_types[0]['slug'],
+                )
+            )
+
+
+class TestDataTypesWithUser(TestDataTypeBase):
+    def setUp(self):
+        super(TestDataTypesWithUser, self).setUp()
+        ProjectFactory.create(data_types = 1,owner = 'another.email@test.com', collaborators = ['none@none.com'])
+        ProjectFactory.create(data_types = 1,owner = 'another.email@test.com', collaborators = ['test@example.com'])
+
+    @freeze_time('2020-06-02 08:57:53')
+    @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
+    def test_fetch_all_data_types_without_page_and_per_page_and_direction(self):
+
+        with self.client as rdbclient:
+            response = rdbclient.get('/v1/data_types', headers=self.headers)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.content_type, 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            data_types = outcome['data_types']
+
+            self.assertEqual(outcome['page'], 1)
+            self.assertEqual(outcome['per_page'], 2)
+            self.assertEqual(outcome['total'], 4)
+
+            self.assertEqual(len(data_types), 2)
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-datatype-factory-[0-9]{1,4}-[a-f0-9]{8}$',
+                    data_types[0]['slug'],
+                )
+            )
+
+    @freeze_time('2020-06-02 08:57:53')
+    @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
+    def test_fetch_data_types_with_page_1_and_per_page_with_direction_desc(self):
+
+        with self.client as rdbclient:
+            response = rdbclient.get(
+                '/v1/data_types/' + '?page=1&per_page=2&direction=desc',
+                headers=self.headers,
+            )
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.content_type, 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            data_types = outcome['data_types']
+
+            self.assertEqual(outcome['page'], 1)
+            self.assertEqual(outcome['per_page'], 2)
+            self.assertEqual(outcome['total'], 4)
+            self.assertEqual(len(data_types), 2)
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-datatype-factory-[0-9]{1,4}-[a-f0-9]{8}$',
+                    data_types[0]['slug'],
+                )
+            )
+
+    @freeze_time('2020-06-02 08:57:53')
+    @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
+    def test_fetch_data_types_with_page_1_and_per_page_with_direction_asc(self):
+
+        with self.client as rdbclient:
+            response = rdbclient.get(
+                '/v1/data_types' + '?page=1&per_page=2&direction=asc',
+                headers=self.headers,
+            )
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.content_type, 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            data_types = outcome['data_types']
+
+            self.assertEqual(outcome['page'], 1)
+            self.assertEqual(outcome['per_page'], 2)
+            self.assertEqual(outcome['total'], 4)
+            self.assertEqual(len(data_types), 2)
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-datatype-factory-[0-9]{1,4}-[a-f0-9]{8}$',
+                    data_types[0]['slug'],
+                )
+            )
+
+    @freeze_time('2020-06-02 08:57:53')
+    @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
+    def test_fetch_data_types_with_page_2_nd_per_page_with_direction_desc(self):
+
+        with self.client as rdbclient:
+            response = rdbclient.get(
+                '/v1/data_types/' + '?page=2&per_page=2&direction=desc',
+                headers=self.headers,
+            )
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.content_type, 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            data_types = outcome['data_types']
+
+            self.assertEqual(outcome['page'], 2)
+            self.assertEqual(outcome['per_page'], 2)
+            self.assertEqual(outcome['total'], 4)
+            self.assertEqual(len(data_types), 2)
+            self.assertTrue(
+                re.match(
+                    r'^metabolomics-datatype-factory-[0-9]{1,4}-[a-f0-9]{8}$',
+                    data_types[0]['slug'],
+                )
+            )
+
+    @freeze_time('2020-06-02 08:57:53')
+    @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
+    def test_fetch_when_user_has_no_data_types(self):
+        for project in Project.query.all():
+            project.owner = 'not_current_user@example.com'
+            project.collaborators = []
+
+            db.session.flush()
+            db.session.commit()
+
+
+        with self.client as rdbclient:
+            response = rdbclient.get(
+                '/v1/data_types',
+                headers=self.headers,
+            )
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.content_type, 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            data_types = outcome['data_types']
+
+            self.assertEqual(outcome['page'], 1)
+            self.assertEqual(outcome['per_page'], 2)
+            self.assertEqual(outcome['total'], 0)
+            self.assertEqual(len(data_types), 0)
+
+    @freeze_time('2020-06-02 08:57:53')
+    @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
+    def test_fetch_data_types_with_page_2_and_per_page_with_direction_asc(self):
+
+        with self.client as rdbclient:
+            response = rdbclient.get(
+                '/v1/data_types' + '?page=2&per_page=2&direction=asc',
+                headers=self.headers,
+            )
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.content_type, 'application/json')
+
+            outcome = json.loads(response.data.decode())
+            data_types = outcome['data_types']
+
+            self.assertEqual(outcome['page'], 2)
+            self.assertEqual(outcome['per_page'], 2)
+            self.assertEqual(outcome['total'], 4)
+            self.assertEqual(len(data_types), 2)
             self.assertTrue(
                 re.match(
                     r'^metabolomics-datatype-factory-[0-9]{1,4}-[a-f0-9]{8}$',
