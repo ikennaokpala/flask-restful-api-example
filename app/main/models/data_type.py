@@ -28,14 +28,14 @@ class DataType(db.Model):
     project = db.relationship('Project', back_populates='data_types')
     data_formats = db.Column(pg.ARRAY(db.String))
     data_format_files = db.relationship(
-        'DataFormatFile', cascade='all,delete', lazy='joined'
+        'DataFormatFile', cascade='all,delete-orphan', lazy='joined'
     )
     mzxml_files = db.relationship(
-        'MZXmlFile', cascade='all,delete', backref='data_types', lazy='joined'
+        'MZXmlFile', cascade='all,delete-orphan', backref='data_types', lazy='joined'
     )
     metadata_shipment_files = db.relationship(
         'MetadataShipmentFile',
-        cascade='all,delete',
+        cascade='all,delete-orphan',
         backref='data_types',
         lazy='joined',
     )

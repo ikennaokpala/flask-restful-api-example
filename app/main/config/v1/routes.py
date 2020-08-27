@@ -11,6 +11,9 @@ from app.main.controllers.v1.projects_controller import endpoint as projects_end
 from app.main.controllers.v1.data_types_controller import (
     endpoint as data_types_endpoint,
 )
+from app.main.controllers.v1.data_types_with_user_controller import (
+    endpoint as data_types_with_user_endpoint,
+)
 from app.main.controllers.v1.data_formats_controller import (
     endpoint as data_formats_endpoint,
 )
@@ -27,6 +30,7 @@ class RouterV1:
         api.add_namespace(auth_endpoint, path=prefix + '/auth')
         api.add_namespace(projects_endpoint, path=prefix + '/projects')
         api.add_namespace(data_formats_endpoint, path=prefix + '/data_formats')
+        api.add_namespace(data_types_with_user_endpoint, path=prefix + '/data_types')
         api.add_namespace(
             data_types_endpoint, path=prefix + '/projects/<slug>/data_types'
         )

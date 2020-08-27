@@ -24,7 +24,7 @@ class Project(db.Model):
     owner = db.Column(db.String, index=True, nullable=False)
     collaborators = db.Column(pg.ARRAY(db.String))
     data_types = db.relationship(
-        'DataType', cascade='all,delete', backref='projects', lazy='joined'
+        'DataType', cascade='all,delete-orphan', backref='projects', lazy='joined'
     )
     created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
     updated_at = db.Column(
