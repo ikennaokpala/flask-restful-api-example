@@ -22,7 +22,9 @@ class DataTypesWithUserDAO(DataTypesDAO):
         return (
             db.session.query(DataType)
             .join(Project)
-            .filter(or_(Project.owner == self.owner, Project.collaborators.any(self.owner)))
+            .filter(
+                or_(Project.owner == self.owner, Project.collaborators.any(self.owner))
+            )
             .order_by(self.ranker())
             .paginate(self.page, self.per_page, self.error_out, self.max_per_page)
         )

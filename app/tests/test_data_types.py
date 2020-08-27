@@ -337,8 +337,16 @@ class TestDataTypes(TestDataTypeBase):
 class TestDataTypesWithUser(TestDataTypeBase):
     def setUp(self):
         super(TestDataTypesWithUser, self).setUp()
-        ProjectFactory.create(data_types = 1,owner = 'another.email@test.com', collaborators = ['none@none.com'])
-        ProjectFactory.create(data_types = 1,owner = 'another.email@test.com', collaborators = ['test@example.com'])
+        ProjectFactory.create(
+            data_types=1,
+            owner='another.email@test.com',
+            collaborators=['none@none.com'],
+        )
+        ProjectFactory.create(
+            data_types=1,
+            owner='another.email@test.com',
+            collaborators=['test@example.com'],
+        )
 
     @freeze_time('2020-06-02 08:57:53')
     @patch.dict(current_app.config, {'PAGINATION_MAX_PER_PAGE': 2})
@@ -456,12 +464,8 @@ class TestDataTypesWithUser(TestDataTypeBase):
             db.session.flush()
             db.session.commit()
 
-
         with self.client as rdbclient:
-            response = rdbclient.get(
-                '/v1/data_types',
-                headers=self.headers,
-            )
+            response = rdbclient.get('/v1/data_types', headers=self.headers,)
 
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.content_type, 'application/json')
