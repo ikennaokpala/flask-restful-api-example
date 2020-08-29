@@ -107,20 +107,7 @@ class ProjectFactory(factory.alchemy.SQLAlchemyModelFactory):
     name = factory.Sequence(lambda n: 'Metabolomics Project {}'.format(n + 1))
     description = 'Very good science based description'
     owner = 'test@example.com'
-    collaborators = [
-        'collab@ucal.ca',
-        'kaylan.horne@westgrid.ca',
-        'dev@westgrid.ca',
-        'ikenna.okpala@computecanada.ca',
-        'ikenna.okpala@westgrid.ca',
-        'swacker@ucalgary.ca',
-        'patrick.mann@westgrid.ca',
-        'patrick.mann@computecanada.ca',
-        'snoskov@ucalgary.ca',
-        'ian.lewis2@ucalgary.ca',
-        'ian.percel@ucalgary.ca',
-        'fridman@ucalgary.ca',
-    ]
+    collaborators = current_app.config.get('TEST_DATA_COLLABORATORS')
 
     @factory.post_generation
     def data_types(project, create, size, **kwargs):

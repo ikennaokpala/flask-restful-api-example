@@ -1,5 +1,4 @@
 import os
-import unittest
 import click
 
 from flask.cli import FlaskGroup
@@ -21,7 +20,7 @@ Migrate(app, db, directory=MIGRATION_DIR)
 authorizations = {
     'authorization': {'type': 'apiKey', 'in': 'header', 'name': 'Authorization'},
     'accessToken': {'type': 'apiKey', 'in': 'header', 'name': 'X-ACCESS-TOKEN'},
-    'oauth2': {'type': 'oauth2', 'flow': 'accessCode',},
+    'oauth2': {'type': 'oauth2', 'flow': 'accessCode'},
 }
 
 swagger_ui = Api(

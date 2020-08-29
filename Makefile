@@ -44,7 +44,7 @@ apk-packages:
 apt-packages:
 	apt-get install sudo -y --no-install-recommends
 	$(SUDO) apt-get update -y
-	$(SUDO) apt-get install -y python-pip curl wget build-essential liblzma-dev make zlib1g-dev python$(PYTHON_MAIN_VERSION)-dev libevent-dev libblas-dev libatlas-base-dev python$(PYTHON_MAIN_VERSION)-venv pipenv python-psycopg2 libpq-dev -y --no-install-recommends
+	$(SUDO) apt-get install -y python-pip curl wget build-essential liblzma-dev make zlib1g-dev python$(PYTHON_MAIN_VERSION)-dev libevent-dev libblas-dev libatlas-base-dev python$(PYTHON_MAIN_VERSION)-venv python-psycopg2 libpq-dev -y --no-install-recommends
 	$(SUDO) apt-get clean
 	$(SUDO) wget https://www.python.org/ftp/python/$(PYTHON_INSTALL_VERSION)/Python-$(PYTHON_INSTALL_VERSION).tgz && tar xvf Python-$(PYTHON_INSTALL_VERSION).tgz && cd Python-$(PYTHON_INSTALL_VERSION)/ && ./configure --enable-optimizations --with-zlib && make altinstall && cd .. && rm -rf Python-$(PYTHON_INSTALL_VERSION)/
 	$(SUDO) curl --silent https://bootstrap.pypa.io/get-pip.py | python$(PYTHON_VERSION)
