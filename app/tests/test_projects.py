@@ -2,6 +2,7 @@ import re
 import json
 import factory
 import unittest
+import sqlalchemy
 import dataclasses
 
 from freezegun import freeze_time
@@ -523,11 +524,12 @@ class TestDeleteAProject(TestProjectBase):
         super(TestDeleteAProject, self).setUp()
 
     @freeze_time('2020-06-02 08:57:53')
-    def test_delete_a_project(self):
-        self.another_project = ProjectFactory.create(owner='another@anotherexample.com')
+    def test_delete_a_project_without_chidren(self):
+        project_slug_without_chidren = ProjectFactory.create().slug
+
         with self.client as rdbclient:
             response = rdbclient.delete(
-                '/v1/projects/metabolomics-project-1', headers=self.headers
+                '/v1/projects/' + project_slug_without_chidren, headers=self.headers
             )
 
             self.assertEqual(response.status_code, 204)
@@ -536,8 +538,20 @@ class TestDeleteAProject(TestProjectBase):
             outcome = response.data.decode()
             self.assertEqual(outcome, '')
 
-            outcome = Project.query.filter_by(slug='metabolomics-project-1').first()
+            outcome = Project.query.filter_by(slug=project_slug_without_chidren).first()
             self.assertEqual(outcome, None)
+
+    @freeze_time('2020-06-02 08:57:53')
+    def test_delete_a_project_with_children(self):
+        project_slug_with_chidren = DataTypeWithProjectFactory.create(mzxmls=1, metadata_shipments=1).project.slug
+
+        with self.assertRaises(sqlalchemy.exc.IntegrityError):
+            with self.client as rdbclient:
+                response = rdbclient.delete(
+                    '/v1/projects/' + project_slug_with_chidren, headers=self.headers
+                )
+
+
 
 
 if __name__ == '__main__':
