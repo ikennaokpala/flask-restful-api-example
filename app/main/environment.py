@@ -8,6 +8,7 @@ class Environment:
     DATA_FORMAT_FILE_EXTENSIONS = os.getenv('DATA_FORMAT_FILE_EXTENSIONS', 'mzXML,mzML,mzData,xlsx,csv,raw,BAF,DAT,FID,YEP,WIFF,XMS').split(',')
     PAGINATION_MAX_PER_PAGE = int(os.getenv('PAGINATION_MAX_PER_PAGE', 100))
     METADATA_SHIPMENTS_FILE_COLUMNS = os.getenv('METADATA_SHIPMENTS_FILE_COLUMNS', 'DATE shipped,MATRIX_BOX,MATRIX_LOCN,ORGM,ISOLATE_NBR').split(',')
+    TEST_DATA_COLLABORATORS = os.getenv('TEST_DATA_COLLABORATORS', 'dev@westgrid.ca,ikenna.okpala@computecanada.ca,patrick.mann@computecanada.ca,swacker@ucalgary.ca,snoskov@ucalgary.ca,ian.lewis2@ucalgary.ca,ian.percel@ucalgary.ca,fridman@ucalgary.ca').split(',')
     DEBUG = False
     TEST = False
     SQLALCHEMY_DATABASE_URI = ''
@@ -30,6 +31,7 @@ class Production(Environment):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('LSARP_DATABASE_URL') + '/lsarp_production'
     ALLOWED_CORS_CLIENTS = os.getenv('ALLOWED_CORS_CLIENTS', 'https://resistancedb.org,http://proteomics.resistancedb.org').split(',')
+    TEST_DATA_COLLABORATORS = []
 
 environments = dict(
     development=Development,

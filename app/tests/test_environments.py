@@ -40,6 +40,12 @@ class TestDevelopmentEnvironment(TestCase):
             app.config['METADATA_SHIPMENTS_FILE_COLUMNS'],
             'DATE shipped,MATRIX_BOX,MATRIX_LOCN,ORGM,ISOLATE_NBR'.split(','),
         )
+        self.assertEqual(
+            app.config['TEST_DATA_COLLABORATORS'],
+            'dev@westgrid.ca,ikenna.okpala@computecanada.ca,patrick.mann@computecanada.ca,swacker@ucalgary.ca,snoskov@ucalgary.ca,ian.lewis2@ucalgary.ca,ian.percel@ucalgary.ca,fridman@ucalgary.ca'.split(
+                ','
+            ),
+        )
 
 
 class TestTestingEnvironment(TestCase):
@@ -72,6 +78,12 @@ class TestTestingEnvironment(TestCase):
             app.config['METADATA_SHIPMENTS_FILE_COLUMNS'],
             'DATE shipped,MATRIX_BOX,MATRIX_LOCN,ORGM,ISOLATE_NBR'.split(','),
         )
+        self.assertEqual(
+            app.config['TEST_DATA_COLLABORATORS'],
+            'dev@westgrid.ca,ikenna.okpala@computecanada.ca,patrick.mann@computecanada.ca,swacker@ucalgary.ca,snoskov@ucalgary.ca,ian.lewis2@ucalgary.ca,ian.percel@ucalgary.ca,fridman@ucalgary.ca'.split(
+                ','
+            ),
+        )
 
 
 class TestProductionEnvironment(TestCase):
@@ -98,6 +110,7 @@ class TestProductionEnvironment(TestCase):
             app.config['METADATA_SHIPMENTS_FILE_COLUMNS'],
             'DATE shipped,MATRIX_BOX,MATRIX_LOCN,ORGM,ISOLATE_NBR'.split(','),
         )
+        self.assertEqual(app.config['TEST_DATA_COLLABORATORS'], [])
 
 
 if __name__ == '__main__':
