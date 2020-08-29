@@ -2,7 +2,9 @@ name: LSARP-CI
 
 on:
   pull_request:
-  # push:
+  push:
+    - master
+    - develop
 
 jobs:
   lint:
