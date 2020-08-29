@@ -1,0 +1,28 @@
+name: LSARP-CI
+
+on:
+  pull_request:
+  # push:
+
+jobs:
+  lint:
+    runs-on: ubuntu-18.04
+    name: Linting
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+    - uses: ricardochaves/python-lint@v1.1.0
+      with:
+        python-root-list: "app manage.py"
+        use-pylint: true
+        use-pycodestyle: false
+        use-flake8: false
+        use-black: false
+        use-mypy: false
+        use-isort: false
+        extra-pylint-options: ""
+        extra-pycodestyle-options: ""
+        extra-flake8-options: ""
+        extra-black-options: ""
+        extra-mypy-options: ""
+        extra-isort-options: ""
