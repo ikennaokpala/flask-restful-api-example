@@ -2,7 +2,6 @@ import re
 import json
 import factory
 import unittest
-import sqlalchemy
 import dataclasses
 
 from freezegun import freeze_time
@@ -543,15 +542,23 @@ class TestDeleteAProject(TestProjectBase):
 
     @freeze_time('2020-06-02 08:57:53')
     def test_delete_a_project_with_children(self):
-        project_slug_with_chidren = DataTypeWithProjectFactory.create(mzxmls=1, metadata_shipments=1).project.slug
+        project_slug_with_chidren = DataTypeWithProjectFactory.create(
+            mzxmls=1, metadata_shipments=1
+        ).project.slug
 
-        with self.assertRaises(sqlalchemy.exc.IntegrityError):
-            with self.client as rdbclient:
-                response = rdbclient.delete(
-                    '/v1/projects/' + project_slug_with_chidren, headers=self.headers
-                )
+        with self.client as rdbclient:
+            response = rdbclient.delete(
+                '/v1/projects/' + project_slug_with_chidren, headers=self.headers
+            )
 
+            self.assertEqual(response.status_code, 204)
+            self.assertEqual(response.content_type, 'application/json')
 
+            outcome = response.data.decode()
+            self.assertEqual(outcome, '')
+
+            outcome = Project.query.filter_by(slug=project_slug_with_chidren).first()
+            self.assertEqual(outcome, None)
 
 
 if __name__ == '__main__':

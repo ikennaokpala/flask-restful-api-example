@@ -21,7 +21,10 @@ class DataFormatFile(db.Model):
     extension = db.Column(db.String, index=True, nullable=False)
     type = db.Column(db.String)
     data_type_id = db.Column(
-        db.Integer, db.ForeignKey('data_types.id'), index=True, nullable=False
+        db.Integer,
+        db.ForeignKey('data_types.id', ondelete='CASCADE'),
+        index=True,
+        nullable=False,
     )
     data_type = db.relationship('DataType', back_populates=MNEMONIC)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now, index=True)

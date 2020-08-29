@@ -633,8 +633,26 @@ class TestDeleteADataType(TestDataTypeBase):
         super(TestDeleteADataType, self).setUp()
 
     @freeze_time('2020-06-02 08:57:53')
-    def test_delete_a_data_type(self):
+    def test_delete_a_data_type_without_chidren(self):
         slug = self.data_types[0].slug
+
+        with self.client as rdbclient:
+            response = rdbclient.delete(
+                self.project_path + '/data_types/' + slug, headers=self.headers
+            )
+
+            self.assertEqual(response.status_code, 204)
+            self.assertEqual(response.content_type, 'application/json')
+
+            outcome = response.data.decode()
+            self.assertEqual(outcome, '')
+
+            outcome = DataType.query.filter_by(slug=slug).first()
+            self.assertEqual(outcome, None)
+
+    @freeze_time('2020-06-02 08:57:53')
+    def test_delete_a_data_type_with_chidren(self):
+        slug = DataTypeWithProjectFactory.create(mzxmls=1, metadata_shipments=1).slug
 
         with self.client as rdbclient:
             response = rdbclient.delete(

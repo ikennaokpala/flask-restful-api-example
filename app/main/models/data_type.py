@@ -23,7 +23,10 @@ class DataType(db.Model):
     description = db.Column(db.TEXT)
     slug = db.Column(db.TEXT, index=True, unique=True, nullable=False)
     project_id = db.Column(
-        db.Integer, db.ForeignKey('projects.id'), index=True, nullable=False
+        db.Integer,
+        db.ForeignKey('projects.id', ondelete='CASCADE'),
+        index=True,
+        nullable=False,
     )
     project = db.relationship('Project', back_populates='data_types')
     data_formats = db.Column(pg.ARRAY(db.String))
