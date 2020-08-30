@@ -1,34 +1,9 @@
 name: LSARP-CI
 
 on:
-  pull_request:
   push:
-    - master
-    - develop
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    name: Linting
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-python@v1
-    - uses: ricardochaves/python-lint@v1.1.0
-      with:
-        python-root-list: "app manage.py"
-        use-pylint: false
-        use-pycodestyle: false
-        use-flake8: false
-        use-black: true
-        use-mypy: false
-        use-isort: false
-        extra-pylint-options: ""
-        extra-pycodestyle-options: ""
-        extra-flake8-options: ""
-        extra-black-options: "-t py38 -S"
-        extra-mypy-options: ""
-        extra-isort-options: ""
-    
   build-and-run-tests:
     name: Build and run LSARP api tests
     runs-on: ubuntu-latest
@@ -38,6 +13,24 @@ jobs:
         run: |
           sudo make install
           sudo pipenv install --dev
+
+      - name: Lint
+        uses: ricardochaves/python-lint@v1.1.0
+        with:
+          python-root-list: "app manage.py"
+          use-pylint: false
+          use-pycodestyle: false
+          use-flake8: false
+          use-black: true
+          use-mypy: false
+          use-isort: false
+          extra-pylint-options: ""
+          extra-pycodestyle-options: ""
+          extra-flake8-options: ""
+          extra-black-options: "-t py38 -S"
+          extra-mypy-options: ""
+          extra-isort-options: ""
+
       - name: Run tests
         env:
           FLASK_ENV: test
@@ -47,6 +40,7 @@ jobs:
         run: |
           source $(pipenv --venv)/bin/activate
           make tests
+
     services:
       postgres:
         image: postgres
