@@ -19,11 +19,6 @@ jobs:
           sudo make install
           sudo pipenv install --dev
 
-      - name: Lint
-        run: |
-          source $(pipenv --venv)/bin/activate
-          make lint
-
       - name: Run tests
         env:
           FLASK_ENV: test
@@ -33,6 +28,11 @@ jobs:
         run: |
           source $(pipenv --venv)/bin/activate
           make tests
+
+      - name: Lint
+        run: |
+          source $(pipenv --venv)/bin/activate
+          make lint
 
     services:
       postgres:
