@@ -1,22 +1,27 @@
 FROM centos:8
 
+ARG FLASK_ENV
+
 ENV LANG C.UTF-8x
 ENV LC_ALL C.UTF-8
+ENV PYENV_ROOT ${HOME}/.pyenv
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PIPENV_IGNORE_VIRTUALENVS 1
 ENV VENV_HOME_DIR $(pipenv --venv)
 ENV DEBIAN_FRONTEND noninteractive
+ENV PYTHON_BIN_PATH $(python3 -m site --user-base)/bin
 ENV LSARP_DATABASE_URL postgresql://postgres:postgres@db:5432
+ENV PATH ${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:$PYTHON_BIN_PATH:$PATH
 
 WORKDIR /api
-
 RUN yum update -y && yum groupinstall 'Development Tools' -y
 
 COPY Makefile ./
 COPY Pipfile.lock Pipfile.lock
-COPY entrypoint.sh /etc/entrypoint.sh
-RUN chmod +x /etc/entrypoint.sh
+COPY ./app/builds/docker_files/entrypoint.sh /etc/entrypoint.sh
+COPY ./app/builds/makers/* ./app/builds/makers/
 
+RUN chmod +x /etc/entrypoint.sh
 RUN make install
 
 EXPOSE 3000/tcp
