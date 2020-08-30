@@ -6,6 +6,9 @@ from app.main.config.oidc import OIDC
 
 
 class SessionService:
+    code = None
+    redirect_uri = None
+
     @classmethod
     def authorization_code_url(klazz):
         return (
@@ -16,14 +19,19 @@ class SessionService:
 
     @classmethod
     def auth(klazz, code, redirect_uri):
-        return klazz.__tokenized_user(code, redirect_uri)
+        klazz.code = code
+        klazz.redirect_uri = redirect_uri
+
+        return klazz.__authenticate()
 
     @classmethod
-    def __tokenized_user(klazz, code, redirect_uri):
+    def __authenticate(klazz):
         client = OpenIDClient(OIDC.issuer, OIDC.client_id, OIDC.client_secret)
-        token_response = client.request_token(redirect_uri, code)
-        user_info = token_response.userinfo
-        refresh_token = None
+        return klazz.__tokenized_user(client.request_token(klazz.redirect_uri, klazz.code))
+
+    @classmethod
+    def __tokenized_user(klazz, token) -> OIDC.TokenizedUser:
+        user_info = token.userinfo
 
         return OIDC.TokenizedUser(
             name=user_info.get('name', None),
@@ -33,13 +41,13 @@ class SessionService:
             nickname=user_info.get('nickname', None),
             email=user_info.get('email', None),
             locale=user_info.get('locale', None),
-            access_token=token_response.access_token,
-            id_token=token_response.id_token,
-            refresh_token=refresh_token,
+            access_token=token.access_token,
+            id_token=token.id_token,
+            refresh_token=None,
             token_type='bearer',
             expires_in=600,
-            redirect_uri=redirect_uri,
-            code=code,
+            redirect_uri=klazz.redirect_uri,
+            code=klazz.code,
         )
 
     @classmethod
