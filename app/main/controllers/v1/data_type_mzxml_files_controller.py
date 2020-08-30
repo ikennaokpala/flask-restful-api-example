@@ -40,7 +40,10 @@ upload_parser.add_argument('file', location='files', type='file', required=True)
 class MZXmlDataType(Resource):
     @endpoint.doc(
         description='Associate mzXML file(s) with a project via data type group',
-        responses={400: 'Bad request', 404: 'Not Found',},
+        responses={
+            400: 'Bad request',
+            404: 'Not Found',
+        },
     )
     @endpoint.response(201, 'File(s) added to project', data_type_MZXml_field)
     @endpoint.expect(upload_parser)

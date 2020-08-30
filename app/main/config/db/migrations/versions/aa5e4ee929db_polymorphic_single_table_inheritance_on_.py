@@ -30,7 +30,10 @@ def upgrade():
         sa.Column('location', sa.TEXT(), nullable=True),
         sa.Column('checksum', sa.String(), nullable=True),
         sa.Column('content', postgresql.JSON(astext_type=sa.Text()), nullable=False),
-        sa.ForeignKeyConstraint(['data_type_id'], ['data_types.id'],),
+        sa.ForeignKeyConstraint(
+            ['data_type_id'],
+            ['data_types.id'],
+        ),
         sa.PrimaryKeyConstraint('id'),
     )
     op.create_index(

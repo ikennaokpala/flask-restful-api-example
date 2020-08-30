@@ -27,7 +27,9 @@ class SessionService:
     @classmethod
     def __authenticate(klazz):
         client = OpenIDClient(OIDC.issuer, OIDC.client_id, OIDC.client_secret)
-        return klazz.__tokenized_user(client.request_token(klazz.redirect_uri, klazz.code))
+        return klazz.__tokenized_user(
+            client.request_token(klazz.redirect_uri, klazz.code)
+        )
 
     @classmethod
     def __tokenized_user(klazz, token) -> OIDC.TokenizedUser:

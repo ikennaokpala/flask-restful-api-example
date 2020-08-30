@@ -14,7 +14,12 @@ endpoint = Namespace(
     'auth-endpoint', description='authentication related api endpoints'
 )
 
-authorization_code_url_fields = endpoint.model('Resource', {'url': fields.String,})
+authorization_code_url_fields = endpoint.model(
+    'Resource',
+    {
+        'url': fields.String,
+    },
+)
 tokenized_user_fields = endpoint.model(
     'Resource',
     {
@@ -56,7 +61,11 @@ class AuthorizationCodeURL(Resource):
         'code': 'Authorization code issued by IdP from the frontend',
         'redirect_uri': 'Redirect URI',
     },
-    responses={201: 'Created', 403: 'Forbidden', 400: 'Bad Request',},
+    responses={
+        201: 'Created',
+        403: 'Forbidden',
+        400: 'Bad Request',
+    },
 )
 class AuthCallback(Resource):
     def post(self):

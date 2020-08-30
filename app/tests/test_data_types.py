@@ -465,7 +465,10 @@ class TestDataTypesWithUser(TestDataTypeBase):
             db.session.commit()
 
         with self.client as rdbclient:
-            response = rdbclient.get('/v1/data_types', headers=self.headers,)
+            response = rdbclient.get(
+                '/v1/data_types',
+                headers=self.headers,
+            )
 
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.content_type, 'application/json')

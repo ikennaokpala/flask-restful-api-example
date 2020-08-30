@@ -27,7 +27,10 @@ def upgrade():
         sa.Column('content', postgresql.JSON(astext_type=sa.Text()), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
-        sa.ForeignKeyConstraint(['mzxml_file_id'], ['mzxml_files.id'],),
+        sa.ForeignKeyConstraint(
+            ['mzxml_file_id'],
+            ['mzxml_files.id'],
+        ),
         sa.PrimaryKeyConstraint('id'),
     )
     op.create_index(
