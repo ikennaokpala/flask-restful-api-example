@@ -12,10 +12,7 @@ endpoint = Namespace(
 )
 xlsx_content_fields = endpoint.model(
     'XlsxContent',
-    {
-        'rows': fields.List(fields.String),
-        'columns': fields.List(fields.String),
-    },
+    {'rows': fields.List(fields.String), 'columns': fields.List(fields.String),},
 )
 data_type_xlsx_fields = endpoint.model(
     'Xlsx',
@@ -49,10 +46,7 @@ upload_parser.add_argument('file', location='files', type='file', required=True)
 class DataTypeMetadataShipment(Resource):
     @endpoint.doc(
         description='Associate Metadata Shipment(s) with a data type',
-        responses={
-            400: 'Bad request',
-            404: 'Not Found',
-        },
+        responses={400: 'Bad request', 404: 'Not Found',},
     )
     @endpoint.expect(upload_parser)
     @endpoint.response(201, 'Success - File(s) added', data_type_xlsx_fields)

@@ -23,16 +23,13 @@ class TestCommands(BaseTestCase):
     def test_db_create_when_database_is_available(self):
         with self.app.app_context():
             with patch(
-                'app.main.config.tasks.db.database_exists',
-                return_value=True,
+                'app.main.config.tasks.db.database_exists', return_value=True,
             ) as mocked_database_exists:
                 with patch(
-                    'app.main.config.tasks.db.drop_database',
-                    return_value=None,
+                    'app.main.config.tasks.db.drop_database', return_value=None,
                 ) as mocked_drop_database:
                     with patch(
-                        'app.main.config.tasks.db.create_database',
-                        return_value=None,
+                        'app.main.config.tasks.db.create_database', return_value=None,
                     ) as mocked_create_database:
                         result = CliRunner().invoke(create, [])
 
@@ -46,16 +43,13 @@ class TestCommands(BaseTestCase):
     def test_db_create_when_database_is_not_available(self):
         with self.app.app_context():
             with patch(
-                'app.main.config.tasks.db.database_exists',
-                return_value=False,
+                'app.main.config.tasks.db.database_exists', return_value=False,
             ) as mocked_database_exists:
                 with patch(
-                    'app.main.config.tasks.db.drop_database',
-                    return_value=None,
+                    'app.main.config.tasks.db.drop_database', return_value=None,
                 ) as mocked_drop_database:
                     with patch(
-                        'app.main.config.tasks.db.create_database',
-                        return_value=None,
+                        'app.main.config.tasks.db.create_database', return_value=None,
                     ) as mocked_create_database:
                         result = CliRunner().invoke(create, [])
 
@@ -69,8 +63,7 @@ class TestCommands(BaseTestCase):
     def test_db_seed_when_database_is_not_available(self):
         with self.app.app_context():
             with patch(
-                'app.main.config.tasks.db.database_exists',
-                return_value=False,
+                'app.main.config.tasks.db.database_exists', return_value=False,
             ) as mocked_database_exists:
                 result = CliRunner().invoke(seed, [])
 
@@ -82,8 +75,7 @@ class TestCommands(BaseTestCase):
     def test_db_seed_when_database_is_available(self):
         with self.app.app_context():
             with patch(
-                'app.main.config.tasks.db.database_exists',
-                return_value=True,
+                'app.main.config.tasks.db.database_exists', return_value=True,
             ) as mocked_database_exists:
                 result = CliRunner().invoke(seed, [])
 
@@ -96,8 +88,7 @@ class TestCommands(BaseTestCase):
     def test_db_drop(self):
         with self.app.app_context():
             with patch(
-                'app.main.config.tasks.db.drop_database',
-                return_value=None,
+                'app.main.config.tasks.db.drop_database', return_value=None,
             ) as mocked_drop_database:
                 result = CliRunner().invoke(drop, [])
 

@@ -28,10 +28,7 @@ def upgrade():
         sa.Column('project_id', sa.Integer(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
-        sa.ForeignKeyConstraint(
-            ['project_id'],
-            ['projects.id'],
-        ),
+        sa.ForeignKeyConstraint(['project_id'], ['projects.id'],),
         sa.PrimaryKeyConstraint('id'),
     )
     op.create_index(

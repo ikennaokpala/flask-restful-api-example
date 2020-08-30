@@ -12,12 +12,7 @@ endpoint = Namespace(
     'data-types-endpoint', description='data-types related api endpoints'
 )
 
-data_type_field = endpoint.model(
-    'Slug',
-    {
-        'slug': fields.String,
-    },
-)
+data_type_field = endpoint.model('Slug', {'slug': fields.String,},)
 
 data_type_create = endpoint.model(
     'Data_Type',

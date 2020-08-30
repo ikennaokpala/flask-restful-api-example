@@ -11,19 +11,10 @@ from app.main import db
 
 endpoint = Namespace('projects-endpoint', description='projects related api endpoints')
 
-project_field = endpoint.model(
-    'Slug',
-    {
-        'slug': fields.String,
-    },
-)
+project_field = endpoint.model('Slug', {'slug': fields.String,},)
 
 project_create = endpoint.model(
-    'CreateProject',
-    {
-        'name': fields.String,
-        'description': fields.String,
-    },
+    'CreateProject', {'name': fields.String, 'description': fields.String,},
 )
 
 project_fields = endpoint.model(

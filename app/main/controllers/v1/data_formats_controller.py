@@ -15,10 +15,7 @@ data_formats_fields = endpoint.model(
 class DataFormats(Resource):
     @endpoint.doc(
         description='List of a allowed data formats',
-        responses={
-            400: 'Bad request',
-            404: 'Not Found',
-        },
+        responses={400: 'Bad request', 404: 'Not Found',},
     )
     @endpoint.response(200, 'Success - Data Formats fetched', data_formats_fields)
     def get(self):
