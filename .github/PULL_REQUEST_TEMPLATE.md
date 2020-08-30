@@ -1,4 +1,4 @@
-{link to TRELLO task(s)}
+[TRELLO-(NUMBER)](https://trello.com/b/QizdBk0P/lsarp-website)
 
 # Background / Motivation 
 A brief background on why or what of this pull-request
@@ -7,12 +7,18 @@ A brief background on why or what of this pull-request
 Please provide further details where relevant. Describing functionality changes and referencing goals/rationale plus corresponding TRELLO tasks.
 
 # Go-Live Steps
-Any steps necessary to run this, both on a development environment and in production. This may include:
+Any steps necessary to sucessfully build, deploy and run this, both on a development environment and in production. This may include:
 
-* Environment Variables
-* Database Migrations
-* Backfilling Data
-* New Infrastructure Requirements
+* Environment Variables: (Yes/None)
+  - If Yes: Elaborate
+* Database Migrations: (Yes/None)
+  - If Yes: Elaborate
+* Backfilling Data: (Yes/None)
+  - If Yes: Elaborate
+* Docker Images: (Yes/None)
+  - If Yes: Elaborate
+* New Infrastructure Requirements: (Yes/None)
+  - If Yes: Elaborate
 
 # Factcheck 
 
