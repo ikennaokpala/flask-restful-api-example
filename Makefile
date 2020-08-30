@@ -86,6 +86,9 @@ test:
 format:
 	pipenv run format
 
+lint:
+	pipenv run lint
+
 run:
 	FLASK_ENV=production pipenv run start
 
