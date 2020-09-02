@@ -8,7 +8,7 @@ verify_ssl = true
 
 [dev-packages]
 black = '==19.10b0'
-coverage = '==4.5.4'
+coverage = '==5.2.1'
 pytest-cov = '==2.10.1'
 
 [packages]
@@ -42,6 +42,7 @@ sqlalchemy-utils = '==0.36.6'
 werkzeug = '==0.15.5'
 vcrpy = '==4.0.2'
 unidecode = '==1.1.1'
+uwsgi = '==2.0.19.1'
 xlrd = '==1.2.0'
 
 [scripts]
@@ -52,7 +53,8 @@ db_drop = 'flask db: drop'
 db_seed = 'flask db: seed'
 db_migration = 'flask db migrate'
 db_migrate = 'flask db upgrade'
-start = 'flask run'
+start = 'uwsgi --ini /api/wsgi.ini'
+dev = 'flask run'
 console = 'flask shell'
 format = 'black manage.py app/ -S -t py38'
 lint = 'black --check manage.py app/ -S -t py38'

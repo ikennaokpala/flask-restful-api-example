@@ -41,6 +41,7 @@ def cli():
 
 
 app.cli.add_command(commands)
+application = app  # Used by uWSGI to create a production instance
 
 if __name__ == '__main__':
     cli()
