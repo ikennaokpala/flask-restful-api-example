@@ -6,7 +6,7 @@ Python Version: 3.7 or higher
 Python Version Manager: pyenv
 Python Environments and Packages Manager: pipenv
 Database: PostgreSQL
-Containerised solution: Docker and Docker compose
+Containerised solution: Docker and Docker compose (optional)
 
 ### Terminal commands
 

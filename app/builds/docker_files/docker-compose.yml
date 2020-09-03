@@ -3,6 +3,7 @@ services:
   api:
     env_file:
       - ./app/builds/docker_files/docker.env
+    image: api-${LSARP_OS_PLATFORM}:${LSARP_IMAGE_TAG}
     build:
       context: .
       dockerfile: ./app/builds/docker_files/Dockerfile.${LSARP_OS_PLATFORM}
