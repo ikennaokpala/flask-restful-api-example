@@ -7,8 +7,8 @@ source $(pipenv --venv)/bin/activate
 
 if [ ${FLASK_ENV} == "production" ]; then
   pipenv sync
-  make run
+  make start
 else
   pipenv sync --dev
-  make dev
+  make server
 fi

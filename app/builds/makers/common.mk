@@ -9,7 +9,7 @@ build-yum-packages:
 build-apt-packages:
 	apt-get install sudo -y --no-install-recommends
 	$(SUDO) apt-get update -y
-	$(SUDO) apt-get install -y libbz2-dev libsqlite3-dev libreadline6-dev python-pip git curl wget libssl-dev build-essential liblzma-dev make zlib1g-dev python$(LSARP_API_PYTHON_MAIN_VERSION)-dev libevent-dev libblas-dev libatlas-base-dev python$(LSARP_API_PYTHON_MAIN_VERSION)-venv python-psycopg2 libpq-dev -y --no-install-recommends
+	$(SUDO) apt-get install -y libbz2-dev libsqlite3-dev libreadline6-dev libffi-dev python3-dev libjpeg-dev libjpeg8-dev python3-pip python3-psycopg2 git curl wget libssl-dev build-essential liblzma-dev make zlib1g-dev python$(LSARP_API_PYTHON_MAIN_VERSION)-dev libevent-dev libblas-dev libatlas-base-dev python$(LSARP_API_PYTHON_MAIN_VERSION)-venv libpq-dev postgresql-contrib -y --no-install-recommends
 	$(SUDO) apt-get clean
 
 build-homebrew-packages:

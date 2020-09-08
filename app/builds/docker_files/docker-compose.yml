@@ -1,15 +1,15 @@
 version: '3'
 services:
-  api:
+  api: &api
     env_file:
       - ./app/builds/docker_files/docker.env
-    image: api-${LSARP_OS_PLATFORM}:${LSARP_IMAGE_TAG}
+    image: api-${LSARP_API_OS_PLATFORM}:${LSARP_API_IMAGE_TAG}
     build:
       context: .
-      dockerfile: ./app/builds/docker_files/Dockerfile.${LSARP_OS_PLATFORM}
+      dockerfile: ./app/builds/docker_files/Dockerfile.${LSARP_API_OS_PLATFORM}
       args:
         FLASK_ENV: ${FLASK_ENV}
-    container_name: api-${LSARP_OS_PLATFORM}-${FLASK_ENV}
+    container_name: api-${LSARP_API_OS_PLATFORM}
     command: /etc/entrypoint.sh
     volumes:
       - .:/api
@@ -19,7 +19,7 @@ services:
       - db
     environment:
       LSARP_DATABASE_URL: postgresql://postgres:postgres@db:5432
-      ALLOWED_CORS_CLIENTS: '206.12.120.8,https://resistancedb.org,http://proteomics.resistancedb.org'
+      LSARP_API_CORS_CLIENTS: ${LSARP_API_CORS_CLIENTS}
       FLASK_ENV: ${FLASK_ENV}
       PYTHONUNBUFFERED: 1
   db:

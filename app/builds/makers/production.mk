@@ -1,4 +1,4 @@
-.PHONY: run
+.PHONY: start
 
-run:
+start:
 	FLASK_ENV=production pipenv run start

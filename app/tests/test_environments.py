@@ -19,7 +19,7 @@ class TestDevelopmentEnvironment(TestCase):
         self.assertFalse(app.config['SQLALCHEMY_TRACK_MODIFICATIONS'])
         self.assertFalse(app.config['SECRET_KEY'] == 'lsarp')
         self.assertTrue(app.config['DEBUG'] == True)
-        self.assertListEqual(app.config['ALLOWED_CORS_CLIENTS'], ['*'])
+        self.assertListEqual(app.config['LSARP_API_CORS_CLIENTS'], ['*'])
         self.assertFalse(current_app == None)
         self.assertTrue(app.config['SQLALCHEMY_DATABASE_URI'], str)
         self.assertTrue(
@@ -58,7 +58,7 @@ class TestTestingEnvironment(TestCase):
         self.assertFalse(app.config['SQLALCHEMY_TRACK_MODIFICATIONS'])
         self.assertFalse(app.config['SECRET_KEY'] == 'lsarp')
         self.assertTrue(app.config['DEBUG'])
-        self.assertListEqual(app.config['ALLOWED_CORS_CLIENTS'], ['*'])
+        self.assertListEqual(app.config['LSARP_API_CORS_CLIENTS'], ['*'])
         self.assertIsInstance(app.config['SQLALCHEMY_DATABASE_URI'], str)
         self.assertTrue(
             re.match(
@@ -95,9 +95,9 @@ class TestProductionEnvironment(TestCase):
         self.assertFalse(app.config['PRESERVE_CONTEXT_ON_EXCEPTION'])
         self.assertFalse(app.config['SQLALCHEMY_TRACK_MODIFICATIONS'])
         self.assertTrue(app.config['DEBUG'] == False)
-        self.assertTrue(type(app.config['ALLOWED_CORS_CLIENTS']) == list)
-        for index in range(len(app.config['ALLOWED_CORS_CLIENTS'])):
-            self.assertTrue(type(app.config['ALLOWED_CORS_CLIENTS'][index]) == str)
+        self.assertTrue(type(app.config['LSARP_API_CORS_CLIENTS']) == list)
+        for index in range(len(app.config['LSARP_API_CORS_CLIENTS'])):
+            self.assertTrue(type(app.config['LSARP_API_CORS_CLIENTS'][index]) == str)
 
         self.assertEqual(app.config['MZXML_FILES_KEY_PREFIX'], 'mzxml_file_')
         self.assertEqual(app.config['MZXML_FILES_UPLOAD_FOLDER'], '/tmp/')
