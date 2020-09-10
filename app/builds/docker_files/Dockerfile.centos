@@ -16,10 +16,13 @@ ENV PATH ${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:$PYTHON_BIN_PATH:$PATH
 WORKDIR /api
 RUN yum update -y && yum groupinstall 'Development Tools' -y
 
+COPY VERSION ./
 COPY Makefile ./
+COPY .python-version ./
 COPY Pipfile.lock Pipfile.lock
-COPY ./app/builds/docker_files/entrypoint.sh /etc/entrypoint.sh
+COPY ./app/builds/docker_files/VERSION ./
 COPY ./app/builds/makers/* ./app/builds/makers/
+COPY ./app/builds/docker_files/entrypoint.sh /etc/entrypoint.sh
 
 RUN chmod +x /etc/entrypoint.sh
 RUN make install

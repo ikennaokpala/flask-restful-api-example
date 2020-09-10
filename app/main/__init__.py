@@ -21,7 +21,7 @@ def create_app():
     app.config.from_object(environments[environment])
     CORS(
         app,
-        resources={r'/v1/*': {'origins': app.config['ALLOWED_CORS_CLIENTS']}},
+        resources={r'/v1/*': {'origins': app.config['LSARP_API_CORS_CLIENTS']}},
         headers=CUSTOM_REQUEST_HEADERS,
         expose_headers=CUSTOM_REQUEST_HEADERS,
     )

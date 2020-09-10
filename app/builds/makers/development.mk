@@ -1,4 +1,4 @@
-.PHONY: clean format lint dev console dev_console
+.PHONY: clean format lint server console all
 
 clean:
 	pipenv clean
@@ -12,13 +12,14 @@ format:
 lint:
 	pipenv run lint
 
-dev:
-	FLASK_ENV=development pipenv run dev
+server:
+	FLASK_ENV=development pipenv run server
 
 console:
-	pipenv run console
+	@if [[ $(call args, prod) == "dev" ]] ; then \
+		FLASK_ENV=development pipenv run console; \
+	else \
+		FLASK_ENV=production pipenv run console; \
+	fi
 
-dev_console:
-	FLASK_ENV=development pipenv run console
-
-all: clean install tests run
+all: clean install tests server

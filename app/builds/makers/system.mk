@@ -11,6 +11,6 @@ build-centos: build-yum-packages pyenv-packages sync-packages
 
 build-darwin: build-homebrew-packages build-homebrew-python-packages sync-packages
 
-build: build-system
-
+build: docker-build
 install: build-system
+publish: docker-publish

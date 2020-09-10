@@ -3,7 +3,7 @@ name: ON-PUSH-TO-ANY-BRANCH-BUILD-RUN-TESTS
 on:
   push:
     branches:
-      - '*'
+      - '**'
 
 jobs:
   build-and-run-tests:
