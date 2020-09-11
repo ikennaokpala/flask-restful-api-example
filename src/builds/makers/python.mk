@@ -4,7 +4,6 @@ build-homebrew-python-packages:
 	brew install pyenv pipenv
 	pyenv install $(LSARP_API_PYTHON_INSTALL_VERSION)
 	pyenv local $(LSARP_API_PYTHON_INSTALL_VERSION)
-	$(SUDO) easy_install pip
 	python$(LSARP_API_PYTHON_VERSION) -m pip install --upgrade pip pipenv
 
 pyenv-packages:
