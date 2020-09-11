@@ -11,7 +11,7 @@ from src.main.environment import environments
 
 class TestDevelopmentEnvironment(TestCase):
     def create_app(self):
-        app.config.from_object(environments['development'])
+        current_app.config.from_object(environments['development'])
         return app
 
     def test_app_is_development(self):

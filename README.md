@@ -185,6 +185,47 @@ NB: If you need more or less than 100 rows
 
     $ SEED_DATA_COUNT=<however_many> make db seed
 
+Show current branch points:
+
+    $ make db branches
+
+Display the current revision for each database:
+
+    $ make db current
+
+Revert to a previous version:
+
+    $ make db downgrade
+
+Edit a revision file:
+
+    $ make db edit
+
+Show current available heads in the script directory:
+
+    $ make db heads
+
+List changeset scripts in chronological order:
+
+    $ make db history
+
+Merge two revisions together, creating a new revision file:
+
+    $ make db merge
+
+Create a new revision file:
+
+    $ make db revision
+
+Show the revision denoted by the given symbol:
+
+    $ make db show
+
+'stamp' the revision table with the given revision; don't run any
+  migrations:
+
+    $ make db stamp
+
 ## Debugging 
 
 Access console in development environment with:

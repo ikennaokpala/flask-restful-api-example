@@ -22,4 +22,7 @@ console:
 		FLASK_ENV=production pipenv run console; \
 	fi
 
+routes:
+	pipenv run routes
+
 all: clean install tests server
