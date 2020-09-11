@@ -16,7 +16,7 @@ DOCKER_IMAGES_DOMAIN ?= docker.pkg.github.com
 PATH := $(PYENV_ROOT)/shims:$(PYENV_ROOT)/bin:$(PATH)
 LSARP_API_PYTHON_INSTALL_VERSION ?= $(shell cat .python-version)
 LSARP_API_IMAGE_NAME ?= ${LSARP_API_OS_PLATFORM}:${LSARP_API_IMAGE_TAG}
-LSARP_API_DOCKER_VERSION ?= $(shell cat app/builds/docker_files/VERSION)
+LSARP_API_DOCKER_VERSION ?= $(shell cat src/builds/docker_files/VERSION)
 LSARP_API_DOCKER_VERSIONS ?= $(LSARP_API_DOCKER_VERSION) $(LSARP_API_IMAGE_TAG)
 LSARP_API_PYTHON_VERSION := $(shell v=$(LSARP_API_PYTHON_INSTALL_VERSION); echo $${v:0:3})
 LSARP_API_PYTHON_MAIN_VERSION := $(shell v=$(LSARP_API_PYTHON_INSTALL_VERSION); echo $${v:0:1})
@@ -27,14 +27,14 @@ LSARP_API_DOCKER_ENDPOINT ?= $(DOCKER_IMAGES_DOMAIN)/$(LSARP_GITHUB_ORG_NAME)/$(
 args = `arg="$(filter-out $@,$(MAKECMDGOALS))" && echo $${arg:-${1}}`
 
 # Modules
-include app/builds/makers/db.mk
-include app/builds/makers/tests.mk
-include app/builds/makers/common.mk
-include app/builds/makers/docker.mk
-include app/builds/makers/python.mk
-include app/builds/makers/system.mk
-include app/builds/makers/production.mk
-include app/builds/makers/development.mk
+include src/builds/makers/db.mk
+include src/builds/makers/tests.mk
+include src/builds/makers/common.mk
+include src/builds/makers/docker.mk
+include src/builds/makers/python.mk
+include src/builds/makers/system.mk
+include src/builds/makers/production.mk
+include src/builds/makers/development.mk
 
 # Match any (command/task) pattern rule https://www.gnu.org/software/make/manual/make.html#Match_002dAnything-Rules
 %:

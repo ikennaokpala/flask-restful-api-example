@@ -5,11 +5,11 @@ from flask.cli import FlaskGroup
 from flask_migrate import Migrate
 from flask_restx import Api
 
-from app.main import create_app, db
-from app.main.config.tasks.db import cli as commands
-from app.main.config.v1.routes import v1_blueprint, RouterV1
+from src.main import create_app, db
+from src.main.config.tasks.db import cli as commands
+from src.main.config.v1.routes import v1_blueprint, RouterV1
 
-MIGRATION_DIR = os.path.join('app', 'main', 'config', 'db', 'migrations')
+MIGRATION_DIR = os.path.join('src', 'main', 'config', 'db', 'migrations')
 
 app = create_app()
 app.register_blueprint(v1_blueprint)

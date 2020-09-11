@@ -28,7 +28,7 @@
         - write:packages
         - read:packages
         - delete:packages (optional)
-        ![PAT](app/docs/images/pat.png)
+        ![PAT](src/docs/images/pat.png)
     - Copy and paste it to ~/LSARP_GITHUB_TOKEN.txt
 
 ## Viewing API's documentation
@@ -130,7 +130,7 @@ To run a single the test file:
 
 Example:
 
-    $ make test app/tests/test_projects.py
+    $ make test src/tests/test_projects.py
 
 To run a single the test class:
 
@@ -138,7 +138,7 @@ To run a single the test class:
 
 Example:
 
-    $ make test app/tests/test_projects.py::TestProjects
+    $ make test src/tests/test_projects.py::TestProjects
 
 To run a single the test method:
 
@@ -146,7 +146,7 @@ To run a single the test method:
 
 Example:
 
-    $ make test app/tests/test_projects.py::TestProjects::test_fetch_all_owned_and_collaborating_projects_without_page_and_per_page_and_direction
+    $ make test src/tests/test_projects.py::TestProjects::test_fetch_all_owned_and_collaborating_projects_without_page_and_per_page_and_direction
 
 ## Working with database
 
