@@ -1,2 +1,2 @@
 [tool:pytest]
-addopts = --cov=app/main --cov-report html
+addopts = --cov=src/main --cov-report html

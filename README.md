@@ -28,7 +28,7 @@
         - write:packages
         - read:packages
         - delete:packages (optional)
-        ![PAT](app/docs/images/pat.png)
+        ![PAT](src/docs/images/pat.png)
     - Copy and paste it to ~/LSARP_GITHUB_TOKEN.txt
 
 ## Viewing API's documentation
@@ -130,7 +130,7 @@ To run a single the test file:
 
 Example:
 
-    $ make test app/tests/test_projects.py
+    $ make test src/tests/test_projects.py
 
 To run a single the test class:
 
@@ -138,7 +138,7 @@ To run a single the test class:
 
 Example:
 
-    $ make test app/tests/test_projects.py::TestProjects
+    $ make test src/tests/test_projects.py::TestProjects
 
 To run a single the test method:
 
@@ -146,7 +146,7 @@ To run a single the test method:
 
 Example:
 
-    $ make test app/tests/test_projects.py::TestProjects::test_fetch_all_owned_and_collaborating_projects_without_page_and_per_page_and_direction
+    $ make test src/tests/test_projects.py::TestProjects::test_fetch_all_owned_and_collaborating_projects_without_page_and_per_page_and_direction
 
 ## Working with database
 
@@ -184,6 +184,47 @@ NB: By default you get a 100 rows of projects and data types and 2 MZXml and met
 NB: If you need more or less than 100 rows
 
     $ SEED_DATA_COUNT=<however_many> make db seed
+
+Show current branch points:
+
+    $ make db branches
+
+Display the current revision for each database:
+
+    $ make db current
+
+Revert to a previous version:
+
+    $ make db downgrade
+
+Edit a revision file:
+
+    $ make db edit
+
+Show current available heads in the script directory:
+
+    $ make db heads
+
+List changeset scripts in chronological order:
+
+    $ make db history
+
+Merge two revisions together, creating a new revision file:
+
+    $ make db merge
+
+Create a new revision file:
+
+    $ make db revision
+
+Show the revision denoted by the given symbol:
+
+    $ make db show
+
+'stamp' the revision table with the given revision; don't run any
+  migrations:
+
+    $ make db stamp
 
 ## Debugging 
 
