@@ -9,6 +9,7 @@ verify_ssl = true
 [dev-packages]
 black = '==19.10b0'
 coverage = '==5.2.1'
+freezegun = '==0.3.15'
 pytest-cov = '==2.10.1'
 
 [packages]
@@ -27,7 +28,6 @@ flask-restx = '==0.2.0'
 flask-socketio = '==4.2.0'
 flask-sqlalchemy = '==2.4.4'
 flask-testing = '==0.8.0'
-freezegun = '==0.3.15'
 itsdangerous = '==1.1.0'
 openid-connect = '==0.5.0'
 psycopg2-binary = '==2.8.6'

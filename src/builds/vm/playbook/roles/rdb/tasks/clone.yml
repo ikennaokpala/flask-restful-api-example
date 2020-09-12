@@ -1,0 +1,75 @@
+---
+- name: Setup api project directory
+  file:
+    path: "{{rdb.api_root_path}}"
+    state: directory
+    owner: "{{os.user.name}}"
+    group: "{{os.user.group}}"
+  become: yes
+  become_user: root
+
+- name: Setup frontend project directory
+  file:
+    path: "{{rdb.frontend_root_path}}"
+    state: directory
+    owner: "{{os.user.name}}"
+    group: "{{os.user.group}}"
+  become: yes
+  become_user: root
+
+- name: Setup configurations directory
+  file:
+    path: "{{rdb.root_path}}/config"
+    state: directory
+    owner: "{{os.user.name}}"
+    group: "{{os.user.group}}"
+  become: yes
+  become_user: root
+
+- git:
+    repo: "{{rdb.repo.api}}"
+    dest: "{{rdb.api_root_path}}"
+    clone: yes
+    update: yes
+    force: yes
+    accept_hostkey: yes
+  tags: rdb
+
+- git:
+    repo: "{{rdb.repo.frontend}}"
+    dest: "{{rdb.frontend_root_path}}"
+    clone: yes
+    update: yes
+    force: yes
+    accept_hostkey: yes
+  tags: rdb
+
+- name: Create api symbolic link to /api
+  file:
+    src: "{{rdb.api_root_path}}"
+    dest: "/api"
+    state: link
+    owner: "{{os.user.name}}"
+    group: "{{os.user.group}}"
+  become: yes
+  become_user: root
+
+- name: Create api symbolic link to user home
+  file:
+    src: "{{rdb.api_root_path}}"
+    dest: "/home/{{os.user.name}}/api"
+    state: link
+    owner: "{{os.user.name}}"
+    group: "{{os.user.group}}"
+  become: yes
+  become_user: root
+
+- name: Create frontend symbolic link to user home
+  file:
+    src: "{{rdb.frontend_root_path}}"
+    dest: "/home/{{os.user.name}}/frontend"
+    state: link
+    owner: "{{os.user.name}}"
+    group: "{{os.user.group}}"
+  become: yes
+  become_user: root

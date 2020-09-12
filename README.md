@@ -17,6 +17,7 @@
     - CentOS version 8 (production and development environment(s) via OpenStack VM or Docker only)
     - Ubuntu version 20.04 (development environment via Docker only)
     - MacOS X Catalina (development environment only)
+- OpenStack Virtual Machine Management Tool: Terraform 0.13.2 or higher
 
 ### Credentials
 
@@ -271,3 +272,7 @@ For CentOS:
 For Ubuntu:
 
     $ LSARP_API_OS_PLATFORM=ubuntu FLASK_ENV=production docker-compose up
+
+# Provisioning OpenStack VM
+
+Click [here](src/builds/vm/README.md) to learn more about the provisioning of an OpenStack VM hosted on Compute Canada's OpenStack Platform(s)

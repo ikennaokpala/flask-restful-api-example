@@ -1,0 +1,35 @@
+#cloud-config
+---
+packages:
+  - vim
+  - screen
+  - sudo
+users:
+  - default
+  - name: centos
+    groups: users, sys, admin
+    shell: /bin/bash
+    sudo: "ALL=(ALL) NOPASSWD: ALL"
+    ssh_authorized_keys:
+      -
+write_files:
+  - path: /etc/bashrc
+    content: |
+      ## CREATED BY TERRAFORM CLOUD-INIT START ###
+
+      export FLASK_ENV=production
+      export RDB_POSTGRESQL_PASSWORD=`cat /opt/.config/.pg/.pwd 2>/dev/null`
+      export RDB_API_DATABASE=lsarp_production
+      export RDB_PYTHON_VERSION=3.8.5
+      export RDB_API_USERNAME=rdb
+      export RDB_API_PASSWORD=`cat /opt/.config/.pg/.pwd 2>/dev/null`
+      export LSARP_DATABASE_URL=postgresql://$RDB_API_USERNAME:$RDB_API_PASSWORD@localhost:5432
+      export PYTHONDONTWRITEBYTECODE=1
+      export PIPENV_IGNORE_VIRTUALENVS=1
+      ## CREATED BY TERRAFORM CLOUD-INIT END ###
+    append: true
+runcmd:
+  - [ 'sh', '-c', 'echo ${vm_ssh_key_priv} | sed -e "s/-----BEGIN RSA PRIVATE KEY-----/&\n/" -e "s/\S\{64\}/&\n/g" | sed "s/^\s//g" > ~centos/.ssh/id_rsa']
+  - [ 'sh', '-c', 'echo ${vm_ssh_key_pub} > ~centos/.ssh/id_rsa.pub']
+  - [ 'sh', '-c', 'chown centos:centos -R ~centos/.ssh && chmod 700 ~centos/.ssh && chmod 600 ~centos/.ssh/id_rsa && chmod 600 ~centos/.ssh/id_rsa.pub']
+  - [ 'sh', '-c', 'if [[ ! -f /opt/.config/.pg/.pwd ]] ; then mkdir -p /opt/.config/.pg && base64 < /dev/urandom | head -c 8 > /opt/.config/.pg/.pwd && chown centos:centos -R /opt/.config; fi']

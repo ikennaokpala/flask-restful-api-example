@@ -1,0 +1,13 @@
+---
+- hosts: rdb
+  become: yes
+  become_user: root
+  gather_facts: yes
+  remote_user: centos
+  roles:
+    - nginx
+  vars_prompt:
+    - name: use_letsencrypt
+      prompt: Would you like to use letsencrypt (instead of OpenSSL) for ssl certificate generation? (yes or no)
+      default: 'no'
+      private: no

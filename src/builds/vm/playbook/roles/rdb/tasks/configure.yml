@@ -1,0 +1,120 @@
+---
+- name: Build 'install' target in Makefile
+  make:
+    chdir: "{{rdb.api_root_path}}"
+    target: install
+    file: Makefile
+  tags:
+    - skip_ansible_lint
+  become: yes
+
+# - name: Connect to database and set user's password with no expire date, granting all privileges
+#   postgresql_user:
+#     db: "{{ postgresql.rdb.database }}"
+#     name: "{{ postgresql.rdb.username }}"
+#     password: "{{ postgresql.rdb.password }}"
+#     priv: ALL
+#     expires: infinity
+
+- name: Create database
+  make:
+    chdir: "{{rdb.api_root_path}}"
+    target: db_create
+    file: Makefile
+  tags:
+    - skip_ansible_lint
+  become: yes
+
+- name: Migrate database schema
+  make:
+    chdir: "{{rdb.api_root_path}}"
+    target: db_migrate
+    file: Makefile
+  tags:
+    - skip_ansible_lint
+  become: yes
+
+- name: Setup NodeJS 10.x
+  become: yes
+  shell: curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash -
+
+- name: Installing latest version of NodeJS
+  yum:
+    name: nodejs
+    state: latest
+  become: yes
+  become_user: root
+
+- name: Installing serve
+  shell: npm install -g serve
+  become: yes
+  become_user: root
+
+- name: Install frontend dependencies
+  shell: cd {{rdb.frontend_root_path}} && npm install
+
+- name: Create template for environment api.env
+  template:
+    src: api.env.j2
+    dest: "{{ rdb.root_path }}/config/api.env"
+    owner: "{{os.user.name}}"
+    group: "{{os.user.group}}"
+    mode: 0600
+
+- name: Create template for environment frontend.env
+  template:
+    src: frontend.env.j2
+    dest: "{{ rdb.root_path }}/config/frontend.env"
+    owner: "{{os.user.name}}"
+    group: "{{os.user.group}}"
+    mode: 0600
+
+- name: Setup api service
+  template:
+    src: api.service.j2
+    dest: /etc/systemd/system/api.service
+    owner: "{{os.user.name}}"
+    group: "{{os.user.group}}"
+    mode: 644
+  become: yes
+  become_user: root
+  tags: api
+
+- name: Enable api service
+  service:
+    name: api
+    enabled: yes
+  become: yes
+  become_user: root
+  tags: api
+
+- name: Start api service
+  shell: /usr/bin/systemctl start api 
+  tags: frontend
+  become: yes
+  become_user: root
+
+- name: Setup frontend service
+  template:
+    src: frontend.service.j2
+    dest: /etc/systemd/system/frontend.service
+    owner: "{{os.user.name}}"
+    group: "{{os.user.group}}"
+    mode: 644
+  become: yes
+  become_user: root
+  tags: frontend
+
+- name: Enable frontend service
+  service:
+    name: frontend
+    enabled: yes
+  become: yes
+  become_user: root
+  tags: frontend
+
+- name: Start frontend service
+  shell: /usr/bin/systemctl start frontend 
+  tags: frontend
+  become: yes
+  become_user: root

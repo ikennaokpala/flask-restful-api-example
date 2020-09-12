@@ -1,0 +1,3 @@
+---
+- import_tasks: clone.yml
+- import_tasks: configure.yml
