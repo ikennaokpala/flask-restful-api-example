@@ -14,7 +14,7 @@ ENV LSARP_DATABASE_URL postgresql://postgres:postgres@db:5432
 ENV PATH ${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:$PYTHON_BIN_PATH:$PATH
 
 WORKDIR /api
-RUN yum update -y && yum groupinstall 'Development Tools' -y
+RUN yum update -y && yum groupinstall 'Development Tools' -y && yum install sudo -y
 
 COPY VERSION ./
 COPY Makefile ./

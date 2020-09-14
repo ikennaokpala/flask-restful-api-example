@@ -15,7 +15,7 @@ ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PYTHON_BIN_PATH:$PATH
 
 WORKDIR /api
 
-RUN apt-get update -y && apt-get install software-properties-common -y && apt-add-repository universe -y && apt-get update -y && apt-get install build-essential make python3-pip python3-psycopg2 -y
+RUN apt-get update -y && apt-get install software-properties-common -y && apt-add-repository universe -y && apt-get update -y && apt-get install build-essential sudo make python3-pip python3-psycopg2 -y
 
 COPY VERSION ./
 COPY Makefile ./
