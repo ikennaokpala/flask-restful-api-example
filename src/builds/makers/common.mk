@@ -14,3 +14,5 @@ build-homebrew-packages:
 	# Sudo is not required as running Homebrew as root is extremely dangerous and no longer supported as Homebrew does not drop privileges on installation you would be giving all build scripts full access to your system
 	# Fails if any of the packages are already installed, ignore and continue - if it's a problem the latest build steps will fail with missing headers
 	brew update
+
+	brew install terraform ansible

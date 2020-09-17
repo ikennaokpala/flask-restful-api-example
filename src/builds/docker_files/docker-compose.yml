@@ -21,6 +21,8 @@ services:
       LSARP_DATABASE_URL: postgresql://postgres:postgres@db:5432
       LSARP_API_CORS_CLIENTS: ${LSARP_API_CORS_CLIENTS}
       FLASK_ENV: ${FLASK_ENV}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
       PYTHONUNBUFFERED: 1
   db:
     container_name: db

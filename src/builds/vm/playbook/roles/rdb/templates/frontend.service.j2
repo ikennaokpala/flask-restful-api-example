@@ -1,0 +1,19 @@
+[Unit]
+Description=RDB api server
+After=api.service
+
+[Service]
+Type=simple
+User={{ os.user.name }}
+Group={{ os.user.group }}
+Restart=on-failure
+WorkingDirectory={{ rdb.frontend_root_path }}
+EnvironmentFile={{ rdb.root_path }}/config/frontend.env
+ExecStartPre=/bin/sh -c "/usr/bin/npm run build"
+ExecStart=/bin/sh -c "/usr/bin/serve -s build"
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=rdb-api
+
+[Install]
+WantedBy=multi-user.target

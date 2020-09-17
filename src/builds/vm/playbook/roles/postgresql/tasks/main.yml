@@ -1,0 +1,69 @@
+- name: Install the PostgreSQL 13 rpm from a remote repo
+  yum:
+    name: https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    state: present
+  tags: postgresql
+  
+- name: Configure environment for PostgreSQL 13 
+  shell: dnf -qy module disable postgresql && dnf -y install dnf-utils && yum -y install yum-utils && yum-config-manager --enable pgdg13-updates-testing
+
+- name: Install postgresql13-server postgresql13-contrib packets
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - postgresql13-server
+    - postgresql13-contrib
+  tags: postgresql
+
+- name: Check if PostgreSQL database is initialized.
+  stat:
+    path: "/var/lib/pgsql/13/data/PG_VERSION"
+  register: pgdata_dir_version
+  tags: postgresql
+  
+- name: Initdb
+  shell: /usr/pgsql-13/bin/postgresql-13-setup initdb
+  when: not pgdata_dir_version.stat.exists
+  tags: postgresql
+
+- name: Template pg_hba.conf
+  template:
+    src: pg_hba.conf.j2
+    dest: /var/lib/pgsql/13/data/pg_hba.conf
+    owner: postgres
+    group: postgres
+    mode: 0600
+  tags: postgresql
+
+- name: Start and enable postgres service
+  service:
+    name: postgresql-13
+    state: started
+    enabled: yes
+  tags: postgresql
+
+# - debug:
+#     msg: "{{ postgresql.password }}"
+    
+- name: Easy setup password for postgres user
+  shell: echo postgres:{{ postgresql.password }} | sudo chpasswd
+  tags: postgresql
+
+- name: Create user
+  shell: createuser {{ postgresql.rdb.username }}
+  become: yes
+  become_user: postgres
+  ignore_errors: yes
+  tags: postgresql
+
+- name: Alter user, create database and grant access to user
+  command: 'psql -c "{{ item }}"'
+  with_items:
+    - ALTER USER {{ postgresql.rdb.username }} WITH ENCRYPTED password '{{ postgresql.rdb.password }}';
+    - CREATE DATABASE {{ postgresql.rdb.database }} OWNER {{ postgresql.rdb.username }};
+  changed_when: False
+  become: yes
+  become_user: postgres
+  ignore_errors: yes
+  tags: postgresql

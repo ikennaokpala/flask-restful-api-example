@@ -1,0 +1,18 @@
+[Unit]
+Description=RDB api server
+After=postgresql-13.service
+
+[Service]
+Type=simple
+User={{ os.user.name }}
+Group={{ os.user.group }}
+Restart=on-failure
+WorkingDirectory={{ rdb.api_root_path }}
+EnvironmentFile={{ rdb.root_path }}/config/api.env
+ExecStart=make start
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=rdb-api
+
+[Install]
+WantedBy=multi-user.target

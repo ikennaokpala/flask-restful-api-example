@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+export OS_CLOUD=${CC_OS_CLOUD}
+export OS_USERNAME=${CCDB_DOMAIN_USERNAME}
+export OS_PASSWORD=${CCDB_DOMAIN_PASSWORD}

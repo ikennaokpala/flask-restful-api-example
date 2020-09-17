@@ -48,7 +48,7 @@ class Production(Environment):
     SQLALCHEMY_DATABASE_URI = os.environ.get('LSARP_DATABASE_URL') + '/lsarp_production'
     LSARP_API_CORS_CLIENTS = os.getenv(
         'LSARP_API_CORS_CLIENTS',
-        'https://resistancedb.org,http://proteomics.resistancedb.org',
+        'https://resistancedb.org,http://proteomics.resistancedb.org,staging.rdb.c3.ca,api.staging.rdb.c3.ca',
     ).split(',')
 
 

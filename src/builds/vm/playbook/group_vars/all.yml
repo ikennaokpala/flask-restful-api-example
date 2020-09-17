@@ -1,0 +1,59 @@
+project:
+  name: rdb
+  email: bot@westgrid.ca
+
+os:
+  user:
+    name: "{{ lookup('env','RDB_VM_USER') or 'centos' }}"
+    group: "{{ lookup('env','RDB_VM_USER') or 'centos' }}"
+
+rdb:
+  domain: "{{ lookup('env','RDB_DOMAIN') or 'staging.rdb.c3.ca' }}"
+  domains: "{{ (lookup('env','RDB_DOMAINS') or 'api.staging.rdb.c3.ca').split(',') }}"
+  ip: "{{ ansible_default_ipv4.address }}"
+  repo:
+    api: git@github.com:LSARP/api.git
+    frontend: git@github.com:LSARP/frontend.git
+  parent_path: /var/www
+  root_path: /var/www/rdb
+  api_root_path: /var/www/rdb/api
+  frontend_root_path: /var/www/rdb/frontend
+  frontend_root_path: /var/www/rdb/frontend
+
+python:
+  install_version: "{{ lookup('env','RDB_PYTHON_VERSION') or '3.8.5' }}"
+  main_version: 3
+  bin_path: /usr/local/bin
+
+postgresql:
+  password: "{{ lookup('env','RDB_POSTGRESQL_PASSWORD') or 'Rdbpassword123' }}"
+  rdb:
+    database: "{{ lookup('env','RDB_API_DATABASE') or 'lsarp_production' }}"
+    username: "{{ lookup('env','RDB_API_USERNAME') or 'rdb' }}"
+    password: "{{ lookup('env','RDB_API_PASSWORD') or 'Rdbpassword123' }}"
+
+centos_version: 8 
+system_build_dependencies:
+  - bzip2
+  - bzip2-devel
+  - curl
+  - expat-devel
+  - gcc
+  - gcc-c++
+  - gdbm-devel
+  - git
+  - libevent-devel
+  - libffi-devel
+  - make
+  - ncurses-devel
+  - openssl-devel
+  - readline-devel
+  - tk-devel
+  - postgresql-devel
+  - sqlite-devel
+  - sudo
+  - xz-devel
+  - vim
+  - wget
+  - which
+  - zlib-devel
