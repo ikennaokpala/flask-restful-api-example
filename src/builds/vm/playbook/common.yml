@@ -2,12 +2,12 @@
 - hosts: rdb
   become: yes
   become_user: root
-  gather_facts: yes
-  remote_user: centos
+  gather_facts: true
+  remote_user: ubuntu
   roles:
     - common
 
   pre_tasks:
-    - name: This reboot is a hack to ensure that cloud-init (terraform) and yum locks have been properly executed and released respectively
+    - name: Reboot a slow machine that might have lots of updates to apply
       reboot:
-        reboot_timeout: 10800
+        reboot_timeout: 3600

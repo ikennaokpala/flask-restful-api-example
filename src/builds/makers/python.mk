@@ -7,7 +7,7 @@ build-homebrew-python-packages:
 	python$(LSARP_API_PYTHON_VERSION) -m pip install --upgrade pip pipenv
 
 pyenv-packages:
-	@if [[ ! -d $(PYENV_ROOT) ]] ; then curl https://pyenv.run | bash; fi	
+	@if [[ ! -d $(PYENV_ROOT) ]] ; then sudo -u `whoami` curl https://pyenv.run | bash; fi	
 	pyenv update
 	pyenv install $(LSARP_API_PYTHON_INSTALL_VERSION)
 	pyenv local $(LSARP_API_PYTHON_INSTALL_VERSION)

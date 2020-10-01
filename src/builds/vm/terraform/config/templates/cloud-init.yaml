@@ -6,30 +6,32 @@ packages:
   - sudo
 users:
   - default
-  - name: centos
+  - name: ubuntu
     groups: users, sys, admin
     shell: /bin/bash
     sudo: "ALL=(ALL) NOPASSWD: ALL"
     ssh_authorized_keys:
       -
 write_files:
-  - path: /etc/bashrc
+  - path: /etc/environment
     content: |
       ## CREATED BY TERRAFORM CLOUD-INIT START ###
 
       export FLASK_ENV=production
-      export RDB_POSTGRESQL_PASSWORD=`cat /opt/.config/.pg/.pwd 2>/dev/null`
-      export RDB_API_DATABASE=lsarp_production
       export RDB_PYTHON_VERSION=3.8.5
-      export RDB_API_USERNAME=rdb
-      export RDB_API_PASSWORD=`cat /opt/.config/.pg/.pwd 2>/dev/null`
-      export LSARP_DATABASE_URL=postgresql://$RDB_API_USERNAME:$RDB_API_PASSWORD@localhost:5432
       export PYTHONDONTWRITEBYTECODE=1
       export PIPENV_IGNORE_VIRTUALENVS=1
+      export RDB_API_USERNAME=${pg_db_user}
+      export RDB_API_DATABASE=${pg_db_name}
+      export RDB_API_PASSWORD=${pg_db_api_password}
+      export RDB_POSTGRES_PASSWORD=${pg_db_password}
+      export RDB_POSTGRESQL_DATA_PATH=${pdb_postgresql_data_path}
+      export LSARP_DATABASE_URL=${pg_db_protocol}://${pg_db_user}:${pg_db_api_password}@${pg_db_domain}:${pg_db_port}/${pg_db_name}
+
       ## CREATED BY TERRAFORM CLOUD-INIT END ###
     append: true
+
 runcmd:
-  - [ 'sh', '-c', 'echo ${vm_ssh_key_priv} | sed -e "s/-----BEGIN RSA PRIVATE KEY-----/&\n/" -e "s/\S\{64\}/&\n/g" | sed "s/^\s//g" > ~centos/.ssh/id_rsa']
-  - [ 'sh', '-c', 'echo ${vm_ssh_key_pub} > ~centos/.ssh/id_rsa.pub']
-  - [ 'sh', '-c', 'chown centos:centos -R ~centos/.ssh && chmod 700 ~centos/.ssh && chmod 600 ~centos/.ssh/id_rsa && chmod 600 ~centos/.ssh/id_rsa.pub']
-  - [ 'sh', '-c', 'if [[ ! -f /opt/.config/.pg/.pwd ]] ; then mkdir -p /opt/.config/.pg && base64 < /dev/urandom | head -c 8 > /opt/.config/.pg/.pwd && chown centos:centos -R /opt/.config; fi']
+  - [ 'sh', '-c', 'echo ${vm_ssh_key_priv} | sed -e "s/-----BEGIN RSA PRIVATE KEY-----/&\n/" -e "s/\S\{64\}/&\n/g" | sed "s/^\s//g" > ~ubuntu/.ssh/id_rsa']
+  - [ 'sh', '-c', 'echo ${vm_ssh_key_pub} > ~ubuntu/.ssh/id_rsa.pub']
+  - [ 'sh', '-c', 'chown ubuntu:ubuntu -R ~ubuntu/.ssh && chmod 700 ~ubuntu/.ssh && chmod 600 ~ubuntu/.ssh/id_rsa && chmod 600 ~ubuntu/.ssh/id_rsa.pub']

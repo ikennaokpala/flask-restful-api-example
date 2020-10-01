@@ -58,6 +58,36 @@ variable "environment" {
   description = "This is the name to the environment, which serves as an identifier. Example: development | staging | production"
   default = "development"
 }
+variable "pdb_postgresql_data_path" {
+  type = string
+  description = "This is the name to the pdb_postgresql_data_path, which serves as the data mount and/or location."
+  default = "~/data"
+}
+variable "pg_db_domain" {
+  type = string
+  description = "This is the name to the pg_db_domain, which serves as the db domain identifier."
+  default = "localhost"
+}
+variable "pg_db_port" {
+  type = string
+  description = "This is the name to the pg_db_port, which serves as the db port identifier."
+  default = "5432"
+}
+variable "pg_db_protocol" {
+  type = string
+  description = "This is the name to the pg_db_protocol, which serves as the db port identifier."
+  default = "postgresql"
+}
+variable "pg_db_user" {
+  type = string
+  description = "This is the name to the pg_db_user, which serves as the db user identifier."
+  default = "rdb"
+}
+variable "pg_db_name" {
+  type = string
+  description = "This is the name to the pg_db_name, which serves as the db identifier."
+  default = "lsarp_production"
+}
 variable "image" {
   type = object({
     id = string
@@ -65,8 +95,8 @@ variable "image" {
   })
   description = "This is the name and id of the choosen OS image"
   default = {
-    id = "80ceebef-f9aa-462e-a793-d3c1cf96123b"
-    name = "CentOS-8-x64-2019-11"
+    id = "50d23ef7-9e74-4395-bbdd-e78cdfa0833e"
+    name = "Ubuntu-20.04-focal-amd64"
   }
 }
 variable "volume_size" {

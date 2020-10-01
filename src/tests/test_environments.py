@@ -2,11 +2,14 @@ import os
 import re
 import unittest
 
-from flask import current_app
+from flask import Flask, current_app
 from flask_testing import TestCase
+from unittest.mock import patch
 
 from manage import app
 from src.main.environment import environments
+
+database_uri = 'postgresql://postgres:postgres@localhost:5432/lsarp_production'
 
 
 class TestDevelopmentEnvironment(TestCase):
@@ -111,6 +114,19 @@ class TestProductionEnvironment(TestCase):
             'DATE shipped,MATRIX_BOX,MATRIX_LOCN,ORGM,ISOLATE_NBR'.split(','),
         )
         self.assertEqual(app.config['TEST_DATA_COLLABORATORS'], [])
+        self.assertTrue(app.config['SQLALCHEMY_DATABASE_URI'], str)
+        self.assertTrue(
+            re.match(
+                r'(postgres|postgresql)://postgres:postgres@.*/lsarp_production',
+                app.config['SQLALCHEMY_DATABASE_URI'],
+            )
+        )
+
+    @patch.dict(os.environ, {'LSARP_DATABASE_URL': database_uri})
+    def test_app_is_production_and_database_uri_is_supplied(self):
+        with self.app.app_context():
+            self.assertTrue(app.config['SQLALCHEMY_DATABASE_URI'], str)
+            self.assertEqual(app.config['SQLALCHEMY_DATABASE_URI'], database_uri)
 
 
 if __name__ == '__main__':
