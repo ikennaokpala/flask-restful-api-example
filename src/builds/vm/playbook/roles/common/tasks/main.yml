@@ -1,2 +1,35 @@
 ---
-- import_tasks: compile.yml
+- name: Update all packages to their latest version
+  apt:
+    name: "*"
+    state: latest
+  tags: common
+
+- name: Upgrade the OS (apt-get dist-upgrade)
+  apt:
+    upgrade: dist
+  tags: common
+
+- name: Install system build dependencies
+  apt: 
+    name: "{{ item }}"
+    state: present
+    install_recommends: yes
+  with_items: "{{ system_build_dependencies }}"
+  tags: common
+
+- name: Write these values to /home/{{os.user.name}}/.bashrc
+  blockinfile:
+    dest: /home/{{os.user.name}}/.bashrc
+    block: |
+      export PYENV_ROOT="/home/{{os.user.name}}/.pyenv"
+      export PATH="/home/{{os.user.name}}/.pyenv/bin:${PATH}"
+      eval "$(pyenv init -)"
+    marker: '# {mark} ANSIBLE MANAGED BLOCK - rdb'
+    insertbefore: EOF
+    create: yes 
+  tags: common
+
+- name: install setfacl support
+  become: yes
+  apt: pkg=acl

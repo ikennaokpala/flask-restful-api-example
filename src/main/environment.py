@@ -45,10 +45,14 @@ class Production(Environment):
     DEBUG = False
     SEED_DATA_COUNT = 0
     TEST_DATA_COLLABORATORS = []
-    SQLALCHEMY_DATABASE_URI = os.environ.get('LSARP_DATABASE_URL') + '/lsarp_production'
+    SQLALCHEMY_DATABASE_URI = (
+        os.environ.get('LSARP_DATABASE_URL')
+        if len(os.environ.get('LSARP_DATABASE_URL').split('/')) == 4
+        else os.environ.get('LSARP_DATABASE_URL') + '/lsarp_production'
+    )
     LSARP_API_CORS_CLIENTS = os.getenv(
         'LSARP_API_CORS_CLIENTS',
-        'https://resistancedb.org,http://proteomics.resistancedb.org,staging.rdb.c3.ca,api.staging.rdb.c3.ca',
+        'resistancedb.org,proteomics.resistancedb.org,staging.rdb.c3.ca,api.staging.rdb.c3.ca,dev.rdb.c3.ca,api.dev.rdb.c3.ca',
     ).split(',')
 
 

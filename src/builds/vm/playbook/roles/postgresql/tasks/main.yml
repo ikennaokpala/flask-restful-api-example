@@ -1,19 +1,42 @@
-- name: Install the PostgreSQL 13 rpm from a remote repo
-  yum:
-    name: https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-    state: present
+- name: Import GPG key, add repository contents to your Ubuntu 20.04 | 18.04 system
+  shell: wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+  become: yes
+  become_user: root
   tags: postgresql
-  
-- name: Configure environment for PostgreSQL 13 
-  shell: dnf -qy module disable postgresql && dnf -y install dnf-utils && yum -y install yum-utils && yum-config-manager --enable pgdg13-updates-testing
+
+- name: Add PostgreSQL 13 repositories
+  shell: | 
+    echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
+    echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg-testing main 13" |sudo tee  /etc/apt/sources.list.d/pgdg-testing.list
+    apt update -y
+  become: yes
+  become_user: root
+  tags: postgresql
+
+- name: Update all packages to their latest version
+  apt:
+    name: "*"
+    state: latest
+  become: yes
+  become_user: root
+  tags: postgresql
+
+- name: Configure {{ ansible_env.RDB_POSTGRESQL_DATA_PATH }}
+  shell: | 
+    mkdir {{ ansible_env.RDB_POSTGRESQL_DATA_PATH }}
+    chmod 775 {{ ansible_env.RDB_POSTGRESQL_DATA_PATH }}
+    chown postgres {{ ansible_env.RDB_POSTGRESQL_DATA_PATH }}
+  become: yes
+  become_user: root
+  tags: postgresql
 
 - name: Install postgresql13-server postgresql13-contrib packets
-  yum:
+  apt:
     name: "{{ item }}"
     state: present
   with_items:
-    - postgresql13-server
-    - postgresql13-contrib
+    - postgresql-13
+    - postgresql-client-13
   tags: postgresql
 
 - name: Check if PostgreSQL database is initialized.
@@ -23,14 +46,17 @@
   tags: postgresql
   
 - name: Initdb
-  shell: /usr/pgsql-13/bin/postgresql-13-setup initdb
+  shell: |
+    /usr/lib/postgresql/13/bin/initdb -D {{ ansible_env.RDB_POSTGRESQL_DATA_PATH }} --locale $LANG -E UTF8
   when: not pgdata_dir_version.stat.exists
+  become: yes
+  become_user: postgres
   tags: postgresql
 
 - name: Template pg_hba.conf
   template:
     src: pg_hba.conf.j2
-    dest: /var/lib/pgsql/13/data/pg_hba.conf
+    dest: "{{ ansible_env.RDB_POSTGRESQL_DATA_PATH }}/pg_hba.conf"
     owner: postgres
     group: postgres
     mode: 0600
@@ -38,32 +64,29 @@
 
 - name: Start and enable postgres service
   service:
-    name: postgresql-13
+    name: postgresql
     state: started
     enabled: yes
   tags: postgresql
-
-# - debug:
-#     msg: "{{ postgresql.password }}"
     
 - name: Easy setup password for postgres user
-  shell: echo postgres:{{ postgresql.password }} | sudo chpasswd
+  shell: echo postgres:{{ ansible_env.RDB_POSTGRES_PASSWORD }} | sudo chpasswd
   tags: postgresql
 
-- name: Create user
-  shell: createuser {{ postgresql.rdb.username }}
-  become: yes
+- name: Create a new database with name "{{ ansible_env.RDB_API_DATABASE }}"
+  become: true
   become_user: postgres
-  ignore_errors: yes
+  postgresql_db:
+    name: "{{ ansible_env.RDB_API_DATABASE }}"    
+
+- name: Connect to database and set user's password with no expire date, granting all privileges
+  postgresql_user:
+    db: "{{ ansible_env.RDB_API_DATABASE }}"
+    name: "{{ ansible_env.RDB_API_USERNAME }}"
+    password: "{{ ansible_env.RDB_API_PASSWORD }}"
+    priv: ALL
+    expires: infinity
+  become: true
+  become_user: postgres
   tags: postgresql
 
-- name: Alter user, create database and grant access to user
-  command: 'psql -c "{{ item }}"'
-  with_items:
-    - ALTER USER {{ postgresql.rdb.username }} WITH ENCRYPTED password '{{ postgresql.rdb.password }}';
-    - CREATE DATABASE {{ postgresql.rdb.database }} OWNER {{ postgresql.rdb.username }};
-  changed_when: False
-  become: yes
-  become_user: postgres
-  ignore_errors: yes
-  tags: postgresql

@@ -1,8 +1,8 @@
 ---
 - hosts: rdb
   become: yes
-  become_user: centos
+  become_user: ubuntu
   gather_facts: yes
-  remote_user: centos
+  remote_user: ubuntu
   roles:
     - rdb

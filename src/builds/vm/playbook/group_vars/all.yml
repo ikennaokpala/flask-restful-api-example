@@ -4,8 +4,8 @@ project:
 
 os:
   user:
-    name: "{{ lookup('env','RDB_VM_USER') or 'centos' }}"
-    group: "{{ lookup('env','RDB_VM_USER') or 'centos' }}"
+    name: "{{ lookup('env','RDB_VM_USER') or 'ubuntu' }}"
+    group: "{{ lookup('env','RDB_VM_USER') or 'ubuntu' }}"
 
 rdb:
   domain: "{{ lookup('env','RDB_DOMAIN') or 'staging.rdb.c3.ca' }}"
@@ -25,35 +25,30 @@ python:
   main_version: 3
   bin_path: /usr/local/bin
 
-postgresql:
-  password: "{{ lookup('env','RDB_POSTGRESQL_PASSWORD') or 'Rdbpassword123' }}"
-  rdb:
-    database: "{{ lookup('env','RDB_API_DATABASE') or 'lsarp_production' }}"
-    username: "{{ lookup('env','RDB_API_USERNAME') or 'rdb' }}"
-    password: "{{ lookup('env','RDB_API_PASSWORD') or 'Rdbpassword123' }}"
-
 centos_version: 8 
 system_build_dependencies:
-  - bzip2
-  - bzip2-devel
-  - curl
-  - expat-devel
-  - gcc
-  - gcc-c++
-  - gdbm-devel
+  - bash-completion
+  - libbz2-dev
+  - libsqlite3-dev
+  - libreadline6-dev
+  - libffi-dev
+  - python3-dev
+  - libjpeg-dev
+  - libjpeg8-dev
+  - python3-pip
+  - python3-psycopg2
   - git
-  - libevent-devel
-  - libffi-devel
-  - make
-  - ncurses-devel
-  - openssl-devel
-  - readline-devel
-  - tk-devel
-  - postgresql-devel
-  - sqlite-devel
-  - sudo
-  - xz-devel
-  - vim
+  - curl
   - wget
-  - which
-  - zlib-devel
+  - libssl-dev
+  - build-essential
+  - liblzma-dev
+  - make
+  - zlib1g-dev
+  - python3-dev
+  - libevent-dev
+  - libblas-dev
+  - libatlas-base-dev
+  - python3-venv
+  - libpq-dev
+  - postgresql-contrib

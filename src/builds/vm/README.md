@@ -6,7 +6,6 @@ This readme is provides a guide for provisioning the admin side of resistance db
 
 - Virtual Machine platform: Compute Canada's OpenStack Platform(s)
 - Operating systems:
-    - CentOS version 8 (production and development environment(s) via OpenStack VM or Docker only)
     - Ubuntu version 20.04 (development environment via Docker only)
     - MacOS X Catalina (development environment only)
 - OpenStack Virtual Machine Management Tool: 
@@ -55,8 +54,8 @@ This readme is provides a guide for provisioning the admin side of resistance db
             password: <password>
     ```
 
-- Sourcing openrc before running `$ source src/builds/vm/terraform/openrc`
-- Initialize Terraform: ``
+- Sourcing openrc before running `$ CC_OS_CLOUD=<cc_cloud_platform> source src/builds/vm/terraform/openrc`
+- Initialize Terraform: `terraform init src/builds/terraform`
 - View Terraform plan: `$ terraform plan src/builds/vm/terraform` or `$ terraform plan -var-file=path/to/terraform/config/<variables>.tfvars src/builds/vm/terraform`
 
 ### Credentials
@@ -66,23 +65,23 @@ This readme is provides a guide for provisioning the admin side of resistance db
 
 ## Create VM
 
-By default this will create a CentOS VM on Arbutus.. Cedar is also possible. The rest can be made possible by overriding the variables from src/builds/vm/config/cedar.tfvars
+By default this will create a Ubuntu VM on Arbutus.. Cedar is also possible. The rest can be made possible by overriding the variables from src/builds/vm/config/cedar.tfvars
 
-### Create CentOS VM on Arbutus for staging instance
-
-	  $ terraform apply -var-file=src/builds/terraform/config/arbutus-centos-staging.tfvars src/builds/vm/terraform
-
-### Create CentOS VM on Arbutus for production instance
+### Create Ubuntu VM on Arbutus for production instance
 
 	  $ terraform apply -var-file=src/builds/terraform/config/arbutus-production.tfvars src/builds/vm/terraform
 
 ### Create Ubuntu VM on Arbutus for staging instance
 
-	  $ terraform apply -var-file=src/builds/terraform/config/arbutus-ubuntu-staging.tfvars src/builds/vm/terraform
+	  $ terraform apply -var-file=src/builds/terraform/config/arbutus-staging.tfvars src/builds/vm/terraform
 
-### Create CentOS VM on Cedar for staging instance
+### Create Ubuntu VM on Cedar for staging instance
 
 	  $ terraform apply -var-file=src/builds/terraform/config/cedar.tfvars src/builds/vm/terraform
+
+### Create Ubuntu VM on Arbutus for dev instance
+
+	  $ terraform apply -var-file=src/builds/terraform/config/arbutus-dev.tfvars src/builds/vm/terraform
 
 # Provisioning RDB VM
 
