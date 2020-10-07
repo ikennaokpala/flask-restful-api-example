@@ -38,9 +38,9 @@
     - skip_ansible_lint
   become: yes
 
-- name: Setup NodeJS 10.x
+- name: Setup NodeJS 14.x
   become: yes
-  shell: curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash -
+  shell: curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 
 - name: Installing latest version of NodeJS
   apt:
@@ -55,7 +55,7 @@
   become_user: root
 
 - name: Install frontend dependencies
-  shell: cd {{rdb.frontend_root_path}} && npm install
+  shell: cd {{rdb.frontend_root_path}}/admin && npm install
 
 - name: Create template for environment api.env
   template:
@@ -64,6 +64,25 @@
     owner: "{{os.user.name}}"
     group: "{{os.user.group}}"
     mode: 0600
+
+- name: Write these values to {{ rdb.root_path }}/config/api.env
+  blockinfile:
+    dest: "{{ rdb.root_path }}/config/api.env"
+    block: |
+      FLASK_ENV={{ ansible_env.FLASK_ENV }}
+      RDB_PYTHON_VERSION={{ ansible_env.RDB_PYTHON_VERSION }}
+      PYTHONDONTWRITEBYTECODE={{ ansible_env.PYTHONDONTWRITEBYTECODE }}
+      PIPENV_IGNORE_VIRTUALENVS={{ ansible_env.PIPENV_IGNORE_VIRTUALENVS }}
+      RDB_API_USERNAME={{ ansible_env.RDB_API_USERNAME }}
+      RDB_API_DATABASE={{ ansible_env.RDB_API_DATABASE }}
+      RDB_API_PASSWORD={{ ansible_env.RDB_API_PASSWORD }}
+      RDB_POSTGRES_PASSWORD={{ ansible_env.RDB_POSTGRES_PASSWORD }}
+      RDB_POSTGRESQL_DATA_PATH={{ ansible_env.RDB_POSTGRESQL_DATA_PATH }}
+      LSARP_DATABASE_URL={{ ansible_env.LSARP_DATABASE_URL }}
+    marker: '# {mark} ANSIBLE MANAGED BLOCK - rdb'
+    insertbefore: EOF
+    create: yes 
+  tags: common
 
 - name: Create template for environment frontend.env
   template:
@@ -84,19 +103,14 @@
   become_user: root
   tags: api
 
-- name: Enable api service
+- name: Enable and start api service
   service:
     name: api
+    state: started
     enabled: yes
   become: yes
   become_user: root
   tags: api
-
-- name: Start api service
-  shell: /usr/bin/systemctl start api 
-  tags: frontend
-  become: yes
-  become_user: root
 
 - name: Setup frontend service
   template:
@@ -112,13 +126,9 @@
 - name: Enable frontend service
   service:
     name: frontend
+    state: started
     enabled: yes
   become: yes
   become_user: root
   tags: frontend
-
-- name: Start frontend service
-  shell: /usr/bin/systemctl start frontend 
-  tags: frontend
-  become: yes
-  become_user: root
+  ignore_errors: yes

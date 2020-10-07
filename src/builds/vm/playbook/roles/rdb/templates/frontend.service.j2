@@ -1,5 +1,5 @@
 [Unit]
-Description=RDB api server
+Description=RDB frontend server
 After=api.service
 
 [Service]
@@ -7,13 +7,13 @@ Type=simple
 User={{ os.user.name }}
 Group={{ os.user.group }}
 Restart=on-failure
-WorkingDirectory={{ rdb.frontend_root_path }}
+WorkingDirectory={{ rdb.frontend_root_path }}/admin
 EnvironmentFile={{ rdb.root_path }}/config/frontend.env
-ExecStartPre=/bin/sh -c "/usr/bin/npm run build"
-ExecStart=/bin/sh -c "/usr/bin/serve -s build"
+ExecStartPre=/bin/bash -c "/usr/bin/npm install && /usr/bin/npm run build"
+ExecStart=/bin/bash -c "/usr/bin/serve -n -s -l 4000 build"
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=rdb-api
+SyslogIdentifier=rdb-frontend
 
 [Install]
 WantedBy=multi-user.target

@@ -1,14 +1,14 @@
 server {
   listen 80;
-  server_name {{ domain }};
+  server_name {{ rdb.domain }};
   return 301 https://$host$request_uri;
 }
 server {
   listen 443 ssl;
-  server_name {{ domain }};
+  server_name {{ rdb.domain }};
 
-  ssl_certificate /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
+  ssl_certificate /etc/letsencrypt/live/{{ rdb.domain }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/{{ rdb.domain }}/privkey.pem;
 
   ssl_session_cache  builtin:1000  shared:SSL:10m;
   ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
@@ -28,7 +28,7 @@ server {
   }
 }
 
-{% for item in domains %}
+{% for item in rdb.domains %}
   {% if item != '' %}
     server {
       listen *:443 ssl;
@@ -40,6 +40,11 @@ server {
       location / {
         client_max_body_size 10000M;
         proxy_pass           http://localhost:3000;
+      }
+
+      location '/.well-known/acme-challenge' {
+        allow all;
+        default_type "text/plain";
       }
     }
   {% endif %}
