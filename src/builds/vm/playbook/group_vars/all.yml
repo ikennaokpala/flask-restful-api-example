@@ -8,8 +8,8 @@ os:
     group: "{{ lookup('env','RDB_VM_USER') or 'ubuntu' }}"
 
 rdb:
-  domain: "{{ lookup('env','RDB_DOMAIN') or 'staging.rdb.c3.ca' }}"
-  domains: "{{ (lookup('env','RDB_DOMAINS') or 'api.staging.rdb.c3.ca').split(',') }}"
+  domain: "{{ansible_env.RDB_DOMAIN}}"
+  domains: "{{ansible_env.RDB_DOMAINS.split(',')}}"
   ip: "{{ ansible_default_ipv4.address }}"
   repo:
     api: git@github.com:LSARP/api.git
@@ -52,3 +52,8 @@ system_build_dependencies:
   - libpq-dev
   - postgresql-contrib
   - xsel
+  - selinux
+  - selinux-utils
+  - selinux-basics
+  - auditd
+  - audispd-plugins

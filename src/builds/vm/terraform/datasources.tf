@@ -18,6 +18,8 @@ data "template_file" "cloud-init" {
   template = "${file("${path.module}/config/templates/cloud-init.yaml")}"
 
   vars = {
+    rdb_domain = var.domain
+    rdb_domains = var.domains
     pg_db_user = var.pg_db_user
     pg_db_name = var.pg_db_name
     pg_db_port = var.pg_db_port

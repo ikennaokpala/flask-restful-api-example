@@ -37,6 +37,16 @@ variable "os_tenant_name" {
   description = "This is openstack tenant name"
   default = "def-pjmann-covid19"
 }
+variable "domain" {
+  type = string
+  description = "This is the domain"
+  default = "admin.resistancedb.org"
+}
+variable "domains" {
+  type = string
+  description = "These are the other related domains"
+  default = "api.resistancedb.org,proteomics.resistancedb.org"
+}
 variable "vm_ssh_key_pub" {
   type = string
   description = "This is the path the user's id_rsa.pub"

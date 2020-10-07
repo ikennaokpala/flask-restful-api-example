@@ -21,6 +21,8 @@ write_files:
       export RDB_PYTHON_VERSION=3.8.5
       export PYTHONDONTWRITEBYTECODE=1
       export PIPENV_IGNORE_VIRTUALENVS=1
+      export RDB_DOMAIN=${rdb_domain}
+      export RDB_DOMAINS=${rdb_domains}
       export RDB_API_USERNAME=${pg_db_user}
       export RDB_API_DATABASE=${pg_db_name}
       export RDB_API_PASSWORD=${pg_db_api_password}

@@ -1,4 +1,16 @@
 ---
+- name: Ensure group "nginx" exists
+  group:
+    name: nginx
+    state: present
+
+- name: Add the user 'nginx' with a bash shell, appending the group 'admins' and 'nginx' to the user's groups
+  user:
+    name: nginx
+    shell: /bin/bash
+    groups: admin,nginx
+    append: yes
+
 - name: Install certbot-nginx nginx
   apt:
     name: "{{ item }}"
@@ -11,14 +23,16 @@
 
 - name: Setup letsencrypt local directory
   file:
-    path: /etc/letsencrypt/live/{{ rdb.domain }}
+    path: /etc/letsencrypt/live/{{ item }}
     state: directory
+  loop: "{{ rdb.domains + [ rdb.domain ] }}"
   tags: nginx
 
 - name: Generate ssl certificates with OpenSSL
   shell: /usr/bin/openssl req -x509 -newkey rsa:4096 -sha256 \
-    -days 36500 -nodes -keyout /etc/letsencrypt/live/{{ rdb.domain }}/privkey.pem \
-    -out /etc/letsencrypt/live/{{ rdb.domain }}/fullchain.pem -subj '/CN={{ rdb.domain }}/O=LSARP./C=CA'
+    -days 36500 -nodes -keyout /etc/letsencrypt/live/{{ item }}/privkey.pem \
+    -out /etc/letsencrypt/live/{{ item }}/fullchain.pem -subj '/CN={{ item }}/O=LSARP./C=CA'
+  loop: "{{ rdb.domains + [ rdb.domain ] }}"
   tags: nginx
 
 - name: Create /etc/nginx/nginx.conf
@@ -33,18 +47,19 @@
     dest: /etc/nginx/conf.d/default.conf
   tags: nginx
 
-- name: Generate SSL certificates with Letsencrypt
-  shell: /usr/bin/letsencrypt certonly --renew-by-default -n --nginx \
-        -m {{ project.email }} --agree-tos -d {{ rdb.domain }} --rsa-key-size 4096
-  ignore_errors: yes
-  when: use_letsencrypt == 'yes'
-  tags: nginx
-
 - name: Enable nginx
   service:
     name: nginx
     state: started
     enabled: yes
+  tags: nginx
+
+- name: Generate SSL certificates with Letsencrypt
+  shell: /usr/bin/letsencrypt certonly --renew-by-default -n --nginx \
+        -m {{ project.email }} --agree-tos -d {{ item }} --rsa-key-size 4096
+  ignore_errors: yes
+  loop: "{{ rdb.domains + [ rdb.domain ] }}"
+  when: use_letsencrypt == 'yes'
   tags: nginx
 
 - name: Jump start nginx
@@ -65,7 +80,10 @@
 
 - name: Add letsencrypt cronjob for cert renewal
   cron:
-    name: letsencrypt_renewal-{{ rdb.domain }}
+    name: letsencrypt_renewal-{{ item }}
     special_time: weekly
-    job: /usr/bin/certbot --nginx -d {{ rdb.domain }} --no-redirect --register-unsafely-without-email --agree-tos --rsa-key-size 4096
+    job: /usr/bin/certbot --nginx -d {{ item }} --no-redirect --register-unsafely-without-email --agree-tos --rsa-key-size 4096
+  loop: "{{ rdb.domains + [ rdb.domain ] }}"
+  become: yes
+  become_user: "{{ os.user.name }}"
   tags: nginx
