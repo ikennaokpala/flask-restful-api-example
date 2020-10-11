@@ -1,28 +1,24 @@
 ---
-- name: Patch SELinux
-  command: setsebool httpd_can_network_connect 1
-  when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "7")
-  tags: nginx
-
 - name: Install certbot-nginx nginx
   apt:
     name: "{{ item }}"
     state: present
   with_items:
-    - certbot-nginx
+    - certbot 
+    - python-certbot-nginx
     - nginx
   tags: nginx
 
 - name: Setup letsencrypt local directory
   file:
-    path: /etc/letsencrypt/live/{{ domain }}
+    path: /etc/letsencrypt/live/{{ rdb.domain }}
     state: directory
   tags: nginx
 
 - name: Generate ssl certificates with OpenSSL
   shell: /usr/bin/openssl req -x509 -newkey rsa:4096 -sha256 \
-    -days 36500 -nodes -keyout /etc/letsencrypt/live/{{ domain }}/privkey.pem \
-    -out /etc/letsencrypt/live/{{ domain }}/fullchain.pem -subj '/CN={{ domain }}/O=LSARP./C=CA'
+    -days 36500 -nodes -keyout /etc/letsencrypt/live/{{ rdb.domain }}/privkey.pem \
+    -out /etc/letsencrypt/live/{{ rdb.domain }}/fullchain.pem -subj '/CN={{ rdb.domain }}/O=LSARP./C=CA'
   tags: nginx
 
 - name: Create /etc/nginx/nginx.conf
@@ -39,7 +35,7 @@
 
 - name: Generate SSL certificates with Letsencrypt
   shell: /usr/bin/letsencrypt certonly --renew-by-default -n --nginx \
-        -m {{ project.email }} --agree-tos -d {{ domain }} --rsa-key-size 4096
+        -m {{ project.email }} --agree-tos -d {{ rdb.domain }} --rsa-key-size 4096
   ignore_errors: yes
   when: use_letsencrypt == 'yes'
   tags: nginx
@@ -63,13 +59,13 @@
     state: restarted
   with_items:
     - api
-    - front
+    - frontend
     - nginx
   tags: nginx
 
 - name: Add letsencrypt cronjob for cert renewal
   cron:
-    name: letsencrypt_renewal-{{ domain }}
+    name: letsencrypt_renewal-{{ rdb.domain }}
     special_time: weekly
-    job: /usr/bin/certbot --nginx -d {{ domain }} --no-redirect --register-unsafely-without-email --agree-tos --rsa-key-size 4096
+    job: /usr/bin/certbot --nginx -d {{ rdb.domain }} --no-redirect --register-unsafely-without-email --agree-tos --rsa-key-size 4096
   tags: nginx
