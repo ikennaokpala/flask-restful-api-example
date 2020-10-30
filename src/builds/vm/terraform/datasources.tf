@@ -27,6 +27,7 @@ data "template_file" "cloud-init" {
     pg_db_protocol = var.pg_db_protocol
     vm_ssh_key_pub = var.vm_ssh_key_pub
     vm_ssh_key_priv = var.vm_ssh_key_priv
+    cors_clients = "${var.domain},${var.domains}"
     pg_db_password = local.pg_db_password
     pg_db_api_password = local.pg_db_api_password
     pdb_postgresql_data_path = var.pdb_postgresql_data_path
