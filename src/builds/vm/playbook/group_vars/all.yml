@@ -51,9 +51,8 @@ system_build_dependencies:
   - python3-venv
   - libpq-dev
   - postgresql-contrib
-  - xsel
-  - selinux
   - selinux-utils
   - selinux-basics
   - auditd
   - audispd-plugins
+  - xsel
