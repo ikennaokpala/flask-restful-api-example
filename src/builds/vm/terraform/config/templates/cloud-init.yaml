@@ -28,6 +28,8 @@ write_files:
       export RDB_API_PASSWORD=${pg_db_api_password}
       export RDB_POSTGRES_PASSWORD=${pg_db_password}
       export LSARP_API_CORS_CLIENTS=${cors_clients}
+      export OIDC_CLIENT_ID=${oidc_client_id}
+      export OIDC_CLIENT_SECRET=${oidc_client_secret}
       export RDB_POSTGRESQL_DATA_PATH=${pdb_postgresql_data_path}
       export LSARP_DATABASE_URL=${pg_db_protocol}://${pg_db_user}:${pg_db_api_password}@${pg_db_domain}:${pg_db_port}/${pg_db_name}
 

@@ -1,0 +1,8 @@
+---
+- hosts: rdb
+  become: yes
+  become_user: ubuntu
+  gather_facts: yes
+  remote_user: ubuntu
+  roles:
+    - clone

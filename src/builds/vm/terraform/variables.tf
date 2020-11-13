@@ -88,6 +88,16 @@ variable "pg_db_protocol" {
   description = "This is the name to the pg_db_protocol, which serves as the db port identifier."
   default = "postgresql"
 }
+variable "oidc_client_id" {
+  type = string
+  description = "This is the name to the oidc_client_id, which serves as the oidc client identifier."
+  default = "rdb-development-test-staging"
+}
+variable "oidc_client_secret" {
+  type = string
+  description = "This is the name to the oidc_client_secret, which serves as the oidc client secret identifier."
+  default = "oidc_client_secret"
+}
 variable "pg_db_user" {
   type = string
   description = "This is the name to the pg_db_user, which serves as the db user identifier."

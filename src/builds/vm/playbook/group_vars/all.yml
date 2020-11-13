@@ -34,7 +34,6 @@ system_build_dependencies:
   - python3-dev
   - libjpeg-dev
   - libjpeg8-dev
-  - python3-pip
   - python3-psycopg2
   - git
   - curl
@@ -47,12 +46,12 @@ system_build_dependencies:
   - python3-dev
   - libevent-dev
   - libblas-dev
-  - libatlas-base-dev
   - python3-venv
   - libpq-dev
   - postgresql-contrib
   - selinux-utils
   - selinux-basics
+  - snap
   - auditd
   - audispd-plugins
   - xsel

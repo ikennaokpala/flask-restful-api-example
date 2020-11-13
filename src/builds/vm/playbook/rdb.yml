@@ -6,3 +6,15 @@
   remote_user: ubuntu
   roles:
     - rdb
+  pre_tasks:
+    - name: Create virtual environment if doesn't already exist
+      shell: pipenv shell &
+      args:
+        chdir: "{{rdb.api_root_path}}"
+        executable: /bin/bash
+
+    - name: Activate pipenv for API
+      shell: source $(pipenv --venv)/bin/activate && pipenv sync 
+      args:
+        chdir: "{{rdb.api_root_path}}"
+        executable: /bin/bash

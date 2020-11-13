@@ -11,13 +11,22 @@
     groups: admin,nginx
     append: yes
 
-- name: Install certbot-nginx nginx
+- name: Install "certbot" with option --classic
+  snap:
+    name: certbot
+    classic: yes
+
+- name: Create a symbolic link for certbot
+  file:
+    src: /snap/bin/certbot
+    dest: /usr/bin/certbot
+    state: link
+
+- name: Install nginx
   apt:
     name: "{{ item }}"
     state: present
   with_items:
-    - certbot 
-    - python-certbot-nginx
     - nginx
   tags: nginx
 
@@ -82,7 +91,7 @@
   cron:
     name: letsencrypt_renewal-{{ item }}
     special_time: weekly
-    job: /usr/bin/certbot --nginx -d {{ item }} --no-redirect --register-unsafely-without-email --agree-tos --rsa-key-size 4096
+    job: sudo /usr/bin/certbot --nginx -d {{ item }} --no-redirect --register-unsafely-without-email --agree-tos --rsa-key-size 4096
   loop: "{{ rdb.domains + [ rdb.domain ] }}"
   become: yes
   become_user: "{{ os.user.name }}"
