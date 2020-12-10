@@ -12,11 +12,17 @@ class Environment:
     SEED_DATA_COUNT = int(os.getenv('SEED_DATA_COUNT', 100))
     PAGINATION_MAX_PER_PAGE = int(os.getenv('PAGINATION_MAX_PER_PAGE', 100))
     MZXML_FILES_UPLOAD_FOLDER = os.getenv('MZXML_FILES_UPLOAD_FOLDER', '/tmp/')
+    PROTOTYPE_FILES_UPLOAD_FOLDER = os.getenv(
+        'PROTOTYPE_FILES_UPLOAD_FOLDER', '/tmp/prototypes/'
+    )
     MZXML_FILES_KEY_PREFIX = os.getenv('MZXML_FILES_KEY_PREFIX', 'mzxml_file_')
     DATA_FORMAT_FILE_EXTENSIONS = os.getenv(
         'DATA_FORMAT_FILE_EXTENSIONS',
         'mzXML,mzML,mzData,xlsx,csv,raw,BAF,DAT,FID,YEP,WIFF,XMS',
     ).split(',')
+    MAXQUANT_FILE_EXTENSIONS = os.getenv('MAXQUANT_FILE_EXTENSIONS', 'fasta,xml').split(
+        ','
+    )
     METADATA_SHIPMENTS_FILE_COLUMNS = os.getenv(
         'METADATA_SHIPMENTS_FILE_COLUMNS',
         'DATE shipped,MATRIX_BOX,MATRIX_LOCN,ORGM,ISOLATE_NBR',

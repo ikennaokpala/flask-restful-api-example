@@ -1,3 +1,4 @@
+import os
 import factory
 
 from flask import current_app
@@ -5,9 +6,60 @@ from flask import current_app
 from src.main import db
 from src.main.models.session import Session
 from src.main.models.project import Project
+from src.main.models.pipeline import Pipeline
 from src.main.models.data_type import DataType
+from src.main.models.prototype import Prototype
 from src.main.models.mzxml_file import MZXmlFile
+from src.main.models.prototypes.max_quant import MaxQuant
 from src.main.models.metadata_shipment_file import MetadataShipmentFile
+
+
+class PrototypeFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Prototype
+        sqlalchemy_session = db.session
+
+    name = factory.Sequence(lambda n: 'Meta Prototype Factory {}'.format(n + 1))
+    description = 'A particular kind of prototype, as defined by the Prototype and values it can take in.'
+    type = 'Prototype'
+    content = {'example_key': 'example_value'}
+
+    @classmethod
+    def _create(_cls, prototype_model_class, *args, **kwargs):
+        prototype = prototype_model_class(*args, **kwargs)
+
+        db.session.add(prototype)
+        db.session.commit()
+
+        return prototype
+
+
+class MaxQuantFactory(PrototypeFactory):
+    class Meta:
+        model = MaxQuant
+        sqlalchemy_session = db.session
+
+    name = factory.Sequence(lambda n: 'Meta MaxQuant Factory {}'.format(n + 1))
+    description = 'A particular kind of prototype, as defined by the max quant formats (xml) and values it can take in.'
+    type = 'MaxQuant'
+    content = {
+        'fasta_file': {
+            'name': 'sample_factory',
+            'extension': 'fasta',
+            'path': '/tmp/prototypes/maxquants/<checksum>_sample.fasta',
+            'checksum': '<checksum>',
+        },
+        'max_quant_file': {
+            'name': 'sample_factory',
+            'extension': 'xml',
+            'content': open(
+                os.path.abspath('src/tests/support/fixtures/max_quants/sample.xml'),
+                'rb',
+            )
+            .read()
+            .decode('utf-8'),
+        },
+    }
 
 
 class MZXmlFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -17,8 +69,8 @@ class MZXmlFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     name = 'sample'
     extension = 'mzXML'
-    location = '/tmp/projects/metabolomics-project-1/5e8ff9bf55ba3508199d22e984129be6_sample.mzXML'
-    checksum = '5e8ff9bf55ba3508199d22e984129be6'
+    location = '/tmp/projects/metabolomics-project-1/<checksum>_sample.mzXML'
+    checksum = '<checksum>'
 
 
 class MetadataShipmentFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -186,3 +238,21 @@ class SessionFactory(factory.alchemy.SQLAlchemyModelFactory):
         redirect_uri='http://localhost:4000/path/to/destination',
         code='AAdzZWNyZXQx18RH18UlCrmDnmRN9fRrUcqitGMzfpHqy4PL-7wDrfBkvnkajLeNdnOT4yr49O0wVB5Sekcej0AExfZcBC4M5BJZuzOZepJJ9IC2AiRDGJdYnTSeFTwWKok_ZOcgmOYD9K3254UfXNLffd2BUZ7H0RSGRfpxx7Ga1nMYnNIkH_uGj6H3S2J3BLCotKIwR8ArcGkBNWtum3LExSsJdXH36YV5vS61-E_JGg2CurGpt4RHF4zya6z1081WKL1MqTIombIxR07JSvGlnJMcfLsJaVuN70cCKWS0Wnohl2CB5xNLm9LzDrYWk047mgbYU4aDg5SHUqvP3TimOBwfnaX2S3MCLBPwb5JU49sEMV5JKF2vZ9RNPsWZSj5WgV0MtwBWplpSg5hcwdDxOLEfwVEIvMtpOxsTm_a8PMsrk1aN1Uw9v1rzdzlslwPSFQs_VOze-AAW3XKFUWtNetXLxFvkgOUSeMwks7a-pgCGumLpkOqNvZCjHC1s317-97BCc19lfhORapmFlDVn1O_a5c0gQ5M5beIyZYqqxoKaQgOryvqai0efZKxQnjd8b78YcOx0uTPuzA9df21Db3lhqRAmXys',
     )
+
+
+class PipelineFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Pipeline
+        sqlalchemy_session = db.session
+
+    name = factory.Sequence(lambda n: 'Pipeline Factory {}'.format(n + 1))
+    description = 'A particular kind of pipeline, as defined by the prototype and data type formats (xml) and values it can take in.'
+
+    @classmethod
+    def _adjust_kwargs(_cls, **kwargs):
+        kwargs['data_type_id'] = DataTypeWithProjectFactory.create(
+            mzxmls=1, metadata_shipments=1
+        ).id
+        kwargs['prototype_id'] = MaxQuantFactory.create().id
+
+        return kwargs

@@ -8,6 +8,13 @@ from src.main.models.session import Session
 
 from src.main.controllers.v1.auth_controller import endpoint as auth_endpoint
 from src.main.controllers.v1.projects_controller import endpoint as projects_endpoint
+from src.main.controllers.v1.pipelines_controller import endpoint as pipelines_endpoint
+from src.main.controllers.v1.prototypes_controller import (
+    endpoint as prototypes_endpoint,
+)
+from src.main.controllers.v1.max_quant_prototypes_controller import (
+    endpoint as max_quant_prototypes_endpoint,
+)
 from src.main.controllers.v1.data_types_controller import (
     endpoint as data_types_endpoint,
 )
@@ -29,6 +36,11 @@ class RouterV1:
     def draw(klazz, api, prefix=''):
         api.add_namespace(auth_endpoint, path=prefix + '/auth')
         api.add_namespace(projects_endpoint, path=prefix + '/projects')
+        api.add_namespace(prototypes_endpoint, path=prefix + '/prototypes')
+        api.add_namespace(
+            max_quant_prototypes_endpoint, path=prefix + '/prototypes/max_quants'
+        )
+        api.add_namespace(pipelines_endpoint, path=prefix + '/pipelines')
         api.add_namespace(data_formats_endpoint, path=prefix + '/data_formats')
         api.add_namespace(data_types_with_user_endpoint, path=prefix + '/data_types')
         api.add_namespace(
