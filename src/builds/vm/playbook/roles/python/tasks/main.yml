@@ -1,0 +1,20 @@
+---
+- name: Recursively change ownership to {{ os.user.name }}
+  file:
+    path: /home/{{ os.user.name }}
+    state: directory
+    recurse: yes
+    owner: "{{ os.user.name }}"
+    group: "{{ os.user.name }}"
+  become: yes
+  become_user: root
+
+- name: Build 'install' target in Makefile
+  make:
+    chdir: "{{rdb.api_root_path}}"
+    target: install
+    file: Makefile
+  become: yes
+  become_user: "{{ os.user.name }}"
+  tags:
+    - skip_ansible_lint

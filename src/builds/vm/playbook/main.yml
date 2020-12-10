@@ -2,5 +2,7 @@
 # RDB's ansible setup
 - import_playbook: common.yml
 - import_playbook: postgresql.yml
+- import_playbook: clone.yml
+- import_playbook: python.yml
 - import_playbook: rdb.yml
 - import_playbook: nginx.yml

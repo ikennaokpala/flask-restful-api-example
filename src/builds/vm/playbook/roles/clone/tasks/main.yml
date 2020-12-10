@@ -44,25 +44,6 @@
     accept_hostkey: yes
   tags: rdb
 
-- name: Write these values to {{rdb.frontend_root_path}}/admin/.env
-  blockinfile:
-    dest: "{{rdb.frontend_root_path}}/admin/.env"
-    block: |
-      PORT=4000
-      NODE_ENV=production
-      BACKEND_API=https://api.{{rdb.domain}}
-      REACT_APP_REDIRECT_URI=https://{{rdb.domain}}/admin/auth/callback
-      REACT_APP_AUTHORIZATION_CODE_URI=https://api.{{rdb.domain}}/v1/auth/authorization_code_url
-      REACT_APP_AUTH_CALLBACK_URI=https://api.{{rdb.domain}}/v1/auth/callback
-      REACT_APP_AUTH_LOGOUT_URI=https://api.{{rdb.domain}}/v1/auth/logout
-      REACT_APP_PROJECTS_URI=https://api.{{rdb.domain}}/v1/projects
-      REACT_APP_DATA_FORMATS=https://api.{{rdb.domain}}/v1/data_formats
-      REACT_APP_DATA_TYPES=https://api.{{rdb.domain}}/v1/data_types
-      REACT_APP_MAX_UPLOAD_LIMIT=100
-    marker: '# {mark} ANSIBLE MANAGED BLOCK - rdb'
-    insertbefore: EOF
-    create: yes
-
 - name: Create api symbolic link to /api
   file:
     src: "{{rdb.api_root_path}}"

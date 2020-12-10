@@ -1,3 +1,135 @@
 ---
-- import_tasks: clone.yml
-- import_tasks: configure.yml
+- name: Create database
+  make:
+    chdir: "{{rdb.api_root_path}}"
+    target: db_create
+    file: Makefile
+  tags:
+    - skip_ansible_lint
+  become: yes
+
+- name: Migrate database schema
+  make:
+    chdir: "{{rdb.api_root_path}}"
+    target: db_migrate
+    file: Makefile
+  tags:
+    - skip_ansible_lint
+  become: yes
+
+- name: Setup NodeJS 14.x
+  become: yes
+  shell: curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+
+- name: Installing latest version of NodeJS
+  apt:
+    name: nodejs
+    state: latest
+  become: yes
+  become_user: root
+
+- name: Installing serve
+  shell: npm install -g serve
+  become: yes
+  become_user: root
+
+- name: Install frontend dependencies
+  shell: npm install
+  args:
+    chdir: "{{rdb.frontend_root_path}}/admin"
+
+- name: Create template for environment api.env
+  template:
+    src: api.env.j2
+    dest: "{{ rdb.root_path }}/config/api.env"
+    owner: "{{os.user.name}}"
+    group: "{{os.user.group}}"
+    mode: 0600
+
+- name: Write these values to {{ rdb.root_path }}/config/api.env
+  blockinfile:
+    dest: "{{ rdb.root_path }}/config/api.env"
+    block: |
+      FLASK_ENV={{ ansible_env.FLASK_ENV }}
+      RDB_PYTHON_VERSION={{ ansible_env.RDB_PYTHON_VERSION }}
+      PYTHONDONTWRITEBYTECODE={{ ansible_env.PYTHONDONTWRITEBYTECODE }}
+      PIPENV_IGNORE_VIRTUALENVS={{ ansible_env.PIPENV_IGNORE_VIRTUALENVS }}
+      LSARP_API_CORS_CLIENTS={{ ansible_env.LSARP_API_CORS_CLIENTS }}
+      RDB_API_USERNAME={{ ansible_env.RDB_API_USERNAME }}
+      RDB_API_DATABASE={{ ansible_env.RDB_API_DATABASE }}
+      RDB_API_PASSWORD={{ ansible_env.RDB_API_PASSWORD }}
+      RDB_POSTGRES_PASSWORD={{ ansible_env.RDB_POSTGRES_PASSWORD }}
+      RDB_POSTGRESQL_DATA_PATH={{ ansible_env.RDB_POSTGRESQL_DATA_PATH }}
+      LSARP_DATABASE_URL={{ ansible_env.LSARP_DATABASE_URL }}
+    marker: '# {mark} ANSIBLE MANAGED BLOCK - rdb'
+    insertbefore: EOF
+    create: yes 
+  tags: common
+
+- name: Create template for environment frontend.env
+  template:
+    src: frontend.env.j2
+    dest: "{{ rdb.root_path }}/config/frontend.env"
+    owner: "{{os.user.name}}"
+    group: "{{os.user.group}}"
+    mode: 0600
+
+- name: Write these values to {{ rdb.root_path }}/config/frontend.env
+  blockinfile:
+    dest: "{{ rdb.root_path }}/config/frontend.env"
+    block: |
+      PORT=4000
+      NODE_ENV=production
+      BACKEND_API=https://api.{{rdb.domain}}
+      REACT_APP_REDIRECT_URI=https://{{rdb.domain}}/admin/auth/callback
+      REACT_APP_AUTHORIZATION_CODE_URI=https://api.{{rdb.domain}}/v1/auth/authorization_code_url
+      REACT_APP_AUTH_CALLBACK_URI=https://api.{{rdb.domain}}/v1/auth/callback
+      REACT_APP_AUTH_LOGOUT_URI=https://api.{{rdb.domain}}/v1/auth/logout
+      REACT_APP_PROJECTS_URI=https://api.{{rdb.domain}}/v1/projects
+      REACT_APP_DATA_FORMATS=https://api.{{rdb.domain}}/v1/data_formats
+      REACT_APP_DATA_TYPES=https://api.{{rdb.domain}}/v1/data_types
+      REACT_APP_MAX_UPLOAD_LIMIT=100
+    marker: '# {mark} ANSIBLE MANAGED BLOCK - rdb'
+    insertbefore: EOF
+    create: yes
+
+- name: Setup api service
+  template:
+    src: api.service.j2
+    dest: /etc/systemd/system/api.service
+    owner: "{{os.user.name}}"
+    group: "{{os.user.group}}"
+    mode: 644
+  become: yes
+  become_user: root
+  tags: api
+
+- name: Enable and start api service
+  service:
+    name: api
+    state: started
+    enabled: yes
+  become: yes
+  become_user: root
+  tags: api
+
+- name: Setup frontend service
+  template:
+    src: frontend.service.j2
+    dest: /etc/systemd/system/frontend.service
+    owner: "{{os.user.name}}"
+    group: "{{os.user.group}}"
+    mode: 644
+  become: yes
+  become_user: root
+  tags: frontend
+
+- name: Enable frontend service
+  service:
+    name: frontend
+    state: started
+    enabled: yes
+  become: yes
+  become_user: root
+  tags: frontend
+  ignore_errors: yes
