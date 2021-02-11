@@ -36,6 +36,9 @@ class DataType(db.Model):
     mzxml_files = db.relationship(
         'MZXmlFile', cascade='all,delete-orphan', backref='data_types', lazy='joined'
     )
+    pipelines = db.relationship(
+        'Pipeline', cascade='all,delete-orphan', backref='data_types', lazy='joined'
+    )
     metadata_shipment_files = db.relationship(
         'MetadataShipmentFile',
         cascade='all,delete-orphan',

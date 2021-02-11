@@ -1,4 +1,4 @@
-"""empty message
+"""Fix to introduce on delete cascade
 
 Revision ID: ef82c4359bb4
 Revises: 3d2d24f3da61

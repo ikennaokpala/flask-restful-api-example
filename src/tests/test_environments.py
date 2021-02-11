@@ -34,6 +34,9 @@ class TestDevelopmentEnvironment(TestCase):
         self.assertEqual(app.config['MZXML_FILES_KEY_PREFIX'], 'mzxml_file_')
         self.assertEqual(app.config['MZXML_FILES_UPLOAD_FOLDER'], '/tmp/')
         self.assertEqual(
+            app.config['PROTOTYPE_FILES_UPLOAD_FOLDER'], '/tmp/prototypes/'
+        )
+        self.assertEqual(
             app.config['DATA_FORMAT_FILE_EXTENSIONS'],
             'mzXML,mzML,mzData,xlsx,csv,raw,BAF,DAT,FID,YEP,WIFF,XMS'.split(','),
         )
@@ -72,6 +75,9 @@ class TestTestingEnvironment(TestCase):
         self.assertEqual(app.config['MZXML_FILES_KEY_PREFIX'], 'mzxml_file_')
         self.assertEqual(app.config['MZXML_FILES_UPLOAD_FOLDER'], '/tmp/')
         self.assertEqual(
+            app.config['PROTOTYPE_FILES_UPLOAD_FOLDER'], '/tmp/prototypes/'
+        )
+        self.assertEqual(
             app.config['DATA_FORMAT_FILE_EXTENSIONS'],
             'mzXML,mzML,mzData,xlsx,csv,raw,BAF,DAT,FID,YEP,WIFF,XMS'.split(','),
         )
@@ -104,6 +110,9 @@ class TestProductionEnvironment(TestCase):
 
         self.assertEqual(app.config['MZXML_FILES_KEY_PREFIX'], 'mzxml_file_')
         self.assertEqual(app.config['MZXML_FILES_UPLOAD_FOLDER'], '/tmp/')
+        self.assertEqual(
+            app.config['PROTOTYPE_FILES_UPLOAD_FOLDER'], '/tmp/prototypes/'
+        )
         self.assertEqual(
             app.config['DATA_FORMAT_FILE_EXTENSIONS'],
             'mzXML,mzML,mzData,xlsx,csv,raw,BAF,DAT,FID,YEP,WIFF,XMS'.split(','),
