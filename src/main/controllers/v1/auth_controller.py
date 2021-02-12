@@ -9,6 +9,7 @@ from requests.exceptions import HTTPError
 from src.main.services.session_service import SessionService
 from src.main.dao.session_dao import SessionDAO
 from src.main.models.session import Session
+from src.main import db
 
 endpoint = Namespace(
     'auth-endpoint', description='authentication related api endpoints'
@@ -87,6 +88,7 @@ class AuthLogout(Resource):
         Session.query.filter_by(
             access_token=session['token_user']['access_token']
         ).delete()
+        db.session.commit()
         session['token_user'] = None
 
         return None, 202
